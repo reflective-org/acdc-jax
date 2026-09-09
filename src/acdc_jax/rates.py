@@ -73,6 +73,18 @@ class RateInputs:
     delta_s: np.ndarray
     cs_shape: np.ndarray
     """Coagulation-sink size dependence, dimensionless, shape (nclust,)."""
+    has_energy_data: np.ndarray
+    """(nclust,) bool: clusters with tabulated quantum-chemical energies.
+
+    The parameters a sensitivity study may legitimately vary. Monomers and
+    the generic charger ions are excluded because their formation free
+    energy is **zero by definition** -- formation energies are relative to
+    the free monomers, so a monomer is the reference, not a measurement.
+    Differentiating with respect to them shifts the whole reference state
+    and produces a large, meaningless derivative: with them included, 1A and
+    1N dominate dJ/dH for the bundled system, which reads as a physical
+    result and is not one.
+    """
     valid_pairs: np.ndarray
     """(nclust, nclust) bool: pairs with an enumerated collision.
 
@@ -138,6 +150,9 @@ def build_rate_inputs(
 
     delta_h = np.array([energies.delta_h.get(label, 0.0) for label in system.labels])
     delta_s = np.array([energies.delta_s.get(label, 0.0) for label in system.labels])
+    has_energy_data = np.array(
+        [label in energies.delta_h for label in system.labels], dtype=bool
+    )
 
     pair_kind, neutral_partner = _classify_pairs(charge)
 
@@ -169,6 +184,7 @@ def build_rate_inputs(
         delta_h=delta_h,
         delta_s=delta_s,
         cs_shape=cs_shape,
+        has_energy_data=has_energy_data,
         valid_pairs=valid_pairs,
     )
 

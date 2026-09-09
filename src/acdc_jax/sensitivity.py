@@ -98,6 +98,15 @@ def sensitivity_to_free_energies(
     form worth reading: it says how much a 1 kcal/mol error in a given
     cluster's formation enthalpy moves the answer, and quantum chemistry
     errors are of that order.
+
+    **Restricted to clusters with tabulated energies.** Monomers and the
+    generic charger ions are masked to zero: formation energies are defined
+    relative to the free monomers, so a monomer's is zero by construction
+    and not a parameter anyone can be wrong about. Differentiating with
+    respect to it shifts the reference state itself and yields a large
+    derivative that looks like a physical result. Left unmasked, 1A and 1N
+    top the list for the bundled system with sensitivities of +1.16 and
+    +0.65 per kcal/mol, ahead of every real cluster.
     """
 
     def j_of_h(h):
@@ -113,8 +122,15 @@ def sensitivity_to_free_energies(
     d_dh = jax.grad(j_of_h)(h0)
     d_ds = jax.grad(j_of_s)(s0)
 
+    # Mask out the reference-state species. Applied to the RESULT rather
+    # than by restricting the differentiated argument, so the returned
+    # arrays stay aligned with system.labels.
+    parameters = jnp.asarray(inputs.has_energy_data)
+    d_dh = jnp.where(parameters, d_dh, 0.0)
+    d_ds = jnp.where(parameters, d_ds, 0.0)
+
     # Guarded division: J can be numerically zero in the far
-    # evaporation-limited corner, and a bare divide would return NaN
+    # evaporation-limited corner, and a bare divide would give NaN
     # cotangents on any further differentiation.
     safe_j = jnp.where(j > 0, j, 1.0)
     relative = jnp.where(j > 0, d_dh / safe_j, 0.0)

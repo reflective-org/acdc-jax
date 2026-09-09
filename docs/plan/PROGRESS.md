@@ -62,11 +62,14 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **6.5** Replacing the hidden state — `solve` is a pure function
 
 ## Phase 7 — Differentiability & batching
-- ⬜ **7.1** Gradient audit
-- ⬜ **7.2** ∂J/∂ΔG
-- ⬜ **7.3** ∂J/∂conditions
-- ⬜ **7.4** vmap over condition grids
-- ⬜ **7.5** jit
+- ✅ **7.1** Gradient audit (double-where, masked reductions)
+- ✅ **7.2** ∂J/∂ΔH, ∂J/∂ΔS — grad vs FD **2e-7** (gate 1e-3)
+- ✅ **7.3** ∂J/∂conditions, incl. the apparent nucleation order
+- ⏸ **7.4** `vmap` over condition grids — the steady-state solve has a
+  data-dependent convergence check and a root-find; batching it is its own
+  piece of work. `sensitivity.sweep` loops for now, reusing the compiled RHS.
+- ⏸ **7.5** `jit` — the RHS is already traced end to end; an explicit
+  `filter_jit` boundary is deferred with 7.4.
 
 ## Phase 8 — Extended physics
 - ⬜ **8.1**–**8.9** see [phase-8](phase-8-extended-physics.md)
@@ -111,6 +114,8 @@ be re-derived.
 | **Steady-state J vs the `run` binary** | **rel 2.09e-06** (gate 1e-5) | Phase 6 |
 | Root-find vs integration, J | **rel 2.27e-09** (gate 1e-8) | Phase 6 |
 | Root-find vs integration, concentrations | max rel **5.3e-08** | Phase 6 |
+| **∂J/∂ΔH vs central finite difference** | **rel 1.1e-07 – 2.4e-07** (gate 1e-3) | Phase 7 |
+| Differentiable free-energy parameters | **49 of 54** (5 are reference state) | Phase 7 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
