@@ -179,12 +179,20 @@ class TestLosses:
                     coagulation="bg_loss", bg_concentration=BG_CONCENTRATION
                 ),
             ),
-            ("loopA20wl", "a20", losses.LossSettings(wall="cloud4_ja")),
-            ("loopA20wljk", "a20", losses.LossSettings(wall="cloud4_jk")),
+            (
+                "loopA20wl",
+                "a20",
+                losses.LossSettings(coagulation=None, wall="cloud4_ja"),
+            ),
+            (
+                "loopA20wljk",
+                "a20",
+                losses.LossSettings(coagulation=None, wall="cloud4_jk"),
+            ),
             (
                 "loopA20dil",
                 "a20",
-                losses.LossSettings(dilution=config.DILUTION_DEFAULT),
+                losses.LossSettings(coagulation=None, dilution=config.DILUTION_DEFAULT),
             ),
             ("loopA20cswl", "a20", losses.LossSettings(wall="cloud4_ja")),
             ("loopAN66cs", "an66", losses.LossSettings(wall="cloud4_ja")),
@@ -192,15 +200,37 @@ class TestLosses:
     )
     def test_total_loss_matches_fixture(self, name, fixture, settings, request) -> None:
         """Upstream sums everything into one `loss`; compare the sum of the
-        port's per-slot vectors. Variants with only a wall loss or only
-        dilution have no coagulation term upstream, so drop `coag` there."""
+        port's per-slot vectors. A wall-only or dilution-only run has no
+        coagulation term upstream, which `coagulation=None` expresses."""
         system = request.getfixturevalue(fixture)
         golden = _golden(name)
         vectors = loop.first_order_losses(system, settings, T)
-        if name in ("loopA20wl", "loopA20wljk", "loopA20dil"):
-            vectors.pop("coag")
+        wall_only = name in ("loopA20wl", "loopA20wljk", "loopA20dil")
+        assert ("coag" in vectors) is not wall_only
         total = sum(vectors.values())
         assert _worst(total, golden["loss"]) < GATE
+
+    def test_exp_loss_shape_parameters_are_honoured(self, a20) -> None:
+        """--exp_loss_exponent and --exp_loss_ref_cluster reach the sink
+        rather than being silently replaced by the defaults."""
+        base = loop.first_order_losses(a20, losses.LossSettings(), T)["coag"]
+        steeper = loop.first_order_losses(
+            a20, losses.LossSettings(cs_exponent=-2.0), T
+        )["coag"]
+        shifted = loop.first_order_losses(
+            a20, losses.LossSettings(cs_reference="2A"), T
+        )["coag"]
+        r = a20.radius
+        np.testing.assert_allclose(
+            np.asarray(steeper) / np.asarray(base),
+            (r / r[0]) ** (-2.0 - config.CS_EXPONENT_DEFAULT),
+            rtol=1e-12,
+        )
+        assert np.asarray(shifted)[1] == pytest.approx(
+            config.CS_COEFFICIENT_DEFAULT, rel=1e-12
+        )
+        with pytest.raises(ValueError, match="not a cluster of the grid"):
+            loop.first_order_losses(a20, losses.LossSettings(cs_reference="99A"), T)
 
     def test_mass_correction_is_live_in_loop_mode(self, a20) -> None:
         """Perl :7024 `sqrt(1+28.8/m)`: unlike the small-set F11 path, the
@@ -266,6 +296,44 @@ class TestRightHandSide:
         e = loop.kelvin_evaporation(system, k, T, rlim)
         vectors = loop.first_order_losses(system, settings, T) if settings else None
         _check_rhs(system, k, e, golden, vectors)
+
+    def test_kelvin_monomer_channel_set(self, a20) -> None:
+        """Kelvin populates only monomer channels, so `channels="monomer"`
+        must give the same right-hand side from an O(n) channel list."""
+        golden = _golden("loopA20k")
+        k = loop.collision_coefficients(a20, T)
+        e = loop.kelvin_evaporation(a20, k, T)
+        full = loop.assemble(a20, k, e, golden["source"])
+        lean = loop.assemble(a20, k, e, golden["source"], channels="monomer")
+        assert len(lean.evaporation_k) < len(full.evaporation_k)
+        assert len(lean.evaporation_k) <= 2 * a20.n_clusters
+        c = np.zeros(a20.system.n_equations)
+        c[: a20.n_clusters] = golden["states"][0]
+        np.testing.assert_allclose(
+            np.asarray(rhs.rhs(lean, c)), np.asarray(rhs.rhs(full, c)), rtol=1e-12
+        )
+        with pytest.raises(ValueError, match="unknown evaporation channel set"):
+            loop.assemble(a20, k, e, golden["source"], channels="some")
+
+    def test_deltag_evaporation_differentiates(self, a20) -> None:
+        """Off-grid pairs index cluster 0, so their delta can be the largest
+        in the matrix; masking only the result leaves exp's VJP at 0 * inf
+        and jax.grad returns NaN. Checked on a grid deep enough to overflow."""
+        k = loop.collision_coefficients(a20, T)
+
+        def total(scale):
+            e = loop.deltag_evaporation(
+                a20, k, T, lambda counts: scale * _synthetic_gibbs(counts)
+            )
+            return e.sum()
+
+        # scale 10 puts the off-grid exponent past exp's float64 range
+        # (delta ~ 490 kcal/mol -> 1.8 * delta ~ 880), which is what makes
+        # the unmasked VJP 0 * inf.
+        for scale in (1.0, 10.0):
+            value, grad = float(total(scale)), float(jax.grad(total)(scale))
+            assert np.isfinite(value), scale
+            assert np.isfinite(grad) and grad != 0, scale
 
     def test_deltag_rhs(self, a20) -> None:
         golden = _golden("loopA20dg")
@@ -350,8 +418,9 @@ class TestSizeBins:
 class TestSteadyState:
     """9.7: the Phase 6-7 machinery on a loop system, untouched."""
 
+    @staticmethod
     @pytest.fixture(scope="class")
-    def steady(self, a20):
+    def steady(a20):
         from acdc_jax import solve
 
         def coefficients(t):
