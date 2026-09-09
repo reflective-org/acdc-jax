@@ -83,6 +83,8 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **8.8** Non-standard reactions — exact reaction-graph match vs 3 fixtures + baseline; F20 recorded; `is_monomer` fixed
 - ✅ **8.4** Hydrates/RH — K, E, cs at **<1e-12** vs synthetic-monohydrate fixture (280 K, RH 20%); traceable in T where upstream dies
 
+- ✅ **8.10** Code-review follow-up (PR #1) — losses and `FidelityConfig` wired into `rhs.assemble` (each loss on its own flux slot, hydrate-averaged when `--rh`); masks derived from `RateInputs` instead of callers; diffusion loss in direct form; F16 as a real flag with its 2024 setting tested; emitted-text evaluator validated against the f2py bridge; fixed-T `constant` golden; Su73 locking unit test; 2020/2024 generator cross-check in `capture_variants.py`; citations corrected
+
 ## Phase 9 — Loop mode
 - ⏸ **9.1**–**9.5** decision revisited at Phase 8 close
 
