@@ -1,0 +1,84 @@
+!    -*- f90 -*-
+! f2py signature for the generated ACDC equation routines.
+!
+! Written by hand rather than auto-generated, for two reasons:
+!
+! 1. The Fortran declares no `intent`, so f2py defaults every array to
+!    intent(in) and copies it. The routines then write into the copy and the
+!    caller sees an unchanged array full of zeros -- silently, with no error.
+!    Every output below therefore needs an explicit intent(out).
+!
+! 2. `ipar` is genuinely intent(inout): `feval` and `formation` MUTATE it as
+!    a hidden "rate tables are initialised" flag, and the reference relies on
+!    that mutation surviving back to the caller. Declaring it in-out makes
+!    that side channel visible instead of accidental. Pass ipar = [0,0,0,0]
+!    to force a rate recomputation, which is what get_acdc_J.f90:96-97 does
+!    before every driver call.
+!
+! Note that `feval` and `formation` hold SEPARATE saved copies of the
+! coefficient tensors, each gated on a different ipar element (1 and 3
+! respectively), so initialising one does not initialise the other.
+
+python module acdc_ref
+    interface
+
+        ! dc/dt for the cluster birth-death system.
+        subroutine feval(neqn,t,c,f,coef,ipar)
+            integer, optional, intent(in), check(len(c)>=neqn), depend(c) :: neqn=len(c)
+            real(kind=8), intent(in) :: t
+            real(kind=8), dimension(neqn), intent(in) :: c
+            real(kind=8), dimension(neqn), intent(out), depend(neqn) :: f
+            real(kind=8), dimension(4), intent(in) :: coef
+            integer, dimension(4), intent(in,out) :: ipar
+        end subroutine feval
+
+        ! Formation rate: flux into the out_neu/out_neg/out_pos counters.
+        ! j_by_cluster and j_all are computed here and then discarded by
+        ! driver_acdc_J.f90:359-363; we keep them.
+        subroutine formation(neqn,c,j_tot,j_by_charge,j_by_cluster,j_all,ipar,coef)
+            integer, optional, intent(in), check(len(c)>=neqn), depend(c) :: neqn=len(c)
+            real(kind=8), dimension(neqn), intent(in) :: c
+            real(kind=8), intent(out) :: j_tot
+            real(kind=8), dimension(4), intent(out) :: j_by_charge
+            real(kind=8), dimension(neqn), intent(out), depend(neqn) :: j_by_cluster
+            real(kind=8), dimension(neqn,4), intent(out), depend(neqn) :: j_all
+            integer, dimension(4), intent(in,out) :: ipar
+            real(kind=8), dimension(4), intent(in) :: coef
+        end subroutine formation
+
+        ! Collision coefficients, m^3/s. Zero for forbidden pairs.
+        subroutine get_coll(k,temperature)
+            real(kind=8), dimension(54,54), intent(out) :: k
+            real(kind=8), intent(in) :: temperature
+        end subroutine get_coll
+
+        ! Evaporation coefficients, 1/s. Depends on K: detailed balance is
+        ! taken against the same collision rate, ion enhancement included.
+        subroutine get_evap(e,k,temperature)
+            real(kind=8), dimension(54,54), intent(out) :: e
+            real(kind=8), dimension(54,54), intent(in) :: k
+            real(kind=8), intent(in) :: temperature
+        end subroutine get_evap
+
+        ! Coagulation sink SIZE DEPENDENCE only, dimensionless. The caller
+        ! multiplies by cs_ref (get_rate_coefs:1011: cs = coef(2)*cs).
+        subroutine get_losses(cs)
+            real(kind=8), dimension(54), intent(out) :: cs
+        end subroutine get_losses
+
+        ! Ion enhancement factor for losses. Returns 1.0 in this system.
+        subroutine get_fcr(fcs)
+            real(kind=8), intent(out) :: fcs
+        end subroutine get_fcr
+
+        ! The assembled quadratic and linear coefficient tensors -- K, E and
+        ! cs scattered into reaction slots with the 0.5 self-collision
+        ! factors applied. This is what the port's rhs.py must reproduce.
+        subroutine get_rate_coefs(coef_quad,coef_lin,coef)
+            real(kind=8), dimension(54,54,63), intent(out) :: coef_quad
+            real(kind=8), dimension(63,63,54), intent(out) :: coef_lin
+            real(kind=8), dimension(4), intent(in) :: coef
+        end subroutine get_rate_coefs
+
+    end interface
+end python module acdc_ref
