@@ -9,7 +9,8 @@ errors; the per-leaf gates cannot.
 | Gate | Threshold | Phase |
 |---|---|---|
 | Rate constants `K`, `E`, `cs` vs emitted literals | < 1e-12 rel | 4 |
-| `dc/dt` vs f2py-wrapped `feval` | < 1e-12 rel | 5 |
+| `dc/dt` vs f2py `feval`, physical states | < 1e-12 rel | 5 |
+| `dc/dt` vs f2py `feval`, log-uniform stress states | < 1e-11 rel | 5 |
 | `jacfwd` vs the analytic quadratic Jacobian | < 1e-12 rel | 5 |
 | Conservation (molecules, charge) | < 1e-10 rel | 5 |
 | Steady-state J vs the `run` binary | **< 1e-5 rel** | 6 |
@@ -58,6 +59,38 @@ irrelevant details of the integration path. 1e-5 is the honest threshold.
 The root-find path has no such ambiguity (`f(c) = 0` is exact), which is why
 it is gated against the integration path at 1e-8 — that comparison is
 between two of *our* results, both deterministic.
+
+## Why the dc/dt gate is split
+
+Physically plausible states (monomers only; a uniform population) agree to
+**1.5e-15** and **9.7e-14**. The log-uniform random states, which span
+**19 orders of magnitude** in concentration by construction, reach 2.4e-12.
+
+That is not slack for the port. It is summation-order sensitivity: this port
+accumulates by scatter-add while the reference accumulates by nested loop,
+and floating-point addition is not associative, so a term list with a 1e19
+spread in magnitude gives different last bits. The random states exist to
+stress index handling and sign conventions, not to be realistic.
+
+## Why the Jacobian is not gated on finite differences
+
+The right-hand side is exactly quadratic in `c`, so a central difference has
+no truncation error — only roundoff. But that roundoff scales with the
+magnitude of `f` itself, and at atmospheric concentrations `f` dwarfs
+`c·df/dc`. Measured agreement between `jacfwd` and central differences:
+
+| concentration | agreement |
+|---|---|
+| 1e4 | 4.5e-10 |
+| 1e6 | 4.5e-08 |
+| 1e8 | 4.5e-06 |
+| 1e12 | 2.4e-05 |
+
+The degradation is linear in concentration and is a property of finite
+differences, not of `jacfwd`, which is exact. So the Jacobian is checked two
+ways: against central differences at 1e4, where they are trustworthy, and at
+1e12 through the exact quadratic identity
+`f(c+v) = f(c) + J(c)v + Q(v,v)`, which never forms a small difference.
 
 ### Consequence for golden capture
 

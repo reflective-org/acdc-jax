@@ -35,8 +35,8 @@ Taken in dependency order: labels first, since everything else needs them.
 ## Phase 3 — Enumeration
 - ✅ **3.1** System assembly and pair enumeration
 - ✅ **3.2** Sparsity gate against `coef_quad` / `coef_lin`
-- ⬜ **3.3** Dense representation for the traced RHS
-- ⬜ **3.4** Sources, constants, fitted
+- ✅ **3.3** Dense representation for the traced RHS
+- ✅ **3.4** Sources, constants, fitted
 
 ## Phase 4 — Rates
 - ✅ **4.1** Hard-sphere collisions
@@ -47,9 +47,9 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **4.6** Coagulation sink
 
 ## Phase 5 — RHS, formation, fluxes
-- ⬜ **5.1** The RHS
-- ⬜ **5.2** Exact Jacobian
-- ⬜ **5.3** Formation rate
+- ✅ **5.1** The RHS
+- ✅ **5.2** Exact Jacobian
+- ✅ **5.3** Formation rate
 - ⬜ **5.4** Net-flux matrix
 - ⬜ **5.5** Conservation checks
 
@@ -103,6 +103,10 @@ be re-derived.
 | `K` vs reference, 250–320 K | max rel **6e-15**, sparsity exact | Phase 4 |
 | `E` vs reference, 250–320 K | max rel **1.7e-13** | Phase 4 |
 | `cs` vs reference | max rel **2e-15** | Phase 4 |
+| `coef_quad` / `coef_lin` values | max rel **6e-15** / **1.7e-13** | Phase 5 |
+| `dc/dt`, physical states | max rel **9.7e-14** | Phase 5 |
+| `dc/dt`, 19-order stress states | max rel **2.4e-12** | Phase 5 |
+| J vs reference | max rel **1.5e-15** | Phase 5 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
