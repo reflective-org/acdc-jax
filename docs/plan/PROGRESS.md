@@ -92,11 +92,11 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **9.7** steady state and dJ/dT on a loop system through the unchanged Phase 6–7 code
 
 ## Phase 10 — Pathways, figures, docs
-- ⬜ **10.1** Growth-pathway extraction
-- ⬜ **10.2** Source back-solve
-- ⬜ **10.3** ΔG surfaces
-- ✅ **10.4** Figures — 4 of 6, all reproducible from a clean checkout
-- 🔨 **10.5** Documentation (mkdocs site not yet built)
+- ✅ **10.1** Growth-pathway extraction — `track_fluxes.m` semantics on the explicit reaction list; AN exit 5A5N → 6A5N as in the QuickGuide
+- ✅ **10.2** Source back-solve — re-inserted sources hold the steady state; ion sources recover the ipr
+- ✅ **10.3** ΔG surfaces — reference → actual at given vapours; ions carry no pressure term
+- ✅ **10.4** Figures — 6 of 6, all reproducible from a clean checkout
+- ✅ **10.5** Documentation — mkdocs-material + mkdocstrings site builds `--strict`
 
 ---
 
