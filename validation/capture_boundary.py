@@ -49,6 +49,16 @@ CLUSTER_SETS = {
     ),
     "AN": (FORTRAN / "cluster_sets/input_AN_neutral_neg_pos.inp", ("A", "N")),
     "AD": (FORTRAN / "cluster_sets/input_AD_neutral_neg_pos.inp", ("A", "D")),
+    # Same clusters as AN_narrow with the acid/base strength rows removed,
+    # which makes l_strength_neutral false in the generator and forces the
+    # count-based FALLBACK stage of the cascade. Without this fixture that
+    # stage -- including its protonation-transfer accounting, the most
+    # intricate code in boundary.py -- is never reached by any of the three
+    # shipped cluster sets, measured. See docs/plan/phase-2-boundary.md.
+    "AN_narrow_nostrength": (
+        REPO / "validation/fixtures/input_ANnarrow_nostrength.inp",
+        ("A", "N"),
+    ),
 }
 
 ENERGY = FORTRAN / "src/Perl_input/HS298.15K_example.txt"
