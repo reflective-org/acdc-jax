@@ -28,17 +28,13 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **1.5** Energy file (ΔH/ΔS/ΔG) — `13ffa6d`
 - ✅ **1.6** Dipole/polarizability file — `13ffa6d`
 
-## Phase 2 — Boundary cascade
-- ⬜ **2.1** `combine_labels` protonation algebra
-- ⬜ **2.2** Stage 1 — nucleated out?
-- ⬜ **2.3** Stage 2 — per-species clamp
-- ⬜ **2.4** Stage 3a — strength-guided stripping
-- ⬜ **2.5** Stage 3b — fallback and give-up path
-- ⬜ **2.6** Pruning rules
+## Phase 2 — Boundary cascade ✅ — `83ed119`
+- ✅ **2.1**–**2.6** all stages, exact match on 3595 decisions across four
+  cluster sets. Coverage of each stage asserted, not assumed.
 
 ## Phase 3 — Enumeration
-- ⬜ **3.1** Pair enumeration and decision ladder
-- ⬜ **3.2** The six index arrays
+- ✅ **3.1** System assembly and pair enumeration
+- ✅ **3.2** Sparsity gate against `coef_quad` / `coef_lin`
 - ⬜ **3.3** Dense representation for the traced RHS
 - ⬜ **3.4** Sources, constants, fitted
 
@@ -101,6 +97,9 @@ be re-derived.
 | Cluster labels | all **52** match the KEY block exactly | Phase 1.2 |
 | Mass / diameter / mob. diameter | all **52** match after `%.2f` rounding | Phase 1.4 |
 | ΔH, ΔS | all **52** match the literals inlined in `get_evap` | Phase 1.5 |
+| Boundary decisions | **3595 / 3595 exact** across 4 cluster sets | Phase 2 |
+| `coef_quad` sparsity | **2679 / 2679** triples, 0 missing, 0 extra | Phase 3 |
+| `coef_lin` evaporation sparsity | **422 / 422** entries (213 channels) | Phase 3 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
