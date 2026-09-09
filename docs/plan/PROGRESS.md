@@ -1,0 +1,112 @@
+# Progress
+
+Live status. One line per task; each task is one commit. See
+[`ULTRAPLAN.md`](ULTRAPLAN.md) for the arc and the per-phase files for
+detail.
+
+**Legend:** ✅ done · 🔨 in progress · ⬜ not started · ⏸ deferred
+
+---
+
+## Phase 0 — Scaffold & harness
+
+- ✅ **0.1** Repository scaffold and vendored ACDC reference — `57bba17`
+- 🔨 **0.2** Planning documents and doc stubs
+- ⬜ **0.3** Package skeleton and `config.py`
+- ⬜ **0.4** f2py bridge to the reference
+- ⬜ **0.5** Golden capture
+- ⬜ **0.6** Boundary-decision oracle
+
+## Phase 1 — Parser
+- ⬜ **1.1** Molecule-property header
+- ⬜ **1.2** Cluster-set body and range expansion
+- ⬜ **1.3** Cluster labels and canonicalisation
+- ⬜ **1.4** Geometry (mass, volume, radius, mobility diameter)
+- ⬜ **1.5** Energy file (ΔH/ΔS/ΔG)
+- ⬜ **1.6** Dipole/polarizability file
+
+## Phase 2 — Boundary cascade
+- ⬜ **2.1** `combine_labels` protonation algebra
+- ⬜ **2.2** Stage 1 — nucleated out?
+- ⬜ **2.3** Stage 2 — per-species clamp
+- ⬜ **2.4** Stage 3a — strength-guided stripping
+- ⬜ **2.5** Stage 3b — fallback and give-up path
+- ⬜ **2.6** Pruning rules
+
+## Phase 3 — Enumeration
+- ⬜ **3.1** Pair enumeration and decision ladder
+- ⬜ **3.2** The six index arrays
+- ⬜ **3.3** Dense representation for the traced RHS
+- ⬜ **3.4** Sources, constants, fitted
+
+## Phase 4 — Rates
+- ⬜ **4.1** Hard-sphere collisions
+- ⬜ **4.2** Ion–neutral enhancement (Su82)
+- ⬜ **4.3** Su73 and constant
+- ⬜ **4.4** Ion–ion recombination
+- ⬜ **4.5** Evaporation by detailed balance
+- ⬜ **4.6** Coagulation sink
+
+## Phase 5 — RHS, formation, fluxes
+- ⬜ **5.1** The RHS
+- ⬜ **5.2** Exact Jacobian
+- ⬜ **5.3** Formation rate
+- ⬜ **5.4** Net-flux matrix
+- ⬜ **5.5** Conservation checks
+
+## Phase 6 — Solve
+- ⬜ **6.1** Time integration
+- ⬜ **6.2** Steady state by integration
+- ⬜ **6.3** Steady state by root-find
+- ⬜ **6.4** Fitted concentrations
+- ⬜ **6.5** Replacing the hidden state
+
+## Phase 7 — Differentiability & batching
+- ⬜ **7.1** Gradient audit
+- ⬜ **7.2** ∂J/∂ΔG
+- ⬜ **7.3** ∂J/∂conditions
+- ⬜ **7.4** vmap over condition grids
+- ⬜ **7.5** jit
+
+## Phase 8 — Extended physics
+- ⬜ **8.1**–**8.9** see [phase-8](phase-8-extended-physics.md)
+
+## Phase 9 — Loop mode
+- ⏸ **9.1**–**9.5** decision revisited at Phase 8 close
+
+## Phase 10 — Pathways, figures, docs
+- ⬜ **10.1**–**10.5** see [phase-10](phase-10-figures-docs.md)
+
+---
+
+## Verified reference results
+
+Anything established by actually running something, so it does not have to
+be re-derived.
+
+| What | Value | How |
+|---|---|---|
+| Reference builds | GNU Fortran 16.1.0, needs `-fallow-argument-mismatch` | `scripts/build_reference.sh` |
+| AN+ions example J | **2.218 cm⁻³ s⁻¹** | `fortran/src/run` at [A]=1e7, [N]=1e9 cm⁻³, CS=1e-3 s⁻¹, T=280 K, IPR=3 cm⁻³ s⁻¹ |
+| System size | 54 clusters, 63 equations | `acdc_system_AN_ions_example.f90:5-6` |
+| Solver path | VODE (≤5000 eqs), steady-state assumption | `run` stdout |
+
+---
+
+## Changelog
+
+### 2026-09-08
+
+- **0.1 complete.** Repository created at
+  [`reflective-org/acdc-jax`](https://github.com/reflective-org/acdc-jax)
+  (public, GPL-3.0). Fortran reference vendored from `tolenius/ACDC@870b82a`
+  and confirmed to build and run.
+- Found that upstream does not compile on gfortran ≥10: `formation` is
+  called with 8 arguments at `driver_acdc_J.f90:359` and 5 at `:365`.
+  The `:365` branch is dead (`small_set_mode` is a compile-time `.true.`).
+  Resolved with a build flag rather than a patch, so `fortran/` stays
+  byte-identical to upstream.
+- Corrected an early assumption worth recording: the generated `feval` is
+  **not** an unrolled RHS. It is 58 lines looping over integer index arrays.
+  The 10,669 lines are hardcoded *rate tables*. The port therefore
+  reproduces the index-array structure rather than inventing one.
