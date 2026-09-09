@@ -67,3 +67,24 @@ def collision_matrix(path: str | Path, temperature: float, nclust: int) -> np.nd
     for i, j, si, sj in copies:
         k[i, j] = k[si, sj]
     return k
+
+
+_LOSS_ASSIGN = re.compile(r"^\s*cs\((\d+)\)\s*=\s*([-+0-9.dDeE]+)\s*(?:!.*)?$")
+
+
+def loss_vector(path: str | Path, nclust: int) -> np.ndarray:
+    """Evaluate get_losses from a generated equations file.
+
+    Every entry is a plain literal -- the loss routines carry no temperature
+    dependence in any generated variant, because the generator refuses to
+    combine bg_loss or wall losses with --variable_temp.
+    """
+    text = Path(path).read_text()
+    start = text.index("subroutine get_losses")
+    end = text.index("end subroutine get_losses")
+    cs = np.zeros(nclust)
+    for line in text[start:end].splitlines():
+        m = _LOSS_ASSIGN.match(line)
+        if m:
+            cs[int(m.group(1)) - 1] = float(_fortran_to_python(m.group(2)))
+    return cs

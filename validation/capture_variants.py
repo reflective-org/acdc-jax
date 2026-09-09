@@ -42,12 +42,39 @@ DIPOLE = FORTRAN / "src/Perl_input/dip_pol_298.15K_example.txt"
 TEMPERATURES = (250.0, 280.0, 298.15, 320.0)
 NCLUST = 54
 
-# Each variant: the extra generator flags that select it. The base
-# invocation is run_perl.sh's, so everything else matches the shipped example.
-VARIANTS: dict[str, list[str]] = {
-    "su73": ["--ion_coll_method", "Su73"],
-    "constant": ["--ion_coll_method", "constant"],
+# Each variant: the extra generator flags that select it, and what to
+# capture. The base invocation is run_perl.sh's, so everything else matches
+# the shipped example.
+VARIANTS: dict[str, dict] = {
+    "su73": {"flags": ["--ion_coll_method", "Su73"], "capture": "K"},
+    "constant": {"flags": ["--ion_coll_method", "constant"], "capture": "K"},
 }
+
+# Variants the generator REFUSES to combine with --variable_temp. These are
+# generated at one fixed temperature and capture the loss vector, which is
+# then plain numbers rather than expressions.
+FIXED_T = 280.0
+FIXED_T_VARIANTS: dict[str, dict] = {
+    "bgloss": {"flags": ["--cs", "bg_loss"], "capture": "cs"},
+}
+
+FIXED_T_BASE_FLAGS = [
+    "--fortran",
+    "--save_outgoing",
+    "--temperature",
+    f"{FIXED_T:g}",
+    "--e",
+    str(ENERGY),
+    "--dip",
+    str(DIPOLE),
+    "--variable_ion_source",
+    "--cs_only",
+    "1A,0",
+    "--cs_only",
+    "1N,0",
+    "--i",
+    str(INPUT),
+]
 
 BASE_FLAGS = [
     "--fortran",
@@ -74,9 +101,9 @@ BASE_FLAGS = [
 ]
 
 
-def generate(name: str, flags: list[str]) -> Path:
+def generate(name: str, flags: list[str], base: list[str] = BASE_FLAGS) -> Path:
     GENERATED.mkdir(parents=True, exist_ok=True)
-    cmd = ["perl", str(GENERATOR), *BASE_FLAGS, *flags, "--append", f"_{name}"]
+    cmd = ["perl", str(GENERATOR), *base, *flags, "--append", f"_{name}"]
     result = subprocess.run(cmd, cwd=GENERATED, capture_output=True, text=True)
     if result.returncode != 0:
         sys.stderr.write(result.stdout[-2000:] + result.stderr[-2000:])
@@ -90,8 +117,8 @@ def main() -> int:
         return 1
     GOLDENS.mkdir(exist_ok=True)
 
-    for name, flags in VARIANTS.items():
-        equations = generate(name, flags)
+    for name, spec in VARIANTS.items():
+        equations = generate(name, spec["flags"])
         data = {"temperatures": np.asarray(TEMPERATURES)}
         for t in TEMPERATURES:
             data[f"K_{t:g}"] = emitted.collision_matrix(equations, t, NCLUST)
@@ -99,6 +126,13 @@ def main() -> int:
         np.savez_compressed(path, **data)
         nonzero = np.count_nonzero(data["K_280"])
         print(f"wrote {path.relative_to(REPO)}  (K nonzero at 280 K: {nonzero})")
+
+    for name, spec in FIXED_T_VARIANTS.items():
+        equations = generate(name, spec["flags"], base=FIXED_T_BASE_FLAGS)
+        cs = emitted.loss_vector(equations, NCLUST)
+        path = GOLDENS / f"losses_variant_{name}.npz"
+        np.savez_compressed(path, temperature=FIXED_T, cs=cs)
+        print(f"wrote {path.relative_to(REPO)}  (cs nonzero: {np.count_nonzero(cs)})")
     return 0
 
 

@@ -167,6 +167,34 @@ CS_EXPONENT_DEFAULT = -1.6
 CS_COEFFICIENT_DEFAULT = 2.6e-3
 """exp_loss reference coagulation sink, 1/s (acdc_system_AN_ions_example.f90:15)."""
 
+# bg_loss: coagulation onto a monodisperse background population
+# (Perl :325-327 for the defaults, :6668-6699 for the physics). The
+# generator dies if this is combined with variable temperature (:6665); JAX
+# has no such limit, so here the sink follows temperature.
+
+BG_CONCENTRATION_DEFAULT = 1e3 * 1e6
+"""Background particle number concentration, m^-3 (generator default 1e3 cm^-3)."""
+
+BG_DIAMETER_DEFAULT = 100e-9
+"""Background particle diameter, m (generator default 100 nm)."""
+
+BG_DENSITY_DEFAULT = 1000.0
+"""Background particle density, kg/m^3."""
+
+AIR_VISCOSITY_A = 2.5277e-7
+AIR_VISCOSITY_B = 0.75302
+"""Dynamic viscosity of air as ``A * T**B``, Pa s -- the DMAN fit ACDC
+inherited (Perl :6668). Not Sutherland's form; matching the reference wins."""
+
+AIR_MOLAR_MASS = 0.0289
+"""kg/mol, in the mean-free-path expression (Perl :6670)."""
+
+# Phillips (1975) slip correction to the Brownian diffusivity, as a rational
+# function of lambda/r:  (5 + 4x + 6x^2 + 18x^3) / (5 - x + (8 + pi) x^2).
+# The reference labels it "S&P Eq. 9.73" (Perl :6672, :6692).
+PHILLIPS_SLIP_NUMERATOR = (5.0, 4.0, 6.0, 18.0)
+PHILLIPS_SLIP_DENOMINATOR = (5.0, 1.0, 8.0)
+
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
 
