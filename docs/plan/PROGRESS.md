@@ -65,11 +65,13 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **7.1** Gradient audit (double-where, masked reductions)
 - ✅ **7.2** ∂J/∂ΔH, ∂J/∂ΔS — grad vs FD **2e-7** (gate 1e-3)
 - ✅ **7.3** ∂J/∂conditions, incl. the apparent nucleation order
-- ⏸ **7.4** `vmap` over condition grids — the steady-state solve has a
-  data-dependent convergence check and a root-find; batching it is its own
-  piece of work. `sensitivity.sweep` loops for now, reusing the compiled RHS.
-- ⏸ **7.5** `jit` — the RHS is already traced end to end; an explicit
-  `filter_jit` boundary is deferred with 7.4.
+- ✅ **7.4** `vmap` over condition grids — `sensitivity.formation_rate_batch`;
+  the loop is linear in the grid, the batch nearly flat: **9.4×** at 64
+  points (49.2 s → 5.3 s), agreeing with the loop to **6e-13**
+- ✅ **7.5** `jit` — available (`jit=True`) and **off by default**: XLA's CPU
+  compile time grows steeply with the batch (3.5 min at 32 points, and the
+  run then slower than the plain loop), and the solve is already one traced
+  graph. Worth revisiting on an accelerator.
 
 ## Phase 8 — Extended physics (branch `phase-8-extended-physics`)
 - ✅ **8.0** Su73 + constant ion methods — Su73 **4.9e-15**, `constant_no_enhancement` **2.2e-15**; F15 recorded

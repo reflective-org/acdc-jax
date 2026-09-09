@@ -98,6 +98,7 @@ def assemble(
     fidelity: config.FidelityConfig = config.DEFAULT,
     hydrates: HydrateModel | None = None,
     loss_settings: losses.LossSettings | None = None,
+    dense: bool = True,
 ) -> Coefficients:
     """Build the coefficient tensors for one set of ambient conditions.
 
@@ -113,6 +114,12 @@ def assemble(
             reactions.
         loss_settings: which first-order losses to include. Default: the
             exp_loss coagulation sink only, as in the shipped example.
+        dense: also build ``coef_quad``/``coef_lin``/``multiplicity``. They
+            exist to be compared against the reference's ``get_rate_coefs``;
+            nothing in the right-hand side reads them. Building them costs
+            one scatter per reaction, which dominates tracing when the
+            assembly is inside a ``jit`` or ``vmap``, so a batched caller
+            passes False.
     """
     n, neq = system.n_clusters, system.n_equations
     if loss_settings is None:
@@ -137,8 +144,8 @@ def assemble(
     loss_slots = tuple(system.flux_index[name] for name in loss_vectors)
     loss_list = tuple(loss_vectors.values())
 
-    quad = jnp.zeros((n, n, neq))
-    mult = np.ones((n, n, neq), dtype=np.int32)
+    quad = jnp.zeros((n, n, neq)) if dense else None
+    mult = np.ones((n, n, neq), dtype=np.int32) if dense else None
 
     # Collisions. The reference enumerates the upper triangle and writes
     # both orderings, so a self-collision -- listed once but reachable two
@@ -151,23 +158,24 @@ def assemble(
     # cluster and the stripped monomer. Adding the rate twice there makes
     # that channel 2x too fast -- four entries in the bundled system, which
     # is exactly what the get_rate_coefs comparison caught.
-    for c in reactions.collisions:
-        rate = collision[c.i, c.j]
-        if c.is_self_collision:
-            rate = 0.5 * rate
+    if dense:
+        for c in reactions.collisions:
+            rate = collision[c.i, c.j]
+            if c.is_self_collision:
+                rate = 0.5 * rate
 
-        totals: dict[int, int] = {}
-        for product, multiplicity in c.products:
-            totals[product] = totals.get(product, 0) + multiplicity
+            totals: dict[int, int] = {}
+            for product, multiplicity in c.products:
+                totals[product] = totals.get(product, 0) + multiplicity
 
-        for product, multiplicity in totals.items():
-            quad = quad.at[c.i, c.j, product].set(rate)
-            mult[c.i, c.j, product] = multiplicity
-            if c.i != c.j:
-                quad = quad.at[c.j, c.i, product].set(rate)
-                mult[c.j, c.i, product] = multiplicity
+            for product, multiplicity in totals.items():
+                quad = quad.at[c.i, c.j, product].set(rate)
+                mult[c.i, c.j, product] = multiplicity
+                if c.i != c.j:
+                    quad = quad.at[c.j, c.i, product].set(rate)
+                    mult[c.j, c.i, product] = multiplicity
 
-    lin = jnp.zeros((neq, neq, n))
+    lin = jnp.zeros((neq, neq, n)) if dense else None
 
     if reactions.evaporations:
         parents = np.array([e.k for e in reactions.evaporations])
@@ -188,16 +196,18 @@ def assemble(
             evaporation = hydrate_module.evaporation(
                 hydrates, temperature, fidelity=fidelity
             )
-        lin = lin.at[di, dj, parents].add(evaporation)
-        asymmetric = di != dj
-        lin = lin.at[dj[asymmetric], di[asymmetric], parents[asymmetric]].add(
-            evaporation[asymmetric]
-        )
+        if dense:
+            lin = lin.at[di, dj, parents].add(evaporation)
+            asymmetric = di != dj
+            lin = lin.at[dj[asymmetric], di[asymmetric], parents[asymmetric]].add(
+                evaporation[asymmetric]
+            )
 
     # External first-order losses, each booked to its own flux slot
     # (coef_lin(56,56,k) coagulation, (57,57,k) wall, (58,58,k) dilution).
-    for vector, slot in zip(loss_list, loss_slots, strict=True):
-        lin = lin.at[slot, slot, :].add(vector)
+    if dense:
+        for vector, slot in zip(loss_list, loss_slots, strict=True):
+            lin = lin.at[slot, slot, :].add(vector)
 
     source = jnp.zeros(neq)
     if system.generic_neg >= 0:

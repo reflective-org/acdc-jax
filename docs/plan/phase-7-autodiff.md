@@ -39,18 +39,40 @@ Gradients w.r.t. vapour concentrations, T, CS and IPR.
 
 **Verify:** vs finite difference < 1e-3.
 
-## 7.4 vmap over condition grids
+## 7.4 vmap over condition grids ✅
 
 Batch the whole steady-state solve. This is what makes lookup-table
 generation practical.
 
-**Verify:** `vmap` result equals a Python loop over the same conditions,
-exactly (not to a tolerance — same computation, same order).
+Two things had to change first. The steady-state criterion was a Python
+loop with `float()` and `break`; since the checkpoint grid is fixed in
+advance, *which* pairs the criterion may consider is a compile-time fact,
+so the scan became `argmax` over a mask and the whole solve traces. And
+`rhs.assemble` gained `dense=False`: the `(n, n, neq)` tensors exist to be
+compared against `get_rate_coefs`, nothing in the right-hand side reads
+them, and building them costs a scatter per reaction — 1.6 s of tracing per
+condition, against 0.04 s without.
 
-## 7.5 jit
+**Verify (revised):** the plan asked for bitwise equality with a Python
+loop. That is not achievable and should not be: under `vmap` diffrax drives
+the whole batch on one adaptive clock, so the step sequence differs from a
+solo solve. Measured worst-case relative difference over an acid sweep is
+**6e-13** — eight orders below the 1e-5 to which the steady-state criterion
+defines J at all. The gate is 1e-9.
 
-`eqx.filter_jit` at the solver boundary, `ClusterSystem` as a pytree with
-string/tuple metadata `static=True`.
+| points | 4 | 16 | 32 | 64 |
+|---|---|---|---|---|
+| loop | 4.6 s | 14.4 s | 25.5 s | 49.2 s |
+| batched | 2.8 s | 3.2 s | 4.0 s | 5.3 s |
+
+## 7.5 jit ✅ (off by default, measured)
+
+Available as `formation_rate_batch(jit=True)`. It is **not** the default:
+XLA's CPU compile time grows steeply with the batch — 3.5 minutes at 32
+points, after which the run was slower than the serial loop, where the same
+batch untraced takes 4 seconds. The solve is already a single traced graph,
+so there is little left to fuse. Worth revisiting on an accelerator, where
+the batched dense algebra is the right shape.
 
 **Verify:** jit and eager agree bit-for-bit; compile time recorded in
 `benchmarks/`.

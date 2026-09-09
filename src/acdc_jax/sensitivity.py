@@ -75,6 +75,9 @@ def formation_rate_of(
         conditions.cs_ref,
         conditions.ipr,
         conditions.ipr,
+        # J needs only the flat reaction arrays; the dense tensors exist for
+        # the get_rate_coefs comparison and cost a scatter per reaction.
+        dense=False,
     )
     c0 = solve.set_vapours(
         system,
@@ -185,6 +188,74 @@ def sensitivity_to_conditions(
     }
 
 
+def formation_rate_batch(
+    system: AcdcSystem,
+    reactions: ReactionSet,
+    inputs: rates.RateInputs,
+    conditions: Conditions,
+    method: str = "integrate",
+    jit: bool = False,
+) -> jnp.ndarray:
+    """Steady-state J over a grid of conditions, in one batched solve.
+
+    Every field of ``conditions`` may be a scalar or an array; they are
+    broadcast against each other, so a temperature sweep at fixed vapour is
+    ``Conditions(c_a=5e12, c_n=..., temperature=jnp.linspace(240, 300, 25),
+    ...)``. The result has the broadcast shape.
+
+    This is Phase 7.4. What made it possible was making the steady-state
+    criterion traceable (`solve.steady_state_by_integration`) and letting
+    the assembly skip the dense tensors: the checkpoint grid is fixed in
+    advance, so which pairs the criterion considers is a compile-time fact
+    and only the comparison depends on the data. The batched solve steps
+    every point on a shared clock -- diffrax runs its loop until the last
+    member is done -- so the win is in the per-step vectorisation, not in
+    skipping work.
+
+    Measured against the Python loop on the bundled system (CPU, one acid
+    sweep; the loop is linear in the grid, this is nearly flat)::
+
+        points     4     16     32     64
+        loop     4.6 s  14.4 s  25.5 s  49.2 s
+        batched  2.8 s   3.2 s   4.0 s   5.3 s
+
+    Args:
+        method: ``"integrate"`` (the validated default) or ``"rootfind"``.
+        jit: compile the batched function. **Off by default, deliberately.**
+            XLA's CPU compile time grows steeply with the batch: at 32
+            points compiling took 3.5 minutes and the run came out slower
+            than the plain loop, where the same batch without ``jit`` takes
+            4 seconds. The solve is already one traced graph, so there is
+            little left for ``jit`` to fuse. Worth trying on an accelerator,
+            where the batched dense algebra is the right shape.
+
+    Returns:
+        J, 1/m^3/s, with the conditions' broadcast shape.
+    """
+    fields = jnp.broadcast_arrays(
+        *(
+            jnp.asarray(getattr(conditions, name), dtype=float)
+            for name in ("c_a", "c_n", "temperature", "cs_ref", "ipr")
+        )
+    )
+    shape = fields[0].shape
+    flat = [field.reshape(-1) for field in fields]
+
+    def one(c_a, c_n, temperature, cs_ref, ipr):
+        return formation_rate_of(
+            system,
+            reactions,
+            inputs,
+            Conditions(c_a, c_n, temperature, cs_ref, ipr),
+            method=method,
+        )
+
+    batched = jax.vmap(one)
+    if jit:
+        batched = jax.jit(batched)
+    return batched(*flat).reshape(shape)
+
+
 def sweep(
     system: AcdcSystem,
     reactions: ReactionSet,
@@ -195,17 +266,27 @@ def sweep(
     cs_ref: float,
     ipr: float,
     method: str = "integrate",
+    batched: bool = False,
 ) -> np.ndarray:
     """J over a range of vapour concentrations.
 
-    Written as a Python loop rather than ``vmap``. The steady-state solve
-    contains a data-dependent convergence check and a root-find, neither of
-    which batches under ``vmap`` as written; making it do so is a separate
-    piece of work. The loop is still the practical way to build a
-    formation-rate lookup table, and is what the reference does with a
-    shell loop over a serial binary -- except that here the compiled
-    right-hand side is reused across points.
+    ``batched=True`` runs the whole sweep as one ``vmap``-ed solve
+    (:func:`formation_rate_batch`); the default keeps the Python loop, which
+    is what the reference does with a shell loop over a serial binary,
+    except that here the compiled right-hand side is reused across points.
+    The two agree to solver noise -- see ``test_sensitivity.py``.
     """
+    if batched:
+        return np.asarray(
+            formation_rate_batch(
+                system,
+                reactions,
+                inputs,
+                Conditions(jnp.asarray(c_a), c_n, temperature, cs_ref, ipr),
+                method=method,
+            )
+        )
+
     out = np.empty(len(c_a))
     for i, value in enumerate(c_a):
         out[i] = float(
@@ -222,6 +303,7 @@ def sweep(
 
 __all__ = [
     "Conditions",
+    "formation_rate_batch",
     "formation_rate_of",
     "sensitivity_to_conditions",
     "sensitivity_to_free_energies",
