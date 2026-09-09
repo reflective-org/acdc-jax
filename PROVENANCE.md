@@ -49,6 +49,27 @@ that is absent from the committed example. Reproducing the committed files
 byte-for-byte requires the 2020 generator; validating against current
 upstream behaviour requires the 2024 one.
 
+### Regeneration is reproducible to 1e-14
+
+`fortran/src/run_perl.sh`'s invocation, replayed with the 2020 generator
+(see `validation/capture_boundary.py` for the exact command line),
+regenerates the committed `acdc_equations_AN_ions_example.f90` with:
+
+| | |
+|---|---|
+| Line count | identical (10,669) |
+| Structural differences | **none** — every cluster, reaction and index array entry matches |
+| Differing lines | 71 of 10,669 (0.7%) |
+| Max relative difference | **9.8e-15** |
+
+The differences are last-digit rounding in the `sprintf('%.14e', ...)`
+literals, presumably a Perl or libm version difference. That is 100x inside
+the 1e-12 rate-constant acceptance gate, so the committed files and a fresh
+regeneration are interchangeable as validation targets.
+
+This also confirms the reconstructed command line is correct, which matters
+because `run_perl.sh` builds it from shell variables rather than stating it.
+
 ### Not vendored
 
 The MATLAB distribution (`ACDC_Matlab_standard/`, except the cluster-set

@@ -1,0 +1,11244 @@
+{
+ "cluster_set": "input_AD_neutral_neg_pos.inp",
+ "vapors": [
+  "A",
+  "D"
+ ],
+ "generator": "acdc_2020_04_28.pl",
+ "counts": {
+  "unused": 21,
+  "out": 514,
+  "brought_back": 347
+ },
+ "decisions": [
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A1D"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A1D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A2D"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A2D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A3D"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A3D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A",
+    "4A4D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "3A1B"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "3A1B",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "3A1B1D"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "3A1B1D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A",
+    "3A1B2D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A",
+    "3A1B3D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A",
+    "3A1B4D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "2A1D1P"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "2A1D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "2A2D1P"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "2A2D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A3D1P"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A3D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1A",
+    "4A4D1P"
+   ],
+   "products": [
+    [
+     "1A",
+     1
+    ],
+    [
+     "4A4D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A"
+   ],
+   "raw_product": "5A",
+   "products": [
+    [
+     "4A",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A"
+   ],
+   "raw_product": "6A",
+   "products": [
+    [
+     "4A",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A1D"
+   ],
+   "raw_product": "5A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A1D"
+   ],
+   "raw_product": "6A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A2D"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A2D"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A3D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A3D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "3A4D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "4A4D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "2A1B"
+   ],
+   "raw_product": "4A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A1B"
+   ],
+   "raw_product": "5A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "2A1B1D"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A1B1D"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "2A1B2D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "3A1B2D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "2A1B3D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "3A1B3D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A",
+    "3A1B4D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "1A1D1P"
+   ],
+   "raw_product": "3A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "2A1D1P"
+   ],
+   "raw_product": "4A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "1A2D1P"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "2A2D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A3D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A3D1P"
+   ],
+   "raw_product": "6A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "3A4D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A",
+    "4A4D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A"
+   ],
+   "raw_product": "6A",
+   "products": [
+    [
+     "4A",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A"
+   ],
+   "raw_product": "7A",
+   "products": [
+    [
+     "4A",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A1D"
+   ],
+   "raw_product": "5A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A1D"
+   ],
+   "raw_product": "6A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A1D"
+   ],
+   "raw_product": "7A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A2D"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A2D"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A2D"
+   ],
+   "raw_product": "7A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A3D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A3D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A3D"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "2A4D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "3A4D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "4A4D"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "1A1B"
+   ],
+   "raw_product": "4A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A1B"
+   ],
+   "raw_product": "5A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A1B"
+   ],
+   "raw_product": "6A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "1A1B1D"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A1B1D"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A1B1D"
+   ],
+   "raw_product": "6A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "1A1B2D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "2A1B2D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "3A1B2D"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "2A1B3D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "3A1B3D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A",
+    "3A1B4D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "1D1P"
+   ],
+   "raw_product": "3A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "1A1D1P"
+   ],
+   "raw_product": "4A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A1D1P"
+   ],
+   "raw_product": "5A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2D1P"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "1A2D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A2D1P"
+   ],
+   "raw_product": "5A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A3D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A3D1P"
+   ],
+   "raw_product": "6A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A3D1P"
+   ],
+   "raw_product": "7A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "2A4D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "3A4D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A",
+    "4A4D1P"
+   ],
+   "raw_product": "7A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A"
+   ],
+   "raw_product": "8A",
+   "products": [
+    [
+     "4A",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A1D"
+   ],
+   "raw_product": "5A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A1D"
+   ],
+   "raw_product": "6A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A1D"
+   ],
+   "raw_product": "7A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A1D"
+   ],
+   "raw_product": "8A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A2D"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A2D"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A2D"
+   ],
+   "raw_product": "7A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A2D"
+   ],
+   "raw_product": "8A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A3D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A3D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A3D"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A3D"
+   ],
+   "raw_product": "8A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "1A4D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "2A4D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "3A4D"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "4A4D"
+   ],
+   "raw_product": "8A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1B"
+   ],
+   "raw_product": "4A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A1B"
+   ],
+   "raw_product": "5A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A1B"
+   ],
+   "raw_product": "6A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A1B"
+   ],
+   "raw_product": "7A1B",
+   "products": [
+    [
+     "3A1B",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1B1D"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A1B1D"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A1B1D"
+   ],
+   "raw_product": "6A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A1B1D"
+   ],
+   "raw_product": "7A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "1B2D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "1A1B2D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "2A1B2D"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "3A1B2D"
+   ],
+   "raw_product": "7A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "2A1B3D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "3A1B3D"
+   ],
+   "raw_product": "7A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A",
+    "3A1B4D"
+   ],
+   "raw_product": "7A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1D1P"
+   ],
+   "raw_product": "4A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A1D1P"
+   ],
+   "raw_product": "5A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A1D1P"
+   ],
+   "raw_product": "6A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A2D1P"
+   ],
+   "raw_product": "5A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A2D1P"
+   ],
+   "raw_product": "6A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "1A3D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A3D1P"
+   ],
+   "raw_product": "6A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A3D1P"
+   ],
+   "raw_product": "7A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A3D1P"
+   ],
+   "raw_product": "8A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "2A4D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "3A4D1P"
+   ],
+   "raw_product": "7A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A",
+    "4A4D1P"
+   ],
+   "raw_product": "8A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "4D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "4D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "1A4D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "1A4D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "2A4D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "2A4D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "3A4D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "3A4D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1D",
+    "4A4D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "1B2D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "1B2D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "1A1B2D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "1A1B2D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "2A1B3D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "2A1B3D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "3A1B4D"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "3A1B4D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "3D1P"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "3D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "1A3D1P"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "1A3D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "unused",
+   "reactants": [
+    "1D",
+    "2A4D1P"
+   ],
+   "products": [
+    [
+     "1D",
+     1
+    ],
+    [
+     "2A4D1P",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1D",
+    "3A4D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1D",
+    "4A4D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "4A1D"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "4A2D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "4A3D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "4D"
+   ],
+   "raw_product": "1A5D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "1A4D"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "2A4D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A4D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "4A4D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "3A1B"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A1B1D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "1B2D"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A1B2D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A1B3D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A1B4D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "2A1D1P"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "3D1P"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "3A1D"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "4A1D"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "3A2D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "4A2D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A3D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "4A3D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "4D"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "1A4D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "2A4D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A4D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "4A4D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "2A1B"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "3A1B"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "2A1B1D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A1B1D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "2A1B2D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A1B2D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "2A1B3D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A1B3D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A1B4D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "1A1D1P"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "2A1D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "3A1D"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "4A1D"
+   ],
+   "raw_product": "7A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "2A2D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "3A2D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "4A2D"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A3D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A3D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "4A3D"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "4D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "1A4D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A4D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A4D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "4A4D"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "1A1B"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "2A1B"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "3A1B"
+   ],
+   "raw_product": "6A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "1A1B1D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A1B1D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A1B1D"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "1A1B2D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A1B2D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A1B2D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A1B3D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A1B3D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A1B4D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "1D1P"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "1A1D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1D",
+    "pos"
+   ],
+   "raw_product": "3A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "4A1D"
+   ],
+   "raw_product": "8A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1A2D"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "2A2D"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "3A2D"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "4A2D"
+   ],
+   "raw_product": "8A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1A3D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A3D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A3D"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "4A3D"
+   ],
+   "raw_product": "8A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "4D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1A4D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A4D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A4D"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "4A4D"
+   ],
+   "raw_product": "8A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1B"
+   ],
+   "raw_product": "4A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1A1B"
+   ],
+   "raw_product": "5A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "2A1B"
+   ],
+   "raw_product": "6A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "3A1B"
+   ],
+   "raw_product": "7A1B1D",
+   "products": [
+    [
+     "3A1B1D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1B1D"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1A1B1D"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A1B1D"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A1B1D"
+   ],
+   "raw_product": "7A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1B2D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "1A1B2D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A1B2D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A1B2D"
+   ],
+   "raw_product": "7A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A1B3D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A1B3D"
+   ],
+   "raw_product": "7A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A1B4D"
+   ],
+   "raw_product": "7A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1D1P"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A1D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A1D",
+    "pos"
+   ],
+   "raw_product": "4A1D1P",
+   "products": [
+    [
+     "2A1D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3D"
+   ],
+   "raw_product": "5D",
+   "products": [
+    [
+     "4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A3D"
+   ],
+   "raw_product": "1A5D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A3D"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3A3D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "4A3D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "4D"
+   ],
+   "raw_product": "6D",
+   "products": [
+    [
+     "4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A4D"
+   ],
+   "raw_product": "1A6D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A4D"
+   ],
+   "raw_product": "2A6D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3A4D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "4A4D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1B1D"
+   ],
+   "raw_product": "1B3D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A1B1D"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1B2D"
+   ],
+   "raw_product": "1B4D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A1B2D"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A1B2D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A1B3D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3A1B3D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3A1B4D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2D1P"
+   ],
+   "raw_product": "4D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A2D1P"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "3D1P"
+   ],
+   "raw_product": "5D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "1A3D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A3D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "3A3D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "4A3D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2D",
+    "2A4D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "3A4D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2D",
+    "4A4D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "4A2D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "3D"
+   ],
+   "raw_product": "1A5D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1A3D"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "2A3D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A3D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "4A3D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "4D"
+   ],
+   "raw_product": "1A6D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1A4D"
+   ],
+   "raw_product": "2A6D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "2A4D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A4D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "4A4D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A1B"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1B1D"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A1B1D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1B2D"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1A1B2D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A1B2D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "2A1B3D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A1B3D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A1B4D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "2D1P"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "3D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A2D",
+    "1A3D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "2A3D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A3D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A2D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A2D"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "4A2D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "3D"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "1A3D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A3D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A3D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "4A3D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "4D"
+   ],
+   "raw_product": "2A6D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "1A4D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A4D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A4D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "4A4D"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A1B"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A1B"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A1B1D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A1B1D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "1B2D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A1B2D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A1B2D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A1B3D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A1B3D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A1B4D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A2D",
+    "3D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "1A3D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A3D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A2D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A2D"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "4A2D"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A2D",
+    "3D"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A3D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A3D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A3D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "4A3D"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A2D",
+    "4D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A4D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A4D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A4D"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "4A4D"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A1B"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A1B"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A1B"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A1B1D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A1B1D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A1B1D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A1B2D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A1B2D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A1B2D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A1B3D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A1B3D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A1B4D"
+   ],
+   "raw_product": "6A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A2D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A2D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "1A3D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A2D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A2D",
+    "pos"
+   ],
+   "raw_product": "3A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4A2D"
+   ],
+   "raw_product": "8A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3D"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A3D"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A3D"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A3D"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4A3D"
+   ],
+   "raw_product": "8A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A4D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A4D"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A4D"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4A4D"
+   ],
+   "raw_product": "8A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1B"
+   ],
+   "raw_product": "4A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A1B"
+   ],
+   "raw_product": "5A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A1B"
+   ],
+   "raw_product": "6A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A1B"
+   ],
+   "raw_product": "7A1B2D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1B1D"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A1B1D"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A1B1D"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A1B1D"
+   ],
+   "raw_product": "7A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1B2D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A1B2D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A1B2D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A1B2D"
+   ],
+   "raw_product": "7A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A1B3D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A1B3D"
+   ],
+   "raw_product": "7A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A1B4D"
+   ],
+   "raw_product": "7A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A2D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A2D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A3D1P",
+   "products": [
+    [
+     "4A3D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A2D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A2D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A2D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A2D",
+    "pos"
+   ],
+   "raw_product": "4A2D1P",
+   "products": [
+    [
+     "2A2D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3D"
+   ],
+   "raw_product": "6D",
+   "products": [
+    [
+     "4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A3D"
+   ],
+   "raw_product": "1A6D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A3D"
+   ],
+   "raw_product": "2A6D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3A3D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "4A3D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "4D"
+   ],
+   "raw_product": "7D",
+   "products": [
+    [
+     "4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A4D"
+   ],
+   "raw_product": "1A7D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A4D"
+   ],
+   "raw_product": "2A7D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3A4D"
+   ],
+   "raw_product": "3A7D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "4A4D"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1B"
+   ],
+   "raw_product": "1B3D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A1B"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1B1D"
+   ],
+   "raw_product": "1B4D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A1B1D"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A1B1D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1B2D"
+   ],
+   "raw_product": "1B5D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A1B2D"
+   ],
+   "raw_product": "1A1B5D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A1B2D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3A1B2D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A1B3D"
+   ],
+   "raw_product": "2A1B6D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3A1B3D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3A1B4D"
+   ],
+   "raw_product": "3A1B7D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1D1P"
+   ],
+   "raw_product": "4D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A1D1P"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2D1P"
+   ],
+   "raw_product": "5D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A2D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A2D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "3D1P"
+   ],
+   "raw_product": "6D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "1A3D1P"
+   ],
+   "raw_product": "1A6D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A3D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "3A3D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "4A3D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3D",
+    "2A4D1P"
+   ],
+   "raw_product": "2A7D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "3A4D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3D",
+    "4A4D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A3D"
+   ],
+   "raw_product": "2A6D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "2A3D"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A3D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "4A3D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "4D"
+   ],
+   "raw_product": "1A7D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A4D"
+   ],
+   "raw_product": "2A7D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "2A4D"
+   ],
+   "raw_product": "3A7D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A4D"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "4A4D"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1B"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A1B"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1B1D"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A1B1D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A1B1D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1B2D"
+   ],
+   "raw_product": "1A1B5D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A1B2D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "2A1B2D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A1B2D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "2A1B3D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A1B3D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A1B4D"
+   ],
+   "raw_product": "4A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1D1P"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "2D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A2D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "2A2D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "3D1P"
+   ],
+   "raw_product": "1A6D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "1A3D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "2A3D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A3D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A3D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A3D",
+    "neg"
+   ],
+   "raw_product": "1B3D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A3D"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A3D"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "4A3D"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "4D"
+   ],
+   "raw_product": "2A7D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "1A4D"
+   ],
+   "raw_product": "3A7D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A4D"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A4D"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "4A4D"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A1B"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A1B"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "1B1D"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A1B1D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A1B1D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "1B2D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "1A1B2D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A1B2D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A1B2D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A1B3D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A1B3D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A1B4D"
+   ],
+   "raw_product": "5A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "2D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "1A2D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A2D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "3D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "1A3D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A3D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A3D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A3D",
+    "neg"
+   ],
+   "raw_product": "1A1B3D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A3D"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "4A3D"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A3D",
+    "4D"
+   ],
+   "raw_product": "3A7D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A4D"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A4D"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A4D"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "4A4D"
+   ],
+   "raw_product": "7A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A1B"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A1B"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A1B"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A1B1D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A1B1D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A1B1D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A3D",
+    "1B2D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A1B2D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A1B2D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A1B2D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A1B3D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A1B3D"
+   ],
+   "raw_product": "6A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A1B4D"
+   ],
+   "raw_product": "6A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A3D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A2D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "1A3D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A3D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "4A3D"
+   ],
+   "raw_product": "8A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "4D"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A4D"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A4D"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A4D"
+   ],
+   "raw_product": "7A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "4A4D"
+   ],
+   "raw_product": "8A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1B"
+   ],
+   "raw_product": "4A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A1B"
+   ],
+   "raw_product": "5A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A1B"
+   ],
+   "raw_product": "6A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A1B"
+   ],
+   "raw_product": "7A1B3D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1B1D"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A1B1D"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A1B1D"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A1B1D"
+   ],
+   "raw_product": "7A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1B2D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A1B2D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A1B2D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A1B2D"
+   ],
+   "raw_product": "7A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A1B3D"
+   ],
+   "raw_product": "6A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A1B3D"
+   ],
+   "raw_product": "7A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A1B4D"
+   ],
+   "raw_product": "7A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A3D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4A3D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A4D1P",
+   "products": [
+    [
+     "4A4D1P",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A3D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "4D"
+   ],
+   "raw_product": "8D",
+   "products": [
+    [
+     "4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A4D"
+   ],
+   "raw_product": "1A8D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A4D"
+   ],
+   "raw_product": "2A8D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3A4D"
+   ],
+   "raw_product": "3A8D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4D",
+    "4A4D"
+   ],
+   "raw_product": "4A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1B"
+   ],
+   "raw_product": "1B4D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A1B"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A1B"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1B1D"
+   ],
+   "raw_product": "1B5D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A1B1D"
+   ],
+   "raw_product": "1A1B5D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A1B1D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3A1B1D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1B2D"
+   ],
+   "raw_product": "1B6D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A1B2D"
+   ],
+   "raw_product": "1A1B6D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A1B2D"
+   ],
+   "raw_product": "2A1B6D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3A1B2D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A1B3D"
+   ],
+   "raw_product": "2A1B7D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3A1B3D"
+   ],
+   "raw_product": "3A1B7D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3A1B4D"
+   ],
+   "raw_product": "3A1B8D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1D1P"
+   ],
+   "raw_product": "5D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A1D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A1D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2D1P"
+   ],
+   "raw_product": "6D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A2D1P"
+   ],
+   "raw_product": "1A6D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A2D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "3D1P"
+   ],
+   "raw_product": "7D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "1A3D1P"
+   ],
+   "raw_product": "1A7D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A3D1P"
+   ],
+   "raw_product": "2A7D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4D",
+    "3A3D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4D",
+    "4A3D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "2A4D1P"
+   ],
+   "raw_product": "2A8D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4D",
+    "3A4D1P"
+   ],
+   "raw_product": "3A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4D",
+    "4A4D1P"
+   ],
+   "raw_product": "4A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "4D",
+    "pos"
+   ],
+   "raw_product": "4D1P",
+   "products": [
+    [
+     "3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A4D"
+   ],
+   "raw_product": "2A8D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "2A4D"
+   ],
+   "raw_product": "3A8D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A4D"
+   ],
+   "raw_product": "4A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "4A4D"
+   ],
+   "raw_product": "5A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1B"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A1B"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A1B"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1B1D"
+   ],
+   "raw_product": "1A1B5D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A1B1D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "2A1B1D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A1B1D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1B2D"
+   ],
+   "raw_product": "1A1B6D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A1B2D"
+   ],
+   "raw_product": "2A1B6D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "2A1B2D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A1B2D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "2A1B3D"
+   ],
+   "raw_product": "3A1B7D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A1B3D"
+   ],
+   "raw_product": "4A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A1B4D"
+   ],
+   "raw_product": "4A1B8D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1D1P"
+   ],
+   "raw_product": "1A5D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A1D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "2A1D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "2D1P"
+   ],
+   "raw_product": "1A6D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A2D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "2A2D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "3D1P"
+   ],
+   "raw_product": "1A7D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "1A3D1P"
+   ],
+   "raw_product": "2A7D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "2A3D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A3D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A4D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "neg"
+   ],
+   "raw_product": "1B4D",
+   "products": [
+    [
+     "1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A4D",
+    "pos"
+   ],
+   "raw_product": "1A4D1P",
+   "products": [
+    [
+     "1A3D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A4D"
+   ],
+   "raw_product": "4A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A4D"
+   ],
+   "raw_product": "5A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "4A4D"
+   ],
+   "raw_product": "6A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1B"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A1B"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A1B"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1B1D"
+   ],
+   "raw_product": "2A1B5D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1A1B1D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A1B1D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A1B1D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1B2D"
+   ],
+   "raw_product": "2A1B6D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1A1B2D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A1B2D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A1B2D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A1B3D"
+   ],
+   "raw_product": "4A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A1B3D"
+   ],
+   "raw_product": "5A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A1B4D"
+   ],
+   "raw_product": "5A1B8D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "1D1P"
+   ],
+   "raw_product": "2A5D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "1A1D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A1D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "2D1P"
+   ],
+   "raw_product": "2A6D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "1A2D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A2D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "3D1P"
+   ],
+   "raw_product": "2A7D1P",
+   "products": [
+    [
+     "2A4D1P",
+     1
+    ],
+    [
+     "D",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "1A3D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A3D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A4D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A4D",
+    "neg"
+   ],
+   "raw_product": "1A1B4D",
+   "products": [
+    [
+     "1A1B2D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A4D"
+   ],
+   "raw_product": "6A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "4A4D"
+   ],
+   "raw_product": "7A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A1B"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A1B"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A1B"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A4D",
+    "1B1D"
+   ],
+   "raw_product": "3A1B5D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A1B1D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A1B1D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A1B1D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A4D",
+    "1B2D"
+   ],
+   "raw_product": "3A1B6D",
+   "products": [
+    [
+     "3A1B4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A1B2D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A1B2D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A1B2D"
+   ],
+   "raw_product": "6A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A1B3D"
+   ],
+   "raw_product": "5A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A1B3D"
+   ],
+   "raw_product": "6A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A1B4D"
+   ],
+   "raw_product": "6A1B8D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1D1P"
+   ],
+   "raw_product": "3A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A1D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2D1P"
+   ],
+   "raw_product": "3A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A2D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3D1P"
+   ],
+   "raw_product": "3A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "1A3D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A4D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A4D",
+    "neg"
+   ],
+   "raw_product": "2A1B4D",
+   "products": [
+    [
+     "2A1B3D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "4A4D"
+   ],
+   "raw_product": "8A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1B"
+   ],
+   "raw_product": "4A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A1B"
+   ],
+   "raw_product": "5A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A1B"
+   ],
+   "raw_product": "6A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A1B"
+   ],
+   "raw_product": "7A1B4D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1B1D"
+   ],
+   "raw_product": "4A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A1B1D"
+   ],
+   "raw_product": "5A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A1B1D"
+   ],
+   "raw_product": "6A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A1B1D"
+   ],
+   "raw_product": "7A1B5D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1B2D"
+   ],
+   "raw_product": "4A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A1B2D"
+   ],
+   "raw_product": "5A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A1B2D"
+   ],
+   "raw_product": "6A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A1B2D"
+   ],
+   "raw_product": "7A1B6D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A1B3D"
+   ],
+   "raw_product": "6A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A1B3D"
+   ],
+   "raw_product": "7A1B7D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A1B4D"
+   ],
+   "raw_product": "7A1B8D",
+   "channel": "out_neg"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1D1P"
+   ],
+   "raw_product": "4A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A5D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2D1P"
+   ],
+   "raw_product": "4A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A6D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3D1P"
+   ],
+   "raw_product": "4A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A7D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "4A4D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A8D1P",
+   "channel": "out_pos"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B",
+    "4A3D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B",
+    "4A4D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1B",
+    "3A3D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1B",
+    "4A3D1P"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B",
+    "3A4D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B",
+    "4A4D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B",
+    "2A1D1P"
+   ],
+   "raw_product": "5A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B",
+    "2A2D1P"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B",
+    "2A3D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B",
+    "3A3D1P"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B",
+    "4A3D1P"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B",
+    "2A4D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B",
+    "3A4D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B",
+    "4A4D1P"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "1A1D1P"
+   ],
+   "raw_product": "5A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "2A1D1P"
+   ],
+   "raw_product": "6A1D",
+   "products": [
+    [
+     "4A1D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "1A2D1P"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "2A2D1P"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "1A3D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "2A3D1P"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "3A3D1P"
+   ],
+   "raw_product": "7A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B",
+    "4A3D1P"
+   ],
+   "raw_product": "8A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     4
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B",
+    "2A4D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B",
+    "3A4D1P"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B",
+    "4A4D1P"
+   ],
+   "raw_product": "8A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B1D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B1D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B1D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B1D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B1D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B1D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B1D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B1D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B1D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B1D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B1D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B1D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B1D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B1D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A2D",
+   "products": [
+    [
+     "4A2D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B1D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B1D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B1D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B2D",
+    "3D1P"
+   ],
+   "raw_product": "1A5D",
+   "products": [
+    [
+     "1A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B2D",
+    "1A3D1P"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B2D",
+    "2A3D1P"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B2D",
+    "3A3D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B2D",
+    "4A3D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1B2D",
+    "2A4D1P"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B2D",
+    "3A4D1P"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1B2D",
+    "4A4D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1B2D",
+    "3D1P"
+   ],
+   "raw_product": "2A5D",
+   "products": [
+    [
+     "2A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "1A1B2D",
+    "1A3D1P"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "2A3D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "3A3D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "4A3D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "2A4D1P"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "3A4D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "1A1B2D",
+    "4A4D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B2D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B2D",
+    "3D1P"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "1A3D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B2D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B2D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "3A1B2D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A3D",
+   "products": [
+    [
+     "4A3D",
+     1
+    ],
+    [
+     "A",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "3D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B2D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "2A1D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B3D",
+    "2D1P"
+   ],
+   "raw_product": "3A5D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "1A2D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "2A2D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "brought_back",
+   "reactants": [
+    "2A1B3D",
+    "3D1P"
+   ],
+   "raw_product": "3A6D",
+   "products": [
+    [
+     "3A4D",
+     1
+    ],
+    [
+     "D",
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "1A3D1P"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "2A3D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "3A3D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "4A3D1P"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "2A4D1P"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "3A4D1P"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "2A1B3D",
+    "4A4D1P"
+   ],
+   "raw_product": "7A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A4D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "2D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "3D1P"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B3D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "1D1P"
+   ],
+   "raw_product": "4A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "1A1D1P"
+   ],
+   "raw_product": "5A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "2A1D1P"
+   ],
+   "raw_product": "6A5D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "2D1P"
+   ],
+   "raw_product": "4A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "1A2D1P"
+   ],
+   "raw_product": "5A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "2A2D1P"
+   ],
+   "raw_product": "6A6D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "3D1P"
+   ],
+   "raw_product": "4A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "1A3D1P"
+   ],
+   "raw_product": "5A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "2A3D1P"
+   ],
+   "raw_product": "6A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "3A3D1P"
+   ],
+   "raw_product": "7A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "4A3D1P"
+   ],
+   "raw_product": "8A7D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "2A4D1P"
+   ],
+   "raw_product": "6A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "3A4D1P"
+   ],
+   "raw_product": "7A8D",
+   "channel": "out_neu"
+  },
+  {
+   "kind": "out",
+   "reactants": [
+    "3A1B4D",
+    "4A4D1P"
+   ],
+   "raw_product": "8A8D",
+   "channel": "out_neu"
+  }
+ ]
+}

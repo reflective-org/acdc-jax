@@ -15,7 +15,7 @@ detail.
 - ✅ **0.3** Package skeleton and `config.py` — `e2e62b5`
 - ✅ **0.4** f2py bridge to the reference — `9426f63`
 - ✅ **0.5** Golden capture
-- ⬜ **0.6** Boundary-decision oracle
+- ✅ **0.6** Boundary-decision oracle
 
 ## Phase 1 — Parser
 - ⬜ **1.1** Molecule-property header
@@ -94,6 +94,8 @@ be re-derived.
 | Warm-start J spread | **1.5e-6 relative** | same point re-solved after another in one process |
 | Golden J grid | 60 points, J from 1.97e-8 to 2.76e5 cm⁻³ s⁻¹ | `validation/goldens/steadystate.npz` |
 | `K` / `E` / `coef_quad` / `coef_lin` nonzeros | 2131 / 422 / 2679 / 474 | f2py bridge |
+| Boundary oracle | **3034 decisions** across 3 cluster sets | `validation/goldens/boundary_*.json` |
+| Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
 
@@ -125,6 +127,20 @@ be re-derived.
   unpacking and produced a plausible-looking J field three orders too small.
   Now passed by keyword, with an assertion that the bundled example
   reproduces `2217995.192415948` before the grid is run.
+- **0.6 complete.** Boundary oracle captured for all three cluster sets:
+  AN_narrow (745 decisions), AN (1407), AD (882) — 3034 in total, each of
+  which Phase 2 must reproduce exactly. Cross-checked by asserting the
+  number of logged grow-out decisions equals the number of `-> out_`
+  coefficient targets in the code the same run emitted.
+- Confirmed the replayed `run_perl.sh` invocation regenerates the committed
+  equation file with **zero structural differences** and a maximum relative
+  difference of 9.8e-15 — 100x inside the rate gate. Recorded in
+  `PROVENANCE.md`.
+- A bug in the oracle test's composition helper required a leading digit, so
+  bare stripped monomers (`2 A`, meaning two of molecule A) parsed as empty
+  and molecule conservation appeared to fail on all 278 brought-back
+  decisions. With that fixed, conservation now holds across all 1367
+  brought-back decisions in the three sets — a real check on the parser.
 - Corrected an early assumption worth recording: the generated `feval` is
   **not** an unrolled RHS. It is 58 lines looping over integer index arrays.
   The 10,669 lines are hardcoded *rate tables*. The port therefore
