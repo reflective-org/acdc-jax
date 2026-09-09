@@ -189,3 +189,75 @@ __all__ = [
     "out_thresholds",
     "sizes",
 ]
+
+
+# --------------------------------------------------------------------------
+# Thermodynamic data recovered from the emitted evaporation expressions
+# --------------------------------------------------------------------------
+
+# One evaporation assignment plus its trailing `! parent -> d1 + d2` comment.
+_EVAP_BLOCK = re.compile(
+    # The comment may carry a trailing note -- charged evaporations are
+    # annotated ", including ion enhancement" -- so the last product is
+    # matched up to a comma rather than to end of line.
+    r"E\((\d+),(\d+)\)\s*=\s*(.*?)!\s*([^\s,]+)\s*->\s*([^\s,]+)\s*\+\s*([^\s,]+)",
+    re.DOTALL | re.MULTILINE,
+)
+
+# A free-energy slot inside the exp() argument: either an (H, S) group or a
+# bare `0.d0` standing for a zero-reference monomer. Matching both in one
+# alternation keeps the three slots positional, which is what lets them be
+# paired with (parent, daughter, daughter) from the comment.
+#
+# Note the `d0` sits INSIDE the parentheses -- `(-71.024601d0)/1.d3`, not
+# `(-71.024601)d0/1.d3`. Getting that backwards matches nothing and yields a
+# table of zeros rather than an error.
+_SLOT = re.compile(
+    r"\((-?[\d.]+)d0/temperature-\(?(-?[\d.]+)d0\)?/1\.d3\)"
+    r"|(?<![\d.])(0\.d0)"
+)
+
+
+def _normalise(body: str) -> str:
+    """Strip Fortran line continuations so the expression is one string."""
+    return body.replace("&", "").replace("\n", "").replace("\t", "").replace(" ", "")
+
+
+@lru_cache(maxsize=1)
+def energy_data() -> dict[str, tuple[float, float]]:
+    """Recover per-cluster (Delta-H, Delta-S) from ``get_evap``.
+
+    The generator inlines the raw energy-file values into every evaporation
+    expression as ``(H/temperature-(S)/1.d3)`` groups, in the order parent,
+    daughter, daughter, matched to labels by the trailing
+    ``! 2A1N -> 1A1N + 1A`` comment. Zero-reference monomers appear as a
+    bare ``0.d0`` instead.
+
+    Cross-checks itself: a cluster appearing in many expressions must carry
+    identical values in all of them, so a mis-parse is caught here rather
+    than surfacing later as a rate discrepancy.
+    """
+    text = EQUATIONS_F90.read_text()
+    found: dict[str, tuple[float, float]] = {}
+
+    for _i, _j, body, parent, d1, d2 in _EVAP_BLOCK.findall(text):
+        slots = _SLOT.findall(_normalise(body))
+        if len(slots) != 3:
+            raise AssertionError(
+                f"expected 3 free-energy slots for {parent} -> {d1} + {d2}, "
+                f"found {len(slots)}"
+            )
+        for label, (h, s, zero) in zip((parent, d1, d2), slots, strict=True):
+            values = (0.0, 0.0) if zero else (float(h), float(s))
+            previous = found.get(label)
+            if previous is not None and previous != values:
+                raise AssertionError(
+                    f"inconsistent energy data for {label}: {previous} vs {values}"
+                )
+            found[label] = values
+    return found
+
+
+def energy_labels() -> set[str]:
+    """Cluster labels for which the emitted code carries energy data."""
+    return set(energy_data())
