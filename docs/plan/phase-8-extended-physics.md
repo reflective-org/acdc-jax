@@ -34,10 +34,11 @@ ion-neutral pairs. Exposed as two explicitly-named options.
 Losses onto a monodisperse background scavenger population with Dahneke
 transition-regime rates — the physical model that `exp_loss` approximates.
 
-## 8.3 Kelvin evaporation
-Evaporation from the Kelvin equation instead of ΔG data, for clusters
-without quantum chemistry. Also the loop-mode default, so this is a
-prerequisite for Phase 9.
+## 8.3 ~~Kelvin evaporation~~ → moved to Phase 9
+
+**Correction.** Like Dahneke collisions, Kelvin evaporation is a LOOP-MODE
+option (`--loop_evap_coef Kelvin`, gated by `$lloop` at Perl `:600`, `:8517`,
+`:8694`). Not available in small-set mode. Moves to Phase 9 with Dahneke.
 
 ## 8.4 Hydrates / RH
 Pre-equilibrium Boltzmann weighting over water content, then hydrate

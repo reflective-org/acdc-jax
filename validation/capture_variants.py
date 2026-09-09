@@ -56,6 +56,22 @@ VARIANTS: dict[str, dict] = {
 FIXED_T = 280.0
 FIXED_T_VARIANTS: dict[str, dict] = {
     "bgloss": {"flags": ["--cs", "bg_loss"], "capture": "cs"},
+    "dilution": {"flags": ["--use_dilution"], "capture": "dil"},
+    # Six wall-loss parameterizations. Every one applies to all 54 clusters
+    # including the vapour monomers; the emitted loss is the BARE wl(k) --
+    # the ion factor fwl is applied in get_rate_coefs, not in get_losses.
+    **{
+        f"wl_{name}": {"flags": ["--use_wl", "--wl", name], "capture": "wl"}
+        for name in (
+            "CLOUD4_JA",
+            "CLOUD4_JK",
+            "CLOUD4_AK",
+            "CLOUD4_simple",
+            "CLOUD3",
+            "ift",
+            "diffusion",
+        )
+    },
 }
 
 FIXED_T_BASE_FLAGS = [
@@ -129,10 +145,13 @@ def main() -> int:
 
     for name, spec in FIXED_T_VARIANTS.items():
         equations = generate(name, spec["flags"], base=FIXED_T_BASE_FLAGS)
-        cs = emitted.loss_vector(equations, NCLUST)
+        vector = emitted.loss_vector(equations, NCLUST, name=spec["capture"])
         path = GOLDENS / f"losses_variant_{name}.npz"
-        np.savez_compressed(path, temperature=FIXED_T, cs=cs)
-        print(f"wrote {path.relative_to(REPO)}  (cs nonzero: {np.count_nonzero(cs)})")
+        np.savez_compressed(path, temperature=FIXED_T, **{spec["capture"]: vector})
+        print(
+            f"wrote {path.relative_to(REPO)}  "
+            f"({spec['capture']} nonzero: {np.count_nonzero(vector)})"
+        )
     return 0
 
 

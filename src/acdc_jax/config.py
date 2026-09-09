@@ -195,6 +195,59 @@ AIR_MOLAR_MASS = 0.0289
 PHILLIPS_SLIP_NUMERATOR = (5.0, 4.0, 6.0, 18.0)
 PHILLIPS_SLIP_DENOMINATOR = (5.0, 1.0, 8.0)
 
+# Wall losses (Perl :7100-7375). Six chamber/flow-tube parameterizations.
+# All of them apply to EVERY cluster including the vapour monomers -- unlike
+# the coagulation sink, there is no --cs_only exclusion for walls -- and
+# charged clusters are multiplied by FWL_DEFAULT.
+
+WL_IFT = 2.3e-2
+"""IfT-LFT flow-tube wall loss, 1/s, flat (Berndt & Richters 2011; Perl :7373)."""
+
+# CLOUD4 (Almeida et al. 2013): 1.66e-12 / d_mob, with d_mob = (d + 0.3 nm)
+# * sqrt(1 + m_N2/m). Here the mass correction is applied CORRECTLY --
+# $mass1 is the raw kg value -- unlike the metadata emission in F11.
+WL_CLOUD4_JA = 1.66e-12
+"""m/s, Perl :7208."""
+
+WL_CLOUD3 = 1.310e-12
+"""m/s, same form as CLOUD4_JA with the CLOUD3 coefficient (Perl :7251)."""
+
+WL_CLOUD4_SIMPLE = 1.0e-12
+"""m/s, over (d + 0.3 nm) with NO mass correction (Kurten et al. 2015; Perl :7230)."""
+
+# CLOUD4_JK (Jasper Kirkby's Excel fit; Perl :7101-7118). wl = 0.774*sqrt(D)
+# with D the slip-corrected Brownian diffusivity of the mobility diameter.
+WL_JK_PREFACTOR = 0.774
+WL_JK_VISCOSITY = (1.708e-5, 273.15, 1.5, 393.396, 120.246)
+"""Sutherland-type air viscosity: 1.708e-5 (T/273.15)^1.5 * 393.396/(T+120.246)."""
+WL_JK_SLIP = (2.0e-9, 101300.0, 0.752e-6, 6.32, 2.01, 0.1095e9)
+"""Slip correction 1 + 2e-9/(P d 0.752e-6) (6.32 + 2.01 exp(-0.1095e9 P d 0.752e-6)),
+at P = 101300 Pa, as written."""
+
+# CLOUD4_AK (Andreas Kurten; Perl :7155-7175). wl = 0.77*sqrt(D) with D from
+# the GEOMETRIC diameter (the generator's own comment: "for some reason").
+WL_AK_PREFACTOR = 0.77
+WL_AK_VISCOSITY = (11.798, 0.629976, -1.81158e-04, 1e-7)
+"""Polynomial air viscosity: (11.798 + 0.629976 T - 1.81158e-4 T^2) * 1e-7."""
+WL_AK_LAMBDA = (100000.0, 0.37e-9)
+"""Mean free path k_B T / (sqrt2 * P * pi * d_mol^2) at P = 1e5 Pa, d_mol = 0.37 nm."""
+WL_AK_SLIP = (1.142, 0.558, 0.999)
+"""Cunningham-type slip: 1 + Kn (1.142 + 0.558 exp(-0.999/Kn))."""
+
+# diffusion (flow tube of Hanson & Eisele 2000; Perl :7283-7335). Loss
+# relative to the acid monomer's diffusivity in N2, scaled by the laminar
+# diffusion-limited factor 3.65/R^2 (Brown 1978).
+WL_DIFFUSION_TUBE_RADIUS = 0.049 / 2
+"""m, Hanson & Eisele 2000 default; --flowtube_radius overrides (given in cm)."""
+WL_DIFFUSION_TUBE_PRESSURE = 133.322 * 620
+"""Pa, 620 Torr default; --flowtube_pressure overrides."""
+WL_DIFFUSION_LAMINAR = 3.65
+"""Brown (1978) tubular-reactor factor: D -> wall loss as 3.65 D / R^2."""
+MASS_N2 = 28.01
+"""g/mol."""
+N2_SUTHERLAND = (17.9e-6, 300.0, 111.0)
+"""N2 viscosity: 17.9e-6 (300+111)/(T+111) (T/300)^1.5 (Crane 1988 / CRC)."""
+
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
 

@@ -69,22 +69,33 @@ def collision_matrix(path: str | Path, temperature: float, nclust: int) -> np.nd
     return k
 
 
-_LOSS_ASSIGN = re.compile(r"^\s*cs\((\d+)\)\s*=\s*([-+0-9.dDeE]+)\s*(?:!.*)?$")
+def loss_vector(path: str | Path, nclust: int, name: str = "cs") -> np.ndarray:
+    """Evaluate a loss vector from a generated equations file.
 
+    Handles both emitted shapes:
 
-def loss_vector(path: str | Path, nclust: int) -> np.ndarray:
-    """Evaluate get_losses from a generated equations file.
+    - per-cluster literals, ``wl(3) = 1.39d-03``, for the size-dependent
+      parameterizations;
+    - a single scalar, ``wl = 2.3d-02`` or ``dil = 9.6d-05``, which upstream
+      then applies to every cluster (``coef_lin(58,58,k) = dil`` for all k).
+      Broadcast to a full vector here so callers see one shape.
 
-    Every entry is a plain literal -- the loss routines carry no temperature
+    Every entry is a plain literal: the loss routines carry no temperature
     dependence in any generated variant, because the generator refuses to
     combine bg_loss or wall losses with --variable_temp.
     """
     text = Path(path).read_text()
     start = text.index("subroutine get_losses")
     end = text.index("end subroutine get_losses")
-    cs = np.zeros(nclust)
-    for line in text[start:end].splitlines():
-        m = _LOSS_ASSIGN.match(line)
-        if m:
-            cs[int(m.group(1)) - 1] = float(_fortran_to_python(m.group(2)))
-    return cs
+    body = text[start:end]
+
+    vector = re.compile(rf"^\s*{name}\((\d+)\)\s*=\s*([-+0-9.dDeE]+)\s*(?:!.*)?$")
+    scalar = re.compile(rf"^\s*{name}\s*=\s*([-+0-9.dDeE]+)\s*(?:!.*)?$")
+
+    out = np.zeros(nclust)
+    for line in body.splitlines():
+        if m := vector.match(line):
+            out[int(m.group(1)) - 1] = float(_fortran_to_python(m.group(2)))
+        elif m := scalar.match(line):
+            out[:] = float(_fortran_to_python(m.group(1)))
+    return out
