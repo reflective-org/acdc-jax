@@ -104,7 +104,6 @@ def generic_ion_composition(
     charge has nowhere to go and rejects the collision.
     """
     counts = [0] * len(order)
-    by_name = {m.name: m for m in cluster_set.molecules}
 
     if not negative:
         proton = next((m for m in cluster_set.molecules if m.is_proton), None)
