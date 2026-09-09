@@ -39,12 +39,12 @@ Taken in dependency order: labels first, since everything else needs them.
 - ⬜ **3.4** Sources, constants, fitted
 
 ## Phase 4 — Rates
-- ⬜ **4.1** Hard-sphere collisions
-- ⬜ **4.2** Ion–neutral enhancement (Su82)
-- ⬜ **4.3** Su73 and constant
-- ⬜ **4.4** Ion–ion recombination
-- ⬜ **4.5** Evaporation by detailed balance
-- ⬜ **4.6** Coagulation sink
+- ✅ **4.1** Hard-sphere collisions
+- ✅ **4.2** Ion–neutral enhancement (Su82)
+- ⏸ **4.3** Su73 and constant — deferred to Phase 8 with the other options
+- ✅ **4.4** Ion–ion recombination
+- ✅ **4.5** Evaporation by detailed balance
+- ✅ **4.6** Coagulation sink
 
 ## Phase 5 — RHS, formation, fluxes
 - ⬜ **5.1** The RHS
@@ -100,6 +100,9 @@ be re-derived.
 | Boundary decisions | **3595 / 3595 exact** across 4 cluster sets | Phase 2 |
 | `coef_quad` sparsity | **2679 / 2679** triples, 0 missing, 0 extra | Phase 3 |
 | `coef_lin` evaporation sparsity | **422 / 422** entries (213 channels) | Phase 3 |
+| `K` vs reference, 250–320 K | max rel **6e-15**, sparsity exact | Phase 4 |
+| `E` vs reference, 250–320 K | max rel **1.7e-13** | Phase 4 |
+| `cs` vs reference | max rel **2e-15** | Phase 4 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
