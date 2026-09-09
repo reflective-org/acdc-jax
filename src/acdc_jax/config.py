@@ -381,6 +381,15 @@ class FidelityConfig:
     correction as intended, moving 1A from 0.85 to 0.97 nm.
     """
 
+    sticking_on_evaporation: Literal["upstream", "detailed_balance"] = "upstream"
+    """How a --sticking_factor reaches the evaporation rate. See F19.
+
+    Upstream emits ``E(i,j) = s*<prefactor>*exp(...)*K(i,j)`` where ``K(i,j)``
+    already carries ``s``, so evaporation is scaled by s^2 and collision by s,
+    breaking detailed balance by a factor s. ``"upstream"`` reproduces that;
+    ``"detailed_balance"`` applies the factor once, through K only.
+    """
+
     hydrate_discard_threshold: float = 0.99
     """Discard a hydrate distribution normalising at or below this and treat
     the cluster as dry. See F7, P:2637-2643. Phase 8.

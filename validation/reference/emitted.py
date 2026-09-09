@@ -69,6 +69,67 @@ def collision_matrix(path: str | Path, temperature: float, nclust: int) -> np.nd
     return k
 
 
+_EVAP_ASSIGN = re.compile(r"^\s*E\((\d+),(\d+)\)\s*=\s*(.+?)\s*(?:!.*)?$")
+
+
+def evaporation_matrix(path: str | Path, temperature: float, nclust: int) -> np.ndarray:
+    """Evaluate get_evap from a generated equations file at one temperature.
+
+    The emitted ``E(i,j)`` expressions reference ``K(i,j)``, so get_coll is
+    evaluated first and exposed to the expressions as a function. Zero where
+    no channel is emitted.
+    """
+    k = collision_matrix(path, temperature, nclust)
+    text = Path(path).read_text()
+    start = text.index("subroutine get_evap")
+    end = text.index("end subroutine get_evap")
+    joined = re.sub(r"&\s*\n\s*&?", "", text[start:end])
+
+    e = np.zeros((nclust, nclust))
+    env = {
+        "sqrt": math.sqrt,
+        "exp": math.exp,
+        "max": max,
+        "sign": _sign,
+        "temperature": temperature,
+        "K": lambda i, j: k[i - 1, j - 1],
+    }
+    copies: list[tuple[int, int, int, int]] = []
+    for line in joined.splitlines():
+        m = _EVAP_ASSIGN.match(line)
+        if not m:
+            continue
+        i, j, rhs = int(m.group(1)) - 1, int(m.group(2)) - 1, m.group(3)
+        copy = re.fullmatch(r"E\((\d+),(\d+)\)", rhs.strip())
+        if copy:
+            copies.append((i, j, int(copy.group(1)) - 1, int(copy.group(2)) - 1))
+            continue
+        e[i, j] = eval(_fortran_to_python(rhs), {"__builtins__": {}}, env)  # noqa: S307
+    for i, j, si, sj in copies:
+        e[i, j] = e[si, sj]
+    return e
+
+
+def collision_triples(path: str | Path) -> set[tuple[int, int, int]]:
+    """Every ``coef_quad(i,j,k) = K(...)`` assignment as 0-based ``(i, j, k)``.
+
+    The reaction graph itself, independent of rate values: which pairs
+    collide and what each produces. Used to validate --nst.
+    """
+    text = Path(path).read_text()
+    pattern = re.compile(r"^\s*coef_quad\((\d+),(\d+),(\d+)\)\s*=\s*K\(", re.M)
+    return {(int(a) - 1, int(b) - 1, int(c) - 1) for a, b, c in pattern.findall(text)}
+
+
+def evaporation_pairs(path: str | Path) -> set[tuple[int, int]]:
+    """Every daughter pair with an emitted ``E(i,j) =`` line, 0-based, i>=j and i<j."""
+    text = Path(path).read_text()
+    start = text.index("subroutine get_evap")
+    end = text.index("end subroutine get_evap")
+    pattern = re.compile(r"^\s*E\((\d+),(\d+)\)\s*=", re.M)
+    return {(int(a) - 1, int(b) - 1) for a, b in pattern.findall(text[start:end])}
+
+
 def loss_vector(path: str | Path, nclust: int, name: str = "cs") -> np.ndarray:
     """Evaluate a loss vector from a generated equations file.
 

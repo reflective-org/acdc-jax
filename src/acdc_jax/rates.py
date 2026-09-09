@@ -20,7 +20,7 @@ import dataclasses
 import jax.numpy as jnp
 import numpy as np
 
-from acdc_jax import config, geometry
+from acdc_jax import config, geometry, rules
 from acdc_jax.clusterset import ClusterSetFile
 from acdc_jax.system import AcdcSystem
 from acdc_jax.thermo import DipoleTable, EnergyTable
@@ -81,6 +81,21 @@ class RateInputs:
     delta_s: np.ndarray
     cs_shape: np.ndarray
     """Coagulation-sink size dependence, dimensionless, shape (nclust,)."""
+    sticking: np.ndarray
+    """(nclust, nclust) sticking factor multiplying K, 1.0 by default.
+
+    From the --sticking_factor rule list (:mod:`acdc_jax.rules`). Already
+    rounded to the generator's %.4e literal. Under upstream's emission the
+    same factor also multiplies E -- see F19 and
+    ``FidelityConfig.sticking_on_evaporation``.
+    """
+    evap_scale_kcal: np.ndarray
+    """(nclust, nclust) kcal/mol ADDED to the reaction free energy of the
+    evaporation k -> i + j, indexed by the daughters. Zero by default. From
+    the --scale_evap rule list; the emitted Fortran shows it as an extra
+    ``+scale/temperature`` term beside H/T - S/1e3, i.e. inside the exponent.
+    K is untouched.
+    """
     has_energy_data: np.ndarray
     """(nclust,) bool: clusters with tabulated quantum-chemical energies.
 
@@ -111,6 +126,8 @@ def build_rate_inputs(
     energies: EnergyTable,
     dipoles: DipoleTable,
     reactions=None,
+    sticking_rules: tuple[rules.Rule, ...] = (),
+    evap_scale_rules: tuple[rules.Rule, ...] = (),
     cs_reference_label: str = "1A",
     cs_exponent: float = config.CS_EXPONENT_DEFAULT,
     cs_excluded: tuple[str, ...] = ("1A", "1N"),
@@ -187,6 +204,8 @@ def build_rate_inputs(
             valid_pairs[collision.j, collision.i] = True
 
     return RateInputs(
+        sticking=rules.sticking_matrix(system, sticking_rules),
+        evap_scale_kcal=rules.evap_scale_matrix(system, evap_scale_rules),
         mass=mass_g * config.MASS_CONV,
         radius=radius,
         diameter_nm=diameter_nm,
@@ -382,6 +401,9 @@ def collision_coefficients(
     k = jnp.where(kind == PAIR_NEUTRAL, beta, 0.0)
     k = jnp.where(kind == PAIR_ION_NEUTRAL, enhanced, k)
     k = jnp.where(kind == PAIR_RECOMBINATION, config.RECOMB_COEFF, k)
+    # Sticking factors sit outside everything else, including the max():
+    # `K(53,1) = 2.0000d+00*max((...`. Ones where no rule applies.
+    k = k * jnp.asarray(inputs.sticking)
     return jnp.where(jnp.asarray(inputs.valid_pairs), k, 0.0)
 
 
@@ -401,6 +423,7 @@ def evaporation_for_pairs(
     daughters_j: np.ndarray,
     temperature,
     reference_pressure: float = config.P_ATM,
+    fidelity: config.FidelityConfig = config.DEFAULT,
 ) -> jnp.ndarray:
     """Evaporation rates for a list of channels ``k -> i + j``, 1/s.
 
@@ -413,6 +436,9 @@ def evaporation_for_pairs(
     """
     gibbs = gibbs_at(inputs, temperature)
     delta = gibbs[parents] - gibbs[daughters_i] - gibbs[daughters_j]
+    # --scale_evap: a per-channel Delta-G correction, kcal/mol, added inside
+    # the exponent. Zero unless rules were supplied.
+    delta = delta + jnp.asarray(inputs.evap_scale_kcal)[daughters_i, daughters_j]
 
     # kcal/mol -> J per molecule, then divided by k_B T. The reference folds
     # this into the single constant 5.03218937158374e2 = KCAL_PER_MOL_TO_J/k_B.
@@ -424,7 +450,15 @@ def evaporation_for_pairs(
     symmetric = jnp.asarray(daughters_i == daughters_j)
     factor = jnp.where(symmetric, 0.5, 1.0)
 
-    return factor * number_density * jnp.exp(exponent) * beta
+    rate = factor * number_density * jnp.exp(exponent) * beta
+
+    # F19: upstream prepends the sticking literal to the E expression, which
+    # already references the K that carries it, so E scales as s^2 while K
+    # scales as s. Reproduced by default; "detailed_balance" applies it once
+    # (through K only) so E/K stays exp(dG/kT)/n_ref.
+    if fidelity.sticking_on_evaporation == "upstream":
+        rate = rate * jnp.asarray(inputs.sticking)[daughters_i, daughters_j]
+    return rate
 
 
 def coagulation_sink(

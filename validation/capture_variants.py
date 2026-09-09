@@ -48,6 +48,11 @@ NCLUST = 54
 VARIANTS: dict[str, dict] = {
     "su73": {"flags": ["--ion_coll_method", "Su73"], "capture": "K"},
     "constant": {"flags": ["--ion_coll_method", "constant"], "capture": "K"},
+    # Phase 8.7. Sticking factors touch K AND E (E twice over, F19), and the
+    # Delta-G scaling touches E only, so these capture both matrices.
+    "stick05": {"flags": ["--sticking_factor", "0.5"], "capture": "KE"},
+    "stickion2": {"flags": ["--sticking_factor_ion_neutral", "2"], "capture": "KE"},
+    "scaleevap1": {"flags": ["--scale_evap_factor", "1"], "capture": "KE"},
 }
 
 # Variants the generator REFUSES to combine with --variable_temp. These are
@@ -138,9 +143,13 @@ def main() -> int:
         data = {"temperatures": np.asarray(TEMPERATURES)}
         for t in TEMPERATURES:
             data[f"K_{t:g}"] = emitted.collision_matrix(equations, t, NCLUST)
+            if "E" in spec["capture"]:
+                data[f"E_{t:g}"] = emitted.evaporation_matrix(equations, t, NCLUST)
         path = GOLDENS / f"rates_variant_{name}.npz"
         np.savez_compressed(path, **data)
         nonzero = np.count_nonzero(data["K_280"])
+        if nonzero == 0:
+            raise SystemExit(f"variant {name}: get_coll evaluated to all zeros")
         print(f"wrote {path.relative_to(REPO)}  (K nonzero at 280 K: {nonzero})")
 
     for name, spec in FIXED_T_VARIANTS.items():

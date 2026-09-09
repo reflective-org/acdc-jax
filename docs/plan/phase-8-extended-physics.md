@@ -60,9 +60,25 @@ only for chamber comparisons; drop if CLOUD work is not planned.
 ## 8.6 Dilution losses
 Single rate, default `9.6e-5 s⁻¹`.
 
-## 8.7 Sticking factors and ΔG scaling
-Per-collision sticking coefficients and per-channel ΔG corrections from
-files; the corrections go **inside** the exponent, in kcal/mol.
+## 8.7 Sticking factors and ΔG scaling ✅
+Both are last-match-wins rule lists (`acdc_jax.rules`), assembled in the
+generator's order: command-line value(s) first, file rows after.
+
+*Sticking* (`--sticking_factor`, `--sticking_factor_ion_neutral`,
+`--sticking_factor_file_name`): a bare value or a molecule name applies to
+neutral–neutral collisions only; `ion-neutral` to pairs with exactly one
+charged member (generic ions included); a cluster label to either member;
+a label pair to that specific collision. The factor is rounded to the
+`%.4e` literal the Fortran multiplies by, sits outside the `max()` on K,
+and — F19 — is prepended to E as well, so E scales as s².
+
+*ΔG scaling* (`--scale_evap_factor`, `--scale_evap_file_name`): kcal/mol
+added to the reaction free energy inside the exponent, by daughter pair,
+optionally restricted to a parent. K untouched.
+
+Validated: K and E at 1e-12 across 250–320 K against `_stick05`,
+`_stickion2` and `_scaleevap1` fixtures (new `emitted.evaporation_matrix`
+evaluates `get_evap` with `get_coll` in scope).
 
 ## 8.8 Non-standard reactions
 Explicit product overrides for collisions where the product breaks up
