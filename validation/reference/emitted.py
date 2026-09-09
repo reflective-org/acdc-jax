@@ -117,7 +117,10 @@ def collision_triples(path: str | Path) -> set[tuple[int, int, int]]:
     collide and what each produces. Used to validate --nst.
     """
     text = Path(path).read_text()
-    pattern = re.compile(r"^\s*coef_quad\((\d+),(\d+),(\d+)\)\s*=\s*K\(", re.M)
+    # Self-collisions are emitted as `0.5d0*K(i,i)`; everything else as `K(i,j)`.
+    pattern = re.compile(
+        r"^\s*coef_quad\((\d+),(\d+),(\d+)\)\s*=\s*(?:0\.5d0\*)?K\(", re.M
+    )
     return {(int(a) - 1, int(b) - 1, int(c) - 1) for a, b, c in pattern.findall(text)}
 
 
@@ -128,6 +131,26 @@ def evaporation_pairs(path: str | Path) -> set[tuple[int, int]]:
     end = text.index("end subroutine get_evap")
     pattern = re.compile(r"^\s*E\((\d+),(\d+)\)\s*=", re.M)
     return {(int(a) - 1, int(b) - 1) for a, b in pattern.findall(text[start:end])}
+
+
+def formation_extras(path: str | Path) -> set[tuple[int, int, int, int]]:
+    """``ind_quad_form_extra(k, 0:m) = (/ n, i,j,mult, ... /)`` as 0-based
+    ``(i, j, k, mult)`` -- the secondary products of a collision (boundary
+    monomers, non-standard extras) with their multiplicities."""
+    text = Path(path).read_text()
+    joined = re.sub(r"&\s*\n\s*&?", "", text)
+    pattern = re.compile(
+        r"^\s*ind_quad_form_extra\((\d+),0:\d+\)\s*=\s*\(/(.*?)/\)", re.M
+    )
+    out: set[tuple[int, int, int, int]] = set()
+    for k, body in pattern.findall(joined):
+        values = [int(v) for v in body.replace(",", " ").split()]
+        count, rest = values[0], values[1:]
+        assert len(rest) == 3 * count, (k, body)
+        for n in range(count):
+            i, j, mult = rest[3 * n : 3 * n + 3]
+            out.add((i - 1, j - 1, int(k) - 1, mult))
+    return out
 
 
 def loss_vector(path: str | Path, nclust: int, name: str = "cs") -> np.ndarray:

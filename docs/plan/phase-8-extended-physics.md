@@ -80,9 +80,25 @@ Validated: K and E at 1e-12 across 250–320 K against `_stick05`,
 `_stickion2` and `_scaleevap1` fixtures (new `emitted.evaporation_matrix`
 evaluates `get_evap` with `get_coll` in scope).
 
-## 8.8 Non-standard reactions
-Explicit product overrides for collisions where the product breaks up
-(energy non-accommodation), with no reverse evaporation.
+## 8.8 Non-standard reactions ✅
+`--nst` file (Perl `:2009-2117`): `X clusters` forbids X with every other
+non-monomer cluster; `X Y` forbids one collision; `X Y c1 P1 [c2 P2 …]`
+overrides the products (labels or `out_neu`/`out_neg`/`out_pos`, integer
+coefficients only on the Fortran path). Forbidden pairs lose the reverse
+evaporation too; overridden pairs never evaporate back. Consulted first
+in the pair ladder, before the boundary logic.
+
+Ported as `reactions.NonStandardReactions` + `parse_nonstandard_file`,
+consumed by `enumerate_reactions(nonstandard=…)`. Needed the generator's
+monomer definition (`check_monomer`: count everything but the proton
+pseudo-species), which fixed `AcdcSystem.is_monomer` for `1B` and `1A1B`.
+
+Validated on the emitted reaction **graph**: every `coef_quad(i,j,k)`
+triple, every extra-product multiplicity, every `E(i,j)` channel, read
+from the generated Fortran into `reactions_variant_*.npz` and compared
+exactly — for three synthetic `--nst` files and for the unmodified system
+(the first whole-graph check of the Phase 3 enumeration: 2679 terms, 278
+extras, 422 channels, all identical). F20 recorded.
 
 ## 8.9 Charge balance ✅
 The generator's `--charge_balance ±1` (Perl `:2135-2180`), not just the

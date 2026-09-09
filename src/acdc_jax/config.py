@@ -390,6 +390,17 @@ class FidelityConfig:
     ``"detailed_balance"`` applies the factor once, through K only.
     """
 
+    nonstandard_main_coefficient: Literal["fortran", "literal"] = "fortran"
+    """What happens to the coefficient of the FIRST product of a --nst line.
+
+    See F20. The generator folds it into ``coef_quad_form``, which only the
+    MATLAB emitter reads; the Fortran forms the main product once per
+    collision whatever the coefficient says (``1N 2A1N 2 1A1N`` forms one
+    1A1N and loses the other). ``"fortran"`` reproduces that; ``"literal"``
+    honours the coefficient. Extra products (third column onward) keep
+    their coefficients on both paths.
+    """
+
     hydrate_discard_threshold: float = 0.99
     """Discard a hydrate distribution normalising at or below this and treat
     the cluster as dry. See F7, P:2637-2643. Phase 8.

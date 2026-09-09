@@ -1,0 +1,3 @@
+# synthetic --nst fixture
+1A 1A1N
+1N 2A1N 2 1A1N

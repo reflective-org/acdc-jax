@@ -80,7 +80,8 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **8.6** Dilution — exact
 - ✅ **8.9** Charge balance — `--charge_balance ±1` projection, exact vs the emitted algebra (1e-13 summation order)
 - ✅ **8.7** Sticking factors + ΔG scaling — K and E at **<1e-12** vs three fixtures; F19 recorded (E ∝ s²)
-- ⬜ **8.4** hydrates/RH · **8.8** non-standard reactions
+- ✅ **8.8** Non-standard reactions — exact reaction-graph match vs 3 fixtures + baseline; F20 recorded; `is_monomer` fixed
+- ⬜ **8.4** hydrates/RH
 
 ## Phase 9 — Loop mode
 - ⏸ **9.1**–**9.5** decision revisited at Phase 8 close

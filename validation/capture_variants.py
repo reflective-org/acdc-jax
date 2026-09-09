@@ -79,6 +79,17 @@ FIXED_T_VARIANTS: dict[str, dict] = {
     },
 }
 
+# Reaction-graph variants: --nst changes WHICH reactions exist, not their
+# rates, so the golden is the set of coef_quad triples, the extra-product
+# multiplicities and the emitted evaporation pairs.
+NST_DIR = HERE / "fixtures/nst"
+GRAPH_VARIANTS: dict[str, dict] = {
+    "base": {"flags": []},
+    "nst_override": {"flags": ["--nst", str(NST_DIR / "override.txt")]},
+    "nst_duplicate": {"flags": ["--nst", str(NST_DIR / "duplicate_product.txt")]},
+    "nst_clusters": {"flags": ["--nst", str(NST_DIR / "clusters.txt")]},
+}
+
 FIXED_T_BASE_FLAGS = [
     "--fortran",
     "--save_outgoing",
@@ -151,6 +162,18 @@ def main() -> int:
         if nonzero == 0:
             raise SystemExit(f"variant {name}: get_coll evaluated to all zeros")
         print(f"wrote {path.relative_to(REPO)}  (K nonzero at 280 K: {nonzero})")
+
+    for name, spec in GRAPH_VARIANTS.items():
+        equations = generate(name, spec["flags"])
+        triples = np.array(sorted(emitted.collision_triples(equations)), dtype=np.int32)
+        extras = np.array(sorted(emitted.formation_extras(equations)), dtype=np.int32)
+        pairs = np.array(sorted(emitted.evaporation_pairs(equations)), dtype=np.int32)
+        path = GOLDENS / f"reactions_variant_{name}.npz"
+        np.savez_compressed(path, triples=triples, extras=extras, evaporations=pairs)
+        print(
+            f"wrote {path.relative_to(REPO)}  "
+            f"({len(triples)} quad terms, {len(extras)} extras, {len(pairs)} E)"
+        )
 
     for name, spec in FIXED_T_VARIANTS.items():
         equations = generate(name, spec["flags"], base=FIXED_T_BASE_FLAGS)
