@@ -138,6 +138,42 @@ class TestSources:
         n = system.n_clusters
         assert np.max(np.abs(f[:n]) / np.maximum(turnover[:n], 1e-300)) < 1e-6
 
+    def test_source_driven_state_reports_the_total_source(self, model, steady) -> None:
+        """MATLAB works on coll_evap_2d, which has no source row: with a
+        given source S sustaining free monomers the back-solve returns S,
+        not S minus itself."""
+        import dataclasses
+
+        system, reactions, inputs = model
+        co, c = steady
+        sources = pathways.monomer_sources(
+            system, pathways.gross_flux_matrix(system, co, c)
+        )
+        free = rhs.assemble(
+            system, reactions, inputs, T, 1e-3, 3e6, 3e6, constant_vapours=()
+        )
+        source = np.asarray(free.source).copy()
+        for label in ("1A", "1N"):
+            source[system.index(label)] = sources[label]
+        free = dataclasses.replace(free, source=source)
+        again = pathways.monomer_sources(
+            system, pathways.gross_flux_matrix(system, free, c)
+        )
+        assert again["1A"] == pytest.approx(sources["1A"], rel=1e-12)
+        assert again["1N"] == pytest.approx(sources["1N"], rel=1e-12)
+
+    def test_charge_balanced_state_is_projected(self, model) -> None:
+        """Under --charge_balance the fitted ion's raw entry is meaningless;
+        the fluxes must use the projected value rhs.rhs uses."""
+        system, reactions, inputs = model
+        co = rhs.assemble(
+            system, reactions, inputs, T, 1e-3, 3e6, 3e6, charge_balance=1
+        )
+        c = np.full(system.n_equations, 1e10)
+        c[system.generic_pos] = 0.0
+        gross = pathways.gross_flux_matrix(system, co, c)
+        assert gross[system.generic_pos, :].sum() > 0
+
     def test_ion_sources_recover_the_production_rate(self, model, steady) -> None:
         system, _, _ = model
         co, c = steady
@@ -152,7 +188,7 @@ class TestPathways:
     def test_neutral_main_route(self, model, steady) -> None:
         system, reactions, _ = model
         co, c = steady
-        pw = pathways.track_pathways(system, reactions, co, c, charge=0)
+        pw = pathways.track_pathways(system, co, c, charge=0)
         assert pw.exits and pw.edges
         assert pw.total_out == pytest.approx(
             float(rhs.formation_rate(system, co, c)["j_tot"]), rel=1e-10
@@ -171,22 +207,32 @@ class TestPathways:
         # every intermediate is reached by a recorded edge
         ends = {e.end for e in pw.edges}
         assert all(label in ends for label in route[1:-1])
-        # growth_only (default): molecule counts never decrease along the route
-        counts = [sum(system.compositions[system.index(label)]) for label in route[:-1]]
+        # net fluxes: the route is a growth sequence, reaching back to a dimer
+        counts = [system.molecule_count(system.index(label)) for label in route[:-1]]
         assert counts == sorted(counts)
-        # the faithful argmax may take an evaporation step; it must still be
-        # a chain of recorded edges ending at the same exit
-        faithful = pathways.track_pathways(
-            system, reactions, co, c, charge=0, growth_only=False
-        )
-        assert faithful.main_route[-2:] == route[-2:]
+        assert counts[0] <= 2
+        # the exit the QuickGuide's slide 6 shows for this system
+        assert route[-2:] == ("5A5N", "6A5N")
+
+    def test_edges_are_net_fluxes(self, model, steady) -> None:
+        """An edge's value is the NET flow between the two species (or the
+        source row), never the gross rate, so an equilibrium exchange pair
+        cannot swamp the significance test."""
+        system, _, _ = model
+        co, c = steady
+        net = pathways.net_flux_matrix(pathways.gross_flux_matrix(system, co, c))
+        pw = pathways.track_pathways(system, co, c, charge=0, crit_clust=0.0)
+        for e in pw.edges:
+            if e.start in system.labels and e.end in system.labels:
+                s, t_ = system.index(e.start), system.index(e.end)
+                if system.molecule_count(s) > system.molecule_count(t_):
+                    assert e.value == pytest.approx(net[s, t_], rel=1e-12)
+                    assert net[t_, s] == 0.0
 
     def test_edges_are_significant_inflows(self, model, steady) -> None:
         system, reactions, _ = model
         co, c = steady
-        pw = pathways.track_pathways(
-            system, reactions, co, c, charge=0, crit_clust=0.05
-        )
+        pw = pathways.track_pathways(system, co, c, charge=0, crit_clust=0.05)
         for end in {e.end for e in pw.edges}:
             into = [e for e in pw.edges if e.end == end]
             assert all(e.value > 0 for e in into)
@@ -196,15 +242,15 @@ class TestPathways:
         system, reactions, _ = model
         co, c = steady
         for charge in (-1, 1):
-            pw = pathways.track_pathways(system, reactions, co, c, charge=charge)
+            pw = pathways.track_pathways(system, co, c, charge=charge)
             for label in pw.main_route[:-1]:
                 assert system.charges[system.index(label)] == charge
 
     def test_exit_criterion_filters(self, model, steady) -> None:
         system, reactions, _ = model
         co, c = steady
-        loose = pathways.track_pathways(system, reactions, co, c, crit_out=0.0)
-        tight = pathways.track_pathways(system, reactions, co, c, crit_out=0.3)
+        loose = pathways.track_pathways(system, co, c, crit_out=0.0)
+        tight = pathways.track_pathways(system, co, c, crit_out=0.3)
         assert len(tight.exits) <= len(loose.exits)
         assert loose.exits[0] == tight.exits[0]  # the largest is always kept
 
@@ -232,7 +278,8 @@ class TestFreeEnergy:
         )
         kt_kcal = config.K_B * T / config.KCAL_PER_MOL_TO_J
         a = system.order.index("A")
-        n_a = np.asarray(system.compositions)[:, a]
+        n_a = np.asarray(system.compositions)[:, a].astype(float)
+        n_a[[system.generic_neg, system.generic_pos]] = 0.0
         np.testing.assert_allclose(diluted - base, kt_kcal * n_a * np.log(10.0))
 
     def test_ions_are_not_molecules(self, model) -> None:
@@ -251,6 +298,15 @@ class TestFreeEnergy:
         j = system.index("1A1B")
         kt_kcal = config.K_B * T / config.KCAL_PER_MOL_TO_J
         assert diluted[j] - base[j] == pytest.approx(kt_kcal * np.log(10.0))
+        # protonated ammonia is "the ion" too: 1N1P carries no base term,
+        # 1A2N1P one base molecule's worth plus its acid
+        assert system.proton_host == "N"
+        k = system.index("1N1P")
+        assert diluted[k] == base[k]
+        m = system.index("1A2N1P")
+        assert diluted[m] - base[m] == pytest.approx(2 * kt_kcal * np.log(10.0))
+        # the generic ions' pseudo-compositions leak nothing
+        assert diluted[system.generic_neg] == base[system.generic_neg] == 0.0
 
     def test_grid_layout(self, model) -> None:
         system, reactions, inputs = model

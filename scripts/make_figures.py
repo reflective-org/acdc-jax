@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -412,8 +413,7 @@ def figure_stability(model) -> str:
         rates.evaporation_for_pairs(inputs, collision, parents, di, dj, temperature)
     )
 
-    total = np.zeros(system.n_clusters)
-    np.add.at(total, parents, evaporation)
+    total = free_energy.total_evaporation_rate(system.n_clusters, parents, evaporation)
 
     acid = system.labels.index("1A")
     c_acid = 1e13  # [H2SO4] = 1e7 cm^-3
@@ -505,29 +505,39 @@ def figure_stability(model) -> str:
 
 
 # ---------------------------------------------------------------------------
-def _quickguide_state(model):
-    """Steady state at the QuickGuide's conditions: [H2SO4] = 5e6 cm^-3,
-    [NH3] = 100 ppt, T = 280 K, coagulation sink, ion production 3 cm^-3 s^-1."""
+T_QUICKGUIDE = 280.0
+"""The setup QuickGuide's conditions: [H2SO4] = 5e6 cm^-3, [NH3] = 100 ppt,
+280 K, coagulation sink 1e-3 1/s, ion production 3 cm^-3 s^-1."""
+
+
+def _quickguide_coefficients(model):
     system, reactions, inputs = model
-    temperature = 280.0
-    co = rhs.assemble(system, reactions, inputs, temperature, 1e-3, 3e6, 3e6)
-    c_n = 100e-12 * config.P_ATM / (config.K_B * temperature)
+    return rhs.assemble(system, reactions, inputs, T_QUICKGUIDE, 1e-3, 3e6, 3e6)
+
+
+def _quickguide_state(model):
+    """Steady state at the QuickGuide's conditions."""
+    from acdc_jax.thermo import reference_number_density
+
+    system, _, _ = model
+    co = _quickguide_coefficients(model)
+    c_n = 100e-12 * reference_number_density(config.P_ATM, T_QUICKGUIDE)
     c0 = solve.set_vapours(
         system, np.zeros(system.n_equations), {"1A": 5e6 * CM3, "1N": c_n}
     )
     result = solve.solve_steady_state(system, co, c0=c0)
-    return co, np.asarray(result.concentrations), temperature
+    return co, np.asarray(result.concentrations)
 
 
 def _acid_base(system, label: str) -> tuple[int, int]:
-    """(acid, base) coordinates of a label, folding the bisulfate ion into the
-    acid count and ignoring the proton -- the QuickGuide's axes."""
+    """(acid, base) chart coordinates of a label -- in or out of the set --
+    with the bisulfate ion folded into the acid count and the proton ignored."""
     from acdc_jax import labels as label_module
 
-    comp = label_module.parse(label)
-    acid = comp.get("A", 0) + comp.get("B", 0)
-    base = comp.get("N", 0)
-    return acid, base
+    counts = np.array(label_module.composition_vector(label, system.order))
+    return int(free_energy.folded_count(system, counts, "A")), int(
+        free_energy.folded_count(system, counts, "N")
+    )
 
 
 def figure_pathway(model) -> str:
@@ -543,16 +553,35 @@ def figure_pathway(model) -> str:
     below the acid = base diagonal, so a boundary that lets clusters with
     more acid than base grow out is a defensible one.
     """
-    system, reactions, _ = model
-    co, c, temperature = _quickguide_state(model)
-    pw = pathways.track_pathways(system, reactions, co, c, charge=0)
+    system, _, _ = model
+    co, c = _quickguide_state(model)
+    pw = pathways.track_pathways(system, co, c, charge=0)
 
-    edges = [e for e in pw.edges if e.start in system.labels] + list(pw.exits)
+    from acdc_jax import labels as label_module
+
+    def charge_of(label: str) -> int:
+        if label in system.labels:
+            return system.charges[system.labels.index(label)]
+        counts = label_module.composition_vector(label, system.order)
+        return int(
+            sum(n * q for n, q in zip(counts, system.charges_of_molecule, strict=True))
+        )
+
+    # MATLAB draws an arrow only between two clusters of the wanted charge
+    # (track_fluxes.m :313-345); cross-charge sources get a text box there
+    # and are simply left out here.
+    edges = [
+        e
+        for e in list(pw.edges) + list(pw.exits)
+        if e.start in system.labels
+        and charge_of(e.start) == 0
+        and charge_of(e.end) == 0
+    ]
     values = np.array([e.value for e in edges]) / CM3
     vmin, vmax = values.min(), values.max()
     norm = matplotlib.colors.LogNorm(vmin=vmin, vmax=vmax)
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-        "flux", [BLUE, VIOLET, "#e34948"]
+        "flux", [BLUE, VIOLET, NEG]
     )
     route = set(zip(pw.main_route[:-1], pw.main_route[1:], strict=True))
 
@@ -583,10 +612,12 @@ def figure_pathway(model) -> str:
     ax.axvline(max_acid + 0.5, color=INK, ls="--", lw=1.2)
     ax.axhline(max_base + 0.5, color=INK, ls="--", lw=1.2)
     ax.plot([0, max_acid + 1], [0, max_acid + 1], color=INK_MUTED, ls=":", lw=1)
-    ax.set_xlim(-0.5, max_acid + 1.5)
-    ax.set_ylim(-0.5, max_base + 1.5)
-    ax.set_xticks(range(max_acid + 2))
-    ax.set_yticks(range(max_base + 2))
+    reach_a = max([max_acid] + [_acid_base(system, e.end)[0] for e in edges])
+    reach_b = max([max_base] + [_acid_base(system, e.end)[1] for e in edges])
+    ax.set_xlim(-0.5, reach_a + 0.5)
+    ax.set_ylim(-0.5, reach_b + 0.5)
+    ax.set_xticks(range(reach_a + 1))
+    ax.set_yticks(range(reach_b + 1))
     ax.set_xlabel("H$_2$SO$_4$ molecules")
     ax.set_ylabel("NH$_3$ molecules")
     ax.set_aspect("equal")
@@ -596,11 +627,20 @@ def figure_pathway(model) -> str:
     cbar = figure.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label("flux (cm$^{-3}$ s$^{-1}$)")
     ax.set_title(
-        "Neutral growth pathways at [H$_2$SO$_4$] = 5·10$^6$ cm$^{-3}$, "
-        "[NH$_3$] = 100 ppt, 280 K\n"
-        f"main route: {' → '.join(pw.main_route)}",
+        "Neutral growth pathways\n"
+        "[H$_2$SO$_4$] = 5·10$^6$ cm$^{-3}$, [NH$_3$] = 100 ppt, 280 K",
         fontsize=9,
         loc="left",
+    )
+    route_text = " → ".join(pw.main_route)
+    figure.text(
+        0.0,
+        -0.14,
+        "\n".join(textwrap.wrap(f"main route: {route_text}", width=64)),
+        transform=ax.transAxes,
+        fontsize=8,
+        color=INK_SECONDARY,
+        va="top",
     )
     ax.annotate(
         "dashed: edge of the cluster set (growth beyond is counted as J)",
@@ -624,8 +664,9 @@ def figure_evaporation_map(model) -> str:
     if the corner still evaporates at 1e2 s^-1 or more, the set is too small
     and J is an artefact of where it was cut. Cells print log10 of the rate.
     """
-    system, reactions, _ = model
-    co, _, temperature = _quickguide_state(model)
+    system, _, _ = model
+    co = _quickguide_coefficients(model)
+    temperature = T_QUICKGUIDE
     total = free_energy.total_evaporation_rate(
         system.n_clusters, co.evaporation_k, co.evaporation_rate
     )
@@ -634,7 +675,7 @@ def figure_evaporation_map(model) -> str:
 
     figure, ax = plt.subplots(figsize=(6.0, 5.0))
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-        "evap", [BLUE, "#f0efec", ORANGE]
+        "evap", [BLUE, MID, ORANGE]
     )
     image = ax.imshow(
         log_grid.T,
@@ -649,7 +690,9 @@ def figure_evaporation_map(model) -> str:
             if np.isnan(grid[a, b]):
                 continue
             value = grid[a, b]
-            text = "0" if value == 0 else f"$10^{{{int(np.round(np.log10(value)))}}}$"
+            if value <= 0:
+                continue
+            text = f"$10^{{{int(np.round(np.log10(value)))}}}$"
             ax.text(a, b, text, ha="center", va="center", fontsize=8, color=INK)
     ax.set_xticks(range(grid.shape[0]))
     ax.set_yticks(range(grid.shape[1]))
@@ -669,9 +712,7 @@ def figure_evaporation_map(model) -> str:
     out = FIGURES / "06_evaporation_map.png"
     figure.savefig(out, bbox_inches="tight")
     plt.close(figure)
-    finite = grid[~np.isnan(grid)]
-    low = np.log10(finite[finite > 0]).min()
-    high = np.log10(finite.max())
+    low, high = np.nanmin(log_grid), np.nanmax(log_grid)
     return f"{out.name}: evaporation spans 10^{low:.0f} to 10^{high:.0f} s^-1"
 
 

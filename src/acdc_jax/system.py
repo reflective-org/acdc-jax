@@ -88,6 +88,19 @@ class AcdcSystem:
     molecule_is_pseudo: tuple[bool, ...] = ()
     """Per molecule type in ``order``: True for the proton and the missing
     proton, which are charge bookkeeping rather than molecules."""
+    molecule_parent: tuple[str | None, ...] = ()
+    """Per molecule type in ``order``: for an ion, the neutral molecule it
+    derives from (the header's `corresponding neutral molecule`, B -> A);
+    None for neutrals and pseudo-species."""
+    proton_host: str | None = None
+    """The neutral molecule whose positive ion is itself plus the proton
+    pseudo-species (`corresponding positive ion` N -> 1N1P), or None."""
+
+    def molecule_count(self, i: int) -> int:
+        """Molecules in cluster ``i``, not counting the proton pseudo-species
+        (the generator's ``calculate_molecules``, Perl :10835-10845)."""
+        counts = self.compositions[i]
+        return sum(n for j, n in enumerate(counts) if not self.molecule_is_pseudo[j])
 
 
 def generic_ion_composition(
@@ -178,7 +191,25 @@ def build_system(
         molecule_is_pseudo=tuple(
             by_name[n].is_proton or by_name[n].is_missing_proton for n in order
         ),
+        molecule_parent=tuple(by_name[n].corr_neutral for n in order),
+        proton_host=_proton_host(cluster_set, order),
     )
+
+
+def _proton_host(cluster_set: ClusterSetFile, order: tuple[str, ...]) -> str | None:
+    """The neutral whose `corresponding positive ion` is a cluster containing
+    the proton pseudo-species -- protonated ammonia's ammonia."""
+    protons = {m.name for m in cluster_set.molecules if m.is_proton}
+    for molecule in cluster_set.molecules:
+        if molecule.charge != 0 or molecule.corr_positive is None:
+            continue
+        try:
+            composition = labels.parse(molecule.corr_positive)
+        except ValueError:
+            continue
+        if protons & set(composition) and molecule.name in order:
+            return molecule.name
+    return None
 
 
 def _charge_of(counts: tuple[int, ...], molecule_charges: tuple[int, ...]) -> int:

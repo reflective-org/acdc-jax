@@ -270,6 +270,13 @@ DENS_WATER = 997.0
 """kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
 volumes at this bulk density."""
 
+PATHWAY_CRIT_OUT = 0.05
+"""Fraction of the total outgoing flux below which an exit channel is folded
+into 'others' (track_fluxes.m crit_out)."""
+PATHWAY_CRIT_CLUST = 0.05
+"""Fraction of a cluster's total inflow below which a source is folded into
+'others' (track_fluxes.m crit_clust)."""
+
 NBINS = 5
 """Size bins for classifying loop-mode clusters (acdc_simulation_setup.f90:11)."""
 BIN_LIMITS_NM = (1.05, 1.28, 1.73, 2.59, 4.27, 6.36)

@@ -22,10 +22,11 @@ not per timestep. Plain NumPy — no reason for this to be traced.
 **Verify:** the dominant route for the AN system at the QuickGuide's
 conditions (5·10⁶ cm⁻³ acid, 100 ppt NH₃, 280 K) exits through 5A5N →
 6A5N, the same exit the QuickGuide's slide 6 shows, running along and
-below the acid = base diagonal. Ported in `acdc_jax.pathways` on the
-port's explicit reaction list (no label-combining search); boundary
-collisions are attributed to the growing collider where MATLAB parks them
-on a 'bound' node it then declines to track.
+below the acid = base diagonal (pinned by a test). Ported in
+`acdc_jax.pathways` on the port's explicit reaction list (no
+label-combining search), tracking the NET flux matrix as the MATLAB driver
+does; boundary collisions go through the 'bound' node exactly as in
+`get_fluxes.m`; the generic charger ions are never tracked.
 
 ## 10.2 Source back-solve ✅
 Monomer source terms inferred from the steady-state fluxes — an inverse
