@@ -369,8 +369,8 @@ def assemble(
     """The loop-mode right-hand side as a :class:`~acdc_jax.rhs.Coefficients`.
 
     Pairs ``i <= j`` (Perl :4569-4600): rate ``K(i,j)``, halved on the
-    diagonal; product the grid cluster or the ``out_neu`` slot. Evaporation
-    channels wherever ``E(j,i) > 0`` (the product is then on the grid).
+    diagonal; product the grid cluster or the ``out_neu`` slot. An
+    evaporation channel for every on-grid pair, with rate ``E(j,i)``.
     ``monomer_sources`` (n_types,) go to the monomers -- ``source(n_monomers)
     = coef``. ``constant_monomers`` is the driver's steady-state setting
     (``isconst(n_monomers) = .true.``, ``acdc_simulation_setup.f90:106``).
@@ -384,19 +384,20 @@ def assemble(
     product_index = np.where(product >= 0, product, out)
     rate = collision[iu, ju] * jnp.where(iu == ju, 0.5, 1.0)
 
+    on_grid = product >= 0
     if evaporation is None:
         evap_k = evap_i = evap_j = np.zeros(0, dtype=int)
         evap_rate = jnp.zeros(0)
     else:
-        # feval reads E(j,i) for i <= j (Perl :4593), column-major for speed;
-        # the one-component Fortran fills only column 1 (F22), so read the
-        # same element rather than assuming symmetry.
-        e_pairs = np.asarray(evaporation)[ju, iu]
-        channel = (e_pairs > 0) & (product >= 0)
-        evap_k = product[channel]
-        evap_i = iu[channel]
-        evap_j = ju[channel]
-        evap_rate = evaporation[ju[channel], iu[channel]]
+        # Every on-grid pair is a channel; feval's `E(j,i) > 0` test only
+        # skips zero terms, and keeping the channel set static lets E be a
+        # traced function of temperature. feval reads E(j,i) for i <= j
+        # (Perl :4593); the one-component Fortran fills only column 1
+        # (F22), so read that element rather than assuming symmetry.
+        evap_k = product[on_grid]
+        evap_i = iu[on_grid]
+        evap_j = ju[on_grid]
+        evap_rate = jnp.asarray(evaporation)[ju[on_grid], iu[on_grid]]
 
     source = jnp.zeros(neq).at[loop.monomers].set(jnp.asarray(monomer_sources))
     isconst = np.zeros(neq, dtype=bool)
@@ -426,6 +427,50 @@ def assemble(
     )
 
 
+# ---------------------------------------------------------------------------
+# Size bins
+# ---------------------------------------------------------------------------
+
+
+def size_bin_matrix(loop: LoopSystem) -> np.ndarray:
+    """The driver's size classifier as a fixed 0/1 matrix, (NBINS + 1, nclust).
+
+    ``group_size_bins`` (acdc_simulation_setup.f90:192-246): each cluster's
+    mobility diameter is taken as ``2 r + 0.3 nm`` -- the offset alone, no
+    mass correction -- and placed in the bin whose edges bracket it;
+    monomers are skipped entirely; below the first edge is bin 0; above the
+    last edge upstream stops the run, here a ValueError. Row ``b`` sums the
+    clusters of bin ``b``: ``matrix @ c[:nclust]`` is the binned
+    concentration vector.
+
+    Upstream leaves ``diameter_max_syst`` uninitialised on this path
+    (``get_system_size``, the assignment is commented out at :52); nothing
+    here depends on it.
+    """
+    edges = np.asarray(config.BIN_LIMITS_NM) * 1e-9
+    d_mob = 2.0 * loop.radius + config.MOB_DIAMETER_OFFSET
+    matrix = np.zeros((config.NBINS + 1, loop.n_clusters))
+    is_monomer = loop.counts.sum(axis=1) == 1
+    for i in range(loop.n_clusters):
+        if is_monomer[i]:
+            continue
+        if d_mob[i] < edges[0]:
+            matrix[0, i] = 1.0
+            continue
+        placed = False
+        for b in range(config.NBINS):
+            if edges[b] <= d_mob[i] < edges[b + 1]:
+                matrix[b + 1, i] = 1.0
+                placed = True
+                break
+        if not placed:
+            raise ValueError(
+                f"cluster {loop.system.labels[i]} (d_mob {d_mob[i] * 1e9:.2f} nm) "
+                "lies above the last size-bin edge; upstream stops here"
+            )
+    return matrix
+
+
 __all__ = [
     "LOOP_FIDELITY",
     "LoopSystem",
@@ -438,4 +483,5 @@ __all__ = [
     "hard_spheres",
     "kelvin_evaporation",
     "rate_inputs",
+    "size_bin_matrix",
 ]

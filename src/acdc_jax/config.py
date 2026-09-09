@@ -270,6 +270,13 @@ DENS_WATER = 997.0
 """kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
 volumes at this bulk density."""
 
+NBINS = 5
+"""Size bins for classifying loop-mode clusters (acdc_simulation_setup.f90:11)."""
+BIN_LIMITS_NM = (1.05, 1.28, 1.73, 2.59, 4.27, 6.36)
+"""Mobility-diameter bin edges, nm (get_bin_limits, acdc_simulation_setup.f90:183):
+NBINS + 1 edges; below the first is the catch-all bin 0, above the last is a
+hard stop upstream."""
+
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
 

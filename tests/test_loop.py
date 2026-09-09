@@ -302,3 +302,103 @@ class TestRightHandSide:
         c = np.full(a20.system.n_equations, 1e12)
         assert float(rhs.rhs(co, c)[0]) == 0.0
         assert co.coef_quad is None
+
+
+class TestSizeBins:
+    def test_matrix_shape_and_monomer_exclusion(self, a20) -> None:
+        m = loop.size_bin_matrix(a20)
+        assert m.shape == (config.NBINS + 1, a20.n_clusters)
+        assert m[:, 0].sum() == 0  # the monomer is in no bin
+        # every other cluster in exactly one bin
+        np.testing.assert_array_equal(m[:, 1:].sum(axis=0), 1.0)
+
+    def test_assignment_follows_the_edges(self, a20) -> None:
+        m = loop.size_bin_matrix(a20)
+        d_mob = 2.0 * a20.radius + config.MOB_DIAMETER_OFFSET
+        edges = np.asarray(config.BIN_LIMITS_NM) * 1e-9
+        for i in range(1, a20.n_clusters):
+            b = int(np.argmax(m[:, i]))
+            if b == 0:
+                assert d_mob[i] < edges[0]
+            else:
+                assert edges[b - 1] <= d_mob[i] < edges[b]
+        # 2A (0.998 nm) is below the first edge; 3A (1.099 nm) is in bin 1
+        assert m[0, a20.system.index("2A")] == 1.0
+        assert m[1, a20.system.index("3A")] == 1.0
+
+    def test_binned_concentrations(self, an66) -> None:
+        m = loop.size_bin_matrix(an66)
+        c = np.arange(1.0, an66.n_clusters + 1)
+        binned = m @ c
+        monomers = an66.monomers
+        assert binned.sum() == pytest.approx(c.sum() - c[monomers].sum())
+
+    def test_above_range_is_an_error(self) -> None:
+        from acdc_jax.clusterset import ClusterSetFile
+
+        cs = parse_cluster_set(INPUTS / "A20.inp")
+        big = ClusterSetFile(
+            path=cs.path,
+            molecules=cs.molecules,
+            compositions=((2000, 0, 0, 0, 0),),
+            out_rules=cs.out_rules,
+        )
+        with pytest.raises(ValueError, match="above the last size-bin edge"):
+            loop.size_bin_matrix(loop.build_loop_system(big))
+
+
+class TestSteadyState:
+    """9.7: the Phase 6-7 machinery on a loop system, untouched."""
+
+    @pytest.fixture(scope="class")
+    def steady(self, a20):
+        from acdc_jax import solve
+
+        def coefficients(t):
+            k = loop.collision_coefficients(a20, t)
+            e = loop.kelvin_evaporation(a20, k, t)
+            vec = loop.first_order_losses(a20, losses.LossSettings(), t)
+            return loop.assemble(
+                a20, k, e, np.array([0.0]), vec, constant_monomers=True
+            )
+
+        c0 = jnp.zeros(a20.system.n_equations).at[0].set(1e14)
+        result = solve.solve_steady_state(a20.system, coefficients(T), c0=c0)
+        return a20, coefficients, c0, result
+
+    def test_converges_to_a_positive_formation_rate(self, steady) -> None:
+        a20, _, _, result = steady
+        assert result.converged
+        assert float(result.j_total) > 0
+        c = np.asarray(result.concentrations)
+        assert c[0] == 1e14  # the monomer was held constant
+        assert np.all(c[: a20.n_clusters] >= 0)
+
+    def test_formation_rate_is_the_outflux(self, steady) -> None:
+        a20, coefficients, _, result = steady
+        j = rhs.formation_rate(a20.system, coefficients(T), result.concentrations)
+        assert float(j["j_tot"]) == pytest.approx(float(result.j_total), rel=1e-10)
+
+    def test_temperature_sensitivity_by_finite_difference(self, steady) -> None:
+        """With the fixture's fixed psat the Kelvin exponent shrinks as T
+        rises, so evaporation FALLS and J at fixed vapour rises."""
+        from acdc_jax import solve
+
+        a20, coefficients, c0, result = steady
+        warm = solve.solve_steady_state(a20.system, coefficients(T + 5.0), c0=c0)
+        k_cold = loop.collision_coefficients(a20, T)
+        k_warm = loop.collision_coefficients(a20, T + 5.0)
+        e_cold = loop.kelvin_evaporation(a20, k_cold, T)[1, 0]
+        e_warm = loop.kelvin_evaporation(a20, k_warm, T + 5.0)[1, 0]
+        assert float(e_warm) < float(e_cold)
+        assert float(warm.j_total) > float(result.j_total)
+
+    def test_rhs_differentiates_in_temperature(self, steady) -> None:
+        a20, coefficients, _, result = steady
+        c = result.concentrations
+
+        def j_of(t):
+            return rhs.formation_rate(a20.system, coefficients(t), c)["j_tot"]
+
+        g = float(jax.grad(j_of)(T))
+        assert np.isfinite(g)
