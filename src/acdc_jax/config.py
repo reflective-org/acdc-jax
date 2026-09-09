@@ -64,6 +64,25 @@ RTOL_SOLVER = 1e-5
 ATOL_SOLVER = 1e-6
 """Absolute tolerance, m^-3 (S:9). 1e-6 m^-3 = 1e-12 cm^-3, i.e. "zero"."""
 
+ATOL_INTEGRATION = 1.0
+"""Absolute tolerance actually used by this port's integrator, m^-3.
+
+DELIBERATELY DIFFERENT from ATOL_SOLVER, which is the reference's literal
+value. See docs/fidelity.md F14.
+
+1e-6 m^-3 is 1e-12 cm^-3 -- a millionth of a molecule per cubic metre. VODE
+tolerates being asked for that because its BDF implementation rescales
+internally; diffrax's Kvaerno5 does not, and on the evaporation-dominated
+corner of the condition grid (lowest vapour, lowest temperature) it exhausts
+a 20,000-step budget rather than converging.
+
+The formation rate is insensitive to this across eight orders of magnitude:
+measured J identical from atol = 1e-6 to 1e4, and the same to 1e-7 relative
+against the Fortran either way. 1.0 m^-3 is still six orders below any
+physically meaningful concentration. `test_solve.py` asserts the
+insensitivity so the justification is checked rather than merely claimed.
+"""
+
 CHMAX = 1e-2
 """Max relative concentration change per Euler step (S:12)."""
 

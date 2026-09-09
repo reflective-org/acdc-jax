@@ -54,11 +54,12 @@ Taken in dependency order: labels first, since everything else needs them.
 - ⬜ **5.5** Conservation checks
 
 ## Phase 6 — Solve
-- ⬜ **6.1** Time integration
-- ⬜ **6.2** Steady state by integration
-- ⬜ **6.3** Steady state by root-find
-- ⬜ **6.4** Fitted concentrations
-- ⬜ **6.5** Replacing the hidden state
+- ✅ **6.1** Time integration (diffrax Kvaerno5)
+- ✅ **6.2** Steady state by integration — the parity default
+- ✅ **6.3** Steady state by root-find (optimistix Newton, log space)
+- ⏸ **6.4** Fitted concentrations — upstream ships this commented out, so
+  there is nothing to validate against; deferred to Phase 8
+- ✅ **6.5** Replacing the hidden state — `solve` is a pure function
 
 ## Phase 7 — Differentiability & batching
 - ⬜ **7.1** Gradient audit
@@ -107,6 +108,9 @@ be re-derived.
 | `dc/dt`, physical states | max rel **9.7e-14** | Phase 5 |
 | `dc/dt`, 19-order stress states | max rel **2.4e-12** | Phase 5 |
 | J vs reference | max rel **1.5e-15** | Phase 5 |
+| **Steady-state J vs the `run` binary** | **rel 2.09e-06** (gate 1e-5) | Phase 6 |
+| Root-find vs integration, J | **rel 2.27e-09** (gate 1e-8) | Phase 6 |
+| Root-find vs integration, concentrations | max rel **5.3e-08** | Phase 6 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
