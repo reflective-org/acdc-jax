@@ -127,6 +127,17 @@ class TestConstant:
         np.testing.assert_array_equal(got != 0, expected != 0)
         assert _worst(got, expected) < GATE
 
+    def test_matches_the_fixed_temperature_fixture(self, inputs) -> None:
+        """At fixed temperature upstream DOES apply the factor of 10; this is
+        the fixture for the `constant` setting itself (the F15 flag's other
+        side), literal K values at 280 K."""
+        golden = _golden("constant_fixed")
+        fidelity = config.FidelityConfig(ion_collision_method="constant")
+        got = np.asarray(rates.collision_coefficients(inputs, 280.0, fidelity))
+        expected = golden["K"]
+        np.testing.assert_array_equal(got != 0, expected != 0)
+        assert _worst(got, expected) < GATE
+
     def test_upstream_fixture_really_has_no_enhancement(self, inputs) -> None:
         """The finding itself, asserted on the fixture rather than on this
         port: the constant-method fixture's ion-neutral rates equal plain
@@ -164,3 +175,37 @@ def test_default_is_still_su82(inputs) -> None:
     )
     np.testing.assert_array_equal(default, explicit)
     assert config.DEFAULT.ion_collision_method == "su82"
+
+
+class TestDipoleLocking:
+    """Su73 damps the dipole by a MONOMER or a CLUSTER coefficient (Perl
+    :7880-7885). The bundled file has both at 0.15, so only a hand-built
+    table can tell the branch is wired the right way round."""
+
+    def test_monomer_and_cluster_coefficients_go_to_the_right_species(self) -> None:
+        from acdc_jax.thermo import DipoleTable
+
+        cluster_set = parse_cluster_set(INPUTS / "input_ANnarrow_neutral_neg_pos.inp")
+        system = build_system(cluster_set)
+        energies = parse_energy_file(
+            INPUTS / "HS298.15K_example.txt", cluster_set.molecule_names
+        )
+        real = parse_dipole_file(
+            INPUTS / "dip_pol_298.15K_example.txt", cluster_set.molecule_names
+        )
+        table = DipoleTable(
+            monomer_locking=0.1,
+            cluster_locking=0.3,
+            dipole=real.dipole,
+            polarizability=real.polarizability,
+        )
+        inputs = rates.build_rate_inputs(system, cluster_set, energies, table)
+        for label, factor in (
+            ("1A", 0.1),
+            ("1N", 0.1),
+            ("1B", 0.1),
+            ("2A", 0.3),
+            ("1A1N", 0.3),
+        ):
+            i = system.index(label)
+            assert inputs.dipole_locked[i] == pytest.approx(factor * inputs.dipole[i])

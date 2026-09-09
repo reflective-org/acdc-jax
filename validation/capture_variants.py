@@ -60,6 +60,9 @@ VARIANTS: dict[str, dict] = {
 # then plain numbers rather than expressions.
 FIXED_T = 280.0
 FIXED_T_VARIANTS: dict[str, dict] = {
+    # `constant` at FIXED temperature is the only path where upstream applies
+    # its documented factor of 10 (F15); captured as literal K values.
+    "constant_fixed": {"flags": ["--ion_coll_method", "constant"], "capture": "K"},
     "bgloss": {"flags": ["--cs", "bg_loss"], "capture": "cs"},
     "dilution": {"flags": ["--use_dilution"], "capture": "dil"},
     # Six wall-loss parameterizations. Every one applies to all 54 clusters
@@ -173,6 +176,67 @@ def generate(name: str, flags: list[str], base: list[str] = BASE_FLAGS) -> Path:
     return GENERATED / f"acdc_equations_{name}.f90"
 
 
+GENERATOR_2024 = FORTRAN / "perl/acdc_2024_02_12.pl"
+
+# Variants where the 2024 generator is KNOWN to emit something different from
+# the 2020 one that produced the shipped example. Anything else differing is
+# an error: the goldens are 2020 output and the fidelity table must say so.
+EXPECTED_2024_DIFFERENCES = {
+    "wl_diffusion": "generic ions get a diffusion wall loss in 2024 (F16)",
+}
+
+
+def cross_check_2024() -> None:
+    """Regenerate every variant with the 2024 generator and compare.
+
+    The goldens come from acdc_2020_04_28.pl because that is what produced
+    the shipped example the whole port is gated on. This pass shows where
+    current upstream differs, so nothing 2020-specific is mistaken for
+    physics. Rates are compared at 280 K; the reaction graph exactly.
+    """
+    if not GENERATOR_2024.exists():
+        print("2024 generator not vendored; skipping cross-check")
+        return
+    print("\ncross-checking against acdc_2024_02_12.pl:")
+    variants = [
+        (name, spec["flags"], BASE_FLAGS, "rates") for name, spec in VARIANTS.items()
+    ] + [
+        (name, spec["flags"], FIXED_T_BASE_FLAGS, spec["capture"])
+        for name, spec in FIXED_T_VARIANTS.items()
+    ]
+    for name, flags, base, kind in variants:
+        old = GENERATED / f"acdc_equations_{name}.f90"
+        cmd = ["perl", str(GENERATOR_2024), *base, *flags, "--append", f"_{name}_2024"]
+        result = subprocess.run(cmd, cwd=GENERATED, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise SystemExit(f"2024 generator failed for variant {name}")
+        new = GENERATED / f"acdc_equations_{name}_2024.f90"
+        if kind in ("rates", "K"):
+            a = emitted.collision_matrix(old, FIXED_T, NCLUST)
+            b = emitted.collision_matrix(new, FIXED_T, NCLUST)
+            if kind == "rates":
+                a_e = emitted.evaporation_matrix(old, FIXED_T, NCLUST)
+                b_e = emitted.evaporation_matrix(new, FIXED_T, NCLUST)
+                a, b = (
+                    np.concatenate([a.ravel(), a_e.ravel()]),
+                    np.concatenate([b.ravel(), b_e.ravel()]),
+                )
+        else:
+            a = emitted.loss_vector(old, NCLUST, name=kind)
+            b = emitted.loss_vector(new, NCLUST, name=kind)
+        same_pattern = np.array_equal(a != 0, b != 0)
+        mask = a != 0
+        worst = (
+            float(np.max(np.abs(a - b)[mask] / np.abs(a)[mask])) if mask.any() else 0.0
+        )
+        differs = not same_pattern or worst > 1e-12
+        note = EXPECTED_2024_DIFFERENCES.get(name)
+        status = "identical" if not differs else f"DIFFERS ({note or 'UNEXPECTED'})"
+        print(f"  {name:16s} {status}")
+        if differs and note is None:
+            raise SystemExit(f"unexpected 2020/2024 difference in variant {name}")
+
+
 def main() -> int:
     if shutil.which("perl") is None:
         print("perl not found on PATH", file=sys.stderr)
@@ -221,13 +285,27 @@ def main() -> int:
 
     for name, spec in FIXED_T_VARIANTS.items():
         equations = generate(name, spec["flags"], base=FIXED_T_BASE_FLAGS)
+        if spec["capture"] == "K":
+            k = emitted.collision_matrix(equations, FIXED_T, NCLUST)
+            if np.count_nonzero(k) == 0:
+                raise SystemExit(f"variant {name}: get_coll evaluated to all zeros")
+            path = GOLDENS / f"rates_variant_{name}.npz"
+            np.savez_compressed(path, temperature=FIXED_T, K=k)
+            print(f"wrote {path.relative_to(REPO)}  (K nonzero: {np.count_nonzero(k)})")
+            continue
         vector = emitted.loss_vector(equations, NCLUST, name=spec["capture"])
+        if np.count_nonzero(vector) == 0:
+            raise SystemExit(
+                f"variant {name}: {spec['capture']} evaluated to all zeros"
+            )
         path = GOLDENS / f"losses_variant_{name}.npz"
         np.savez_compressed(path, temperature=FIXED_T, **{spec["capture"]: vector})
         print(
             f"wrote {path.relative_to(REPO)}  "
             f"({spec['capture']} nonzero: {np.count_nonzero(vector)})"
         )
+
+    cross_check_2024()
     return 0
 
 
