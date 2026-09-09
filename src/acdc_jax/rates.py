@@ -58,6 +58,14 @@ class RateInputs:
     partner) or has no data."""
     polarizability: np.ndarray
     """Angstrom^3."""
+    dipole_locked: np.ndarray
+    """Debye, multiplied by the Su73 dipole LOCKING coefficient.
+
+    Su73 damps the dipole by a factor from the dipole file's header --
+    a separate coefficient for monomers and for clusters (Perl :7880-7886).
+    Su82 reads those two header lines and ignores them, so this column is
+    used only by Su73.
+    """
     charge: np.ndarray
     """-1, 0 or +1, shape (nclust,)."""
     pair_kind: np.ndarray
@@ -143,10 +151,17 @@ def build_rate_inputs(
 
     dipole = np.zeros(n)
     polarizability = np.zeros(n)
+    dipole_locked = np.zeros(n)
     for i, label in enumerate(system.labels):
         if label in dipoles.dipole:
             dipole[i] = dipoles.dipole[label]
             polarizability[i] = dipoles.polarizability[label]
+            locking = (
+                dipoles.monomer_locking
+                if system.is_monomer(i)
+                else dipoles.cluster_locking
+            )
+            dipole_locked[i] = dipoles.dipole[label] * locking
 
     delta_h = np.array([energies.delta_h.get(label, 0.0) for label in system.labels])
     delta_s = np.array([energies.delta_s.get(label, 0.0) for label in system.labels])
@@ -177,6 +192,7 @@ def build_rate_inputs(
         diameter_nm=diameter_nm,
         dipole=dipole,
         polarizability=polarizability,
+        dipole_locked=dipole_locked,
         charge=charge,
         pair_kind=pair_kind,
         neutral_partner=neutral_partner,
@@ -303,7 +319,36 @@ def langevin_prefactor(inputs: RateInputs) -> jnp.ndarray:
     )
 
 
-def collision_coefficients(inputs: RateInputs, temperature) -> jnp.ndarray:
+def su73_ionic_rate(inputs: RateInputs, temperature) -> jnp.ndarray:
+    """Su & Bowers (1973) ion-neutral capture rate, m^3/s.
+
+    Unlike Su82 this returns an ABSOLUTE rate rather than a ratio -- the
+    published constants absorb the Langevin prefactor (Perl :8199-8213)::
+
+        rate = (9.5436e-29 sqrt(alpha) + 6.4805e-27 mu_locked / sqrt(T))
+               * sqrt(1/m_i + 1/m_j)
+
+    ``mu_locked`` is the dipole moment damped by the locking coefficient,
+    which is the parameterization's way of accounting for the dipole not
+    staying aligned with the field during the encounter.
+    """
+    partner = inputs.neutral_partner
+    polarizability = jnp.asarray(inputs.polarizability)[partner]
+    dipole = jnp.asarray(inputs.dipole_locked)[partner]
+    mass = jnp.asarray(inputs.mass)
+    reduced = jnp.sqrt(1.0 / mass[:, None] + 1.0 / mass[None, :])
+
+    return (
+        config.SU73_POL * jnp.sqrt(polarizability)
+        + config.SU73_DIP * dipole / jnp.sqrt(temperature)
+    ) * reduced
+
+
+def collision_coefficients(
+    inputs: RateInputs,
+    temperature,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+) -> jnp.ndarray:
     """Collision coefficients K, m^3/s. Shape (nclust, nclust).
 
     Dispatches on the pair classification: hard sphere for neutral pairs,
@@ -316,11 +361,26 @@ def collision_coefficients(inputs: RateInputs, temperature) -> jnp.ndarray:
     (Perl :8886-8888).
     """
     beta = hard_sphere(inputs, temperature)
-    ionic = su82_enhancement(inputs, temperature) * langevin_prefactor(inputs)
+    method = fidelity.ion_collision_method
+
+    if method == "su82":
+        enhanced = jnp.maximum(
+            su82_enhancement(inputs, temperature) * langevin_prefactor(inputs), beta
+        )
+    elif method == "su73":
+        enhanced = jnp.maximum(su73_ionic_rate(inputs, temperature), beta)
+    elif method == "constant":
+        enhanced = config.ION_ENHANCEMENT_CONSTANT * beta
+    elif method == "constant_no_enhancement":
+        # Reproduces upstream's variable-temperature path, where the
+        # documented factor of 10 is silently dropped. See fidelity F15.
+        enhanced = beta
+    else:  # pragma: no cover - Literal keeps this unreachable
+        raise ValueError(f"unknown ion collision method {method!r}")
 
     kind = jnp.asarray(inputs.pair_kind)
     k = jnp.where(kind == PAIR_NEUTRAL, beta, 0.0)
-    k = jnp.where(kind == PAIR_ION_NEUTRAL, jnp.maximum(ionic, beta), k)
+    k = jnp.where(kind == PAIR_ION_NEUTRAL, enhanced, k)
     k = jnp.where(kind == PAIR_RECOMBINATION, config.RECOMB_COEFF, k)
     return jnp.where(jnp.asarray(inputs.valid_pairs), k, 0.0)
 

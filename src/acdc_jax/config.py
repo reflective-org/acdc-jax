@@ -257,6 +257,30 @@ class FidelityConfig:
     See F4. ``get_acdc_J.f90:117``.
     """
 
+    ion_collision_method: Literal[
+        "su82", "su73", "constant", "constant_no_enhancement"
+    ] = "su82"
+    """Ion-neutral collision parameterization. See F15.
+
+    ``"su82"`` (Su & Chesnavich 1982) is the reference's default.
+    ``"su73"`` (Su & Bowers 1973) uses the dipole locking coefficients from
+    the dipole file header, which Su82 reads but ignores.
+
+    The two ``constant`` values exist because upstream's behaviour depends on
+    whether temperature is a runtime variable:
+
+    - ``"constant"`` applies the documented size-independent factor of 10,
+      which is what upstream does at FIXED temperature.
+    - ``"constant_no_enhancement"`` reproduces upstream's VARIABLE-temperature
+      path, where the factor is silently dropped and ion-neutral collisions
+      come out at the bare hard-sphere rate. Verified by generating that
+      fixture: zero of 587 ion-neutral pairs carry any enhancement.
+
+    Split into two names rather than one flag because either choice would
+    otherwise be silent, and 'constant' quietly meaning 'no enhancement' is
+    a worse trap than an extra option.
+    """
+
     mobility_diameter: Literal["fortran", "tammet"] = "fortran"
     """How the mobility diameter is computed. See F11.
 

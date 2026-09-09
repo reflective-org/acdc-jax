@@ -41,7 +41,7 @@ Taken in dependency order: labels first, since everything else needs them.
 ## Phase 4 — Rates
 - ✅ **4.1** Hard-sphere collisions
 - ✅ **4.2** Ion–neutral enhancement (Su82)
-- ⏸ **4.3** Su73 and constant — deferred to Phase 8 with the other options
+- ✅ **4.3** Su73 and constant — done in Phase 8.0 (branch `phase-8-extended-physics`)
 - ✅ **4.4** Ion–ion recombination
 - ✅ **4.5** Evaporation by detailed balance
 - ✅ **4.6** Coagulation sink
@@ -71,8 +71,10 @@ Taken in dependency order: labels first, since everything else needs them.
 - ⏸ **7.5** `jit` — the RHS is already traced end to end; an explicit
   `filter_jit` boundary is deferred with 7.4.
 
-## Phase 8 — Extended physics
-- ⬜ **8.1**–**8.9** see [phase-8](phase-8-extended-physics.md)
+## Phase 8 — Extended physics (branch `phase-8-extended-physics`)
+- ✅ **8.0** Su73 + constant ion methods — Su73 **4.9e-15**, `constant_no_enhancement` **2.2e-15**; F15 recorded
+- ➡️ **8.1** Dahneke collisions — **moved to Phase 9**: loop-mode only (`--loop_coll_coef`), dies under variable T
+- ⬜ **8.2**–**8.9** see [phase-8](phase-8-extended-physics.md)
 
 ## Phase 9 — Loop mode
 - ⏸ **9.1**–**9.5** decision revisited at Phase 8 close

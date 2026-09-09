@@ -9,8 +9,26 @@ Perl-generated fixture.
 Additive — nothing in Phases 0–7 depends on this, and individual items can
 be dropped.
 
-## 8.1 Dahneke transition-regime collisions
-Kinetic-to-continuum transition, as an alternative to hard spheres.
+## 8.1 ~~Dahneke transition-regime collisions~~ → moved to Phase 9
+
+**Correction.** Dahneke collisions are a LOOP-MODE option
+(`--loop_coll_coef Dahneke`, Perl `:8036`), and the generator dies if it is
+combined with variable temperature. They are not available in the small-set
+mode this port targets, so they belong with loop mode in Phase 9. The
+manual lists the option under §2.1.1 "Loop mode in Fortran", which is where
+the confusion came from.
+
+The `bg_loss` sink in 8.2 also uses Dahneke *transition-regime coagulation*,
+but onto a background population -- a different formula that IS available
+in small-set mode.
+
+## 8.0 Su73 and constant ion-neutral methods ✅ (was 4.3)
+
+Validated against Perl-generated fixtures across 250-320 K: Su73 at 4.9e-15,
+`constant_no_enhancement` at 2.2e-15. Found and recorded fidelity **F15**:
+`--ion_coll_method constant` with `--variable_temp` silently drops the
+documented factor of 10 and emits bare hard-sphere rates for all 587
+ion-neutral pairs. Exposed as two explicitly-named options.
 
 ## 8.2 `bg_loss` coagulation sink
 Losses onto a monodisperse background scavenger population with Dahneke
