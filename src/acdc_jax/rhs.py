@@ -68,6 +68,10 @@ class Coefficients:
     sink: jnp.ndarray
     """(nclust,) first-order coagulation sink, 1/s."""
     coag_slot: int
+    charge_balance: int = 0
+    """--charge_balance mode; see charge_balance_projection."""
+    system: AcdcSystem | None = None
+    """Needed only when charge_balance != 0, for the projection inside rhs()."""
 
 
 def assemble(
@@ -80,6 +84,7 @@ def assemble(
     ipr_pos: float = 0.0,
     constant_vapours: tuple[str, ...] = ("1A", "1N"),
     fcs: float = 1.0,
+    charge_balance: int = 0,
 ) -> Coefficients:
     """Build the coefficient tensors for one set of ambient conditions.
 
@@ -154,6 +159,15 @@ def assemble(
         if label in system.labels:
             isconst[system.labels.index(label)] = True
 
+    # Under --charge_balance the fitted ion is algebraic, not integrated:
+    # the generator marks it isconst and drops its source (cb1.f90:227-230).
+    if charge_balance > 0 and system.generic_pos >= 0:
+        isconst[system.generic_pos] = True
+        source = source.at[system.generic_pos].set(0.0)
+    elif charge_balance < 0 and system.generic_neg >= 0:
+        isconst[system.generic_neg] = True
+        source = source.at[system.generic_neg].set(0.0)
+
     coll_i, coll_j, coll_rate = [], [], []
     prod_index, prod_owner, prod_mult = [], [], []
     for slot, c in enumerate(reactions.collisions):
@@ -194,7 +208,52 @@ def assemble(
         evaporation_rate=evap_rate,
         sink=sink,
         coag_slot=coag,
+        charge_balance=charge_balance,
+        system=system if charge_balance else None,
     )
+
+
+def charge_balance_projection(
+    system: AcdcSystem, c: jnp.ndarray, mode: int
+) -> jnp.ndarray:
+    """Set one generic ion to balance the net charge of everything else.
+
+    Reproduces the block the generator emits at the top of ``feval`` AND
+    ``formation`` under ``--charge_balance`` (fixture cb1.f90:93-99)::
+
+        excess = c(neg) + sum(c(negative clusters)) - sum(c(positive clusters))
+        if excess > 0:  c(pos) = excess
+        else:           c(neg) = -(sum(neg clusters) - sum(pos clusters)); c(pos) = 0
+
+    for ``mode = +1``; ``mode = -1`` is the mirror. ``mode = 0`` is the
+    identity. Note the else-branch OVERWRITES the sourced ion too.
+
+    Upstream mutates ``c`` in place inside the RHS -- a state change through
+    the ODE solver. Here it is a pure projection applied to the state before
+    the RHS and before J, which is the same computation without the side
+    effect. Branch-free via jnp.where so it stays traceable.
+    """
+    c = jnp.asarray(c)
+    if mode == 0:
+        return c
+    charges = jnp.asarray(system.charges)
+    n = system.n_clusters
+    neg_i, pos_i = system.generic_neg, system.generic_pos
+    # Charged CLUSTERS only -- the generic ions are handled explicitly.
+    is_cluster = jnp.arange(n) < n
+    is_cluster = is_cluster.at[neg_i].set(False).at[pos_i].set(False)
+    neg_sum = jnp.sum(jnp.where(is_cluster & (charges < 0), c[:n], 0.0))
+    pos_sum = jnp.sum(jnp.where(is_cluster & (charges > 0), c[:n], 0.0))
+
+    if mode > 0:
+        excess = c[neg_i] + neg_sum - pos_sum
+        c_pos = jnp.where(excess > 0, excess, 0.0)
+        c_neg = jnp.where(excess > 0, c[neg_i], -(neg_sum - pos_sum))
+    else:
+        excess = c[pos_i] + pos_sum - neg_sum
+        c_neg = jnp.where(excess > 0, excess, 0.0)
+        c_pos = jnp.where(excess > 0, c[pos_i], -(pos_sum - neg_sum))
+    return c.at[neg_i].set(c_neg).at[pos_i].set(c_pos)
 
 
 def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
@@ -218,6 +277,11 @@ def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
     - An evaporation flux is ``rate * c_k``, added to BOTH daughters, so a
       symmetric channel delivers two.
     """
+    if coefficients.charge_balance:
+        c = charge_balance_projection(
+            coefficients.system, c, coefficients.charge_balance
+        )
+
     quad_i = coefficients.collision_i
     quad_j = coefficients.collision_j
     rate = coefficients.collision_rate

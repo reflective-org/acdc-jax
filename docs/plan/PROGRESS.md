@@ -78,7 +78,8 @@ Taken in dependency order: labels first, since everything else needs them.
 - ➡️ **8.3** Kelvin evaporation — **moved to Phase 9**: loop-mode only (`--loop_evap_coef`)
 - ✅ **8.5** Wall losses, all six — CLOUD4_JA **3.9e-15**, JK **3.5e-15**, AK **3.6e-15**, simple **3.9e-15**, CLOUD3 **4.9e-15**, ift exact, diffusion **3.7e-15**; F16 recorded
 - ✅ **8.6** Dilution — exact
-- ⬜ **8.4** hydrates/RH · **8.7** sticking/ΔG scaling · **8.8** non-standard reactions · **8.9** charge balance
+- ✅ **8.9** Charge balance — `--charge_balance ±1` projection, exact vs the emitted algebra (1e-13 summation order)
+- ⬜ **8.4** hydrates/RH · **8.7** sticking/ΔG scaling · **8.8** non-standard reactions
 
 ## Phase 9 — Loop mode
 - ⏸ **9.1**–**9.5** decision revisited at Phase 8 close

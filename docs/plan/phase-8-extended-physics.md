@@ -68,8 +68,14 @@ files; the corrections go **inside** the exponent, in kcal/mol.
 Explicit product overrides for collisions where the product breaks up
 (energy non-accommodation), with no reverse evaporation.
 
-## 8.9 Charge balance
-MATLAB applies an explicit algebraic projection on the generic ions each
-outer iteration (Perl `:10346-10377`); Fortran has **none**, relying on
-symmetric ion sources. Arguably a correctness feature rather than a
-diagnostic. Implement as a flag; default Fortran.
+## 8.9 Charge balance ✅
+The generator's `--charge_balance ±1` (Perl `:2135-2180`), not just the
+MATLAB driver's projection. One generic ion is made algebraic: `isconst`,
+its source dropped, and at the top of every `feval`/`formation` call it is
+set to `c_other + Σ(same-sign clusters) − Σ(opposite-sign clusters)`, with
+the other ion clamped from below at zero when that difference is negative.
+Ported in `rhs.charge_balance_projection`, applied inside `rhs()` and
+`formation_rate()` so it traces; `assemble(charge_balance=±1)` marks the
+species. Validated against the emitted block in `acdc_equations_cb1.f90`
+by a literal NumPy transcription (1e-13, summation order) and by asserting
+charge neutrality of the result. Default 0 = the shipped Fortran.

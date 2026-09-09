@@ -324,12 +324,21 @@ class FidelityConfig:
     distributions.
     """
 
-    enforce_charge_balance: bool = False
-    """Project the generic ions onto charge neutrality each outer iteration.
+    charge_balance: int = 0
+    """The generator's ``--charge_balance`` flag: 0, +1 or -1.
 
-    See F2. MATLAB does this (P:10346-10377); Fortran does not, relying on
-    symmetric ion sources. Arguably a correctness feature rather than a
-    diagnostic, which is why it is available -- but the default is Fortran.
+    ``0`` (default, the shipped example): both generic ions are sourced at
+    the ion production rate and the equations balance themselves.
+
+    ``+1``: the positive ion is not integrated. Before every RHS and
+    formation evaluation it is SET to ``c(neg) + sum(negative clusters) -
+    sum(positive clusters)``, i.e. whatever balances the net charge, floored
+    at zero with the excess pushed onto the negative ion. ``-1`` is the
+    mirror. Emitted at the top of feval/formation (fixture
+    acdc_equations_cb1.f90:93-99), with the fitted ion marked isconst.
+
+    Distinct from F2, which is the MATLAB driver's per-outer-iteration
+    projection; this one is a generator option and part of the Fortran path.
     """
 
     clamp_negative_j: bool = True
