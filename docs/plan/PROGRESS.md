@@ -88,7 +88,8 @@ Taken in dependency order: labels first, since everything else needs them.
 ## Phase 9 — Loop mode
 - 🔨 **9.0** plan rewritten after generating loop-mode fixtures: emitted model is 170–270 lines and maps onto `Coefficients`; F21 (invalid Fortran with three losses) found
 - ✅ **9.1–9.5** loop system, K (hard spheres, Dahneke), E (Kelvin, ΔG, size limit), losses, assembly — **<1e-12** vs 15 f2py-compiled fixtures (A20, AN66); F22/F23 found
-- ⬜ **9.6** size bins · **9.7** variable T / steady state on a loop system
+- ✅ **9.6** size bins — driver classifier as a fixed (nbins+1, nclust) matrix
+- ✅ **9.7** steady state and dJ/dT on a loop system through the unchanged Phase 6–7 code
 
 ## Phase 10 — Pathways, figures, docs
 - ⬜ **10.1** Growth-pathway extraction
