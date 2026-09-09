@@ -86,7 +86,8 @@ Taken in dependency order: labels first, since everything else needs them.
 - ✅ **8.10** Code-review follow-up (PR #1) — losses and `FidelityConfig` wired into `rhs.assemble` (each loss on its own flux slot, hydrate-averaged when `--rh`); masks derived from `RateInputs` instead of callers; diffusion loss in direct form; F16 as a real flag with its 2024 setting tested; emitted-text evaluator validated against the f2py bridge; fixed-T `constant` golden; Su73 locking unit test; 2020/2024 generator cross-check in `capture_variants.py`; citations corrected
 
 ## Phase 9 — Loop mode
-- ⏸ **9.1**–**9.5** decision revisited at Phase 8 close
+- 🔨 **9.0** plan rewritten after generating loop-mode fixtures: emitted model is 170–270 lines and maps onto `Coefficients`; F21 (invalid Fortran with three losses) found
+- ⬜ **9.1** loop system · **9.2** K (hard spheres, Dahneke) · **9.3** E (Kelvin, ΔG) · **9.4** losses · **9.5** assembly · **9.6** size bins · **9.7** variable T / steady state
 
 ## Phase 10 — Pathways, figures, docs
 - ⬜ **10.1** Growth-pathway extraction
