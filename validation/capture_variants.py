@@ -90,6 +90,36 @@ GRAPH_VARIANTS: dict[str, dict] = {
     "nst_clusters": {"flags": ["--nst", str(NST_DIR / "clusters.txt")]},
 }
 
+# Hydrate averaging: fixed temperature (upstream refuses --variable_temp),
+# the bundled thermodynamics plus four synthetic monohydrate rows in each
+# input file, RH 20%. Captures K, E and the sink, all literals.
+HYDRATE_DIR = HERE / "fixtures/hydrates"
+HYDRATE_FLAGS = [
+    "--fortran",
+    "--save_outgoing",
+    "--temperature",
+    f"{FIXED_T:g}",
+    "--e",
+    str(HYDRATE_DIR / "HS298.15K_with_hydrates.txt"),
+    "--dip",
+    str(HYDRATE_DIR / "dip_pol_298.15K_with_hydrates.txt"),
+    "--variable_ion_source",
+    "--cs",
+    "exp_loss",
+    "--exp_loss_exponent",
+    "-1.6",
+    "--exp_loss_ref_cluster",
+    "1A",
+    "--cs_only",
+    "1A,0",
+    "--cs_only",
+    "1N,0",
+    "--i",
+    str(INPUT),
+    "--rh",
+    "20",
+]
+
 FIXED_T_BASE_FLAGS = [
     "--fortran",
     "--save_outgoing",
@@ -174,6 +204,20 @@ def main() -> int:
             f"wrote {path.relative_to(REPO)}  "
             f"({len(triples)} quad terms, {len(extras)} extras, {len(pairs)} E)"
         )
+
+    equations = generate("hydr", [], base=HYDRATE_FLAGS)
+    path = GOLDENS / "rates_variant_hydr.npz"
+    np.savez_compressed(
+        path,
+        temperature=FIXED_T,
+        rh=20.0,
+        K=emitted.collision_matrix(equations, FIXED_T, NCLUST),
+        E=emitted.evaporation_matrix(equations, FIXED_T, NCLUST),
+        cs=emitted.loss_vector(equations, NCLUST, name="cs"),
+    )
+    print(
+        f"wrote {path.relative_to(REPO)}  (hydrate-averaged K, E, cs at {FIXED_T:g} K)"
+    )
 
     for name, spec in FIXED_T_VARIANTS.items():
         equations = generate(name, spec["flags"], base=FIXED_T_BASE_FLAGS)

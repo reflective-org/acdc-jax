@@ -120,7 +120,7 @@ def parse_energy_file(
         fields = line.split()
         label = fields[0]
         if molecule_order is not None:
-            label = labels.canonical(label, molecule_order)
+            label = labels.canonical_hydrate(label, molecule_order)
         if label in delta_h:
             raise ValueError(f"{path}: duplicate entry for cluster {label!r}")
 
@@ -227,7 +227,7 @@ def parse_dipole_file(
             )
         label = fields[0]
         if molecule_order is not None:
-            label = labels.canonical(label, molecule_order)
+            label = labels.canonical_hydrate(label, molecule_order)
         if label in dipole:
             raise ValueError(f"{path}: duplicate entry for cluster {label!r}")
         dipole[label] = float(fields[1])

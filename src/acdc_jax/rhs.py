@@ -16,7 +16,9 @@ import dataclasses
 import jax.numpy as jnp
 import numpy as np
 
-from acdc_jax import rates
+from acdc_jax import config, rates
+from acdc_jax import hydrates as hydrate_module
+from acdc_jax.hydrates import HydrateModel
 from acdc_jax.reactions import ReactionSet
 from acdc_jax.system import AcdcSystem
 
@@ -85,6 +87,8 @@ def assemble(
     constant_vapours: tuple[str, ...] = ("1A", "1N"),
     fcs: float = 1.0,
     charge_balance: int = 0,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+    hydrates: HydrateModel | None = None,
 ) -> Coefficients:
     """Build the coefficient tensors for one set of ambient conditions.
 
@@ -93,11 +97,24 @@ def assemble(
             the steady-state assumption the reference pins the neutral
             vapour monomers (``acdc_simulation_setup.f90:84``); the ionic
             monomers stay free so they can respond to ion production.
+        fidelity: forwarded to every rate formula.
+        hydrates: a :func:`~acdc_jax.hydrates.build_hydrate_model` result.
+            When given, K, E and the sink are the hydrate-averaged ones
+            (``--rh``); the model must have been built from these same
+            reactions.
     """
     n, neq = system.n_clusters, system.n_equations
 
-    collision = rates.collision_coefficients(inputs, temperature)
-    sink = rates.coagulation_sink(inputs, cs_ref, fcs)
+    if hydrates is None:
+        collision = rates.collision_coefficients(inputs, temperature, fidelity)
+        sink = rates.coagulation_sink(inputs, cs_ref, fcs)
+    else:
+        collision = hydrate_module.collision_coefficients(
+            hydrates, temperature, fidelity
+        )
+        sink = hydrate_module.coagulation_sink(
+            hydrates, cs_ref, fcs, temperature, fidelity
+        )
 
     quad = jnp.zeros((n, n, neq))
     mult = np.ones((n, n, neq), dtype=np.int32)
@@ -135,9 +152,21 @@ def assemble(
         parents = np.array([e.k for e in reactions.evaporations])
         di = np.array([e.i for e in reactions.evaporations])
         dj = np.array([e.j for e in reactions.evaporations])
-        evaporation = rates.evaporation_for_pairs(
-            inputs, collision, parents, di, dj, temperature
-        )
+        if hydrates is None:
+            evaporation = rates.evaporation_for_pairs(
+                inputs, collision, parents, di, dj, temperature, fidelity=fidelity
+            )
+        else:
+            same_channels = (
+                np.array_equal(hydrates.channel_parent, parents)
+                and np.array_equal(hydrates.channel_i, di)
+                and np.array_equal(hydrates.channel_j, dj)
+            )
+            if not same_channels:
+                raise ValueError("hydrate model was built from different reactions")
+            evaporation = hydrate_module.evaporation(
+                hydrates, temperature, fidelity=fidelity
+            )
         lin = lin.at[di, dj, parents].add(evaporation)
         asymmetric = di != dj
         lin = lin.at[dj[asymmetric], di[asymmetric], parents[asymmetric]].add(

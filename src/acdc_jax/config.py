@@ -248,6 +248,26 @@ MASS_N2 = 28.01
 N2_SUTHERLAND = (17.9e-6, 300.0, 111.0)
 """N2 viscosity: 17.9e-6 (300+111)/(T+111) (T/300)^1.5 (Crane 1988 / CRC)."""
 
+WEXLER = (
+    -2991.2729,
+    -6017.0128,
+    18.87643854,
+    -0.028354721,
+    0.17838301e-4,
+    -0.84150417e-9,
+    0.44412543e-12,
+    2.858487,
+)
+"""Wexler (1976) water saturation-pressure fit, Pa: exp(a0/T^2 + a1/T + a2 +
+a3 T + a4 T^2 + a5 T^3 + a6 T^4 + a7 ln T). Perl :858. An older CNT-book
+form sits commented out beside it upstream."""
+
+MASS_WATER = 18.02
+"""g/mol (Perl :854)."""
+DENS_WATER = 997.0
+"""kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
+volumes at this bulk density."""
+
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
 

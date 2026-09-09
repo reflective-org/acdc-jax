@@ -40,15 +40,29 @@ transition-regime rates — the physical model that `exp_loss` approximates.
 option (`--loop_evap_coef Kelvin`, gated by `$lloop` at Perl `:600`, `:8517`,
 `:8694`). Not available in small-set mode. Moves to Phase 9 with Dahneke.
 
-## 8.4 Hydrates / RH
-Pre-equilibrium Boltzmann weighting over water content, then hydrate
-averaging of every rate constant. Three conventions must be copied exactly
-or numbers won't match: the water-conserving evaporation partition sum
-(Perl `:9640-9705`), the ion enhancement applied *inside* the evaporation
-average (Perl `:9698`), and the escape hatch that **silently discards** a
-distribution normalising to ≤ 0.99 and treats the cluster as dry
-(Perl `:2637-2643`). Incompatible with variable temperature upstream; here
-it need not be, but the default reproduces the restriction.
+## 8.4 Hydrates / RH ✅
+Boltzmann weighting over water content (Wexler saturation pressure, the
+energy file's reference pressure as the activity denominator), then
+averaging of K (both distributions, ion enhancement per hydrate pair from
+the hydrate's own dipole data), E (the **parent's** distribution only, with
+water conserved across the channel — a hydrate splits only into hydrates
+whose waters add up to its own), and the coagulation sink.
+
+Implemented by *expansion*: every (cluster, water count) becomes a species
+in a second `RateInputs`, the validated rate formulas run unchanged on it,
+and a weight matrix contracts back to dry clusters (`W K Wᵀ`, a
+`segment_sum` over pre-enumerated channel combinations for E). Hence the
+whole thing traces in temperature, which upstream forbids (`--rh` with
+`--variable_temp` dies). `rhs.assemble(hydrates=…)` swaps the three rate
+sets in. F7 clarified: the 0.99 discard can only ever catch a non-finite
+distribution.
+
+Validated at 280 K, RH 20%, against a fixture built from the bundled
+thermodynamics plus four synthetic monohydrates (1A, 2A, 1A1N, 2A1N; input
+files kept under `validation/fixtures/hydrates/`): K, E and cs all
+**<1e-12**, with the hydrated pairs moving by several percent so the gate is
+not a tautology. Parsers accept `<label><n>W` rows via
+`labels.canonical_hydrate`.
 
 ## 8.5 Wall losses
 Six parameterizations: `CLOUD4_JA`, `CLOUD4_JK`, `CLOUD4_AK`,
