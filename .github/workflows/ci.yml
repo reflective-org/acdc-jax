@@ -51,4 +51,12 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --extra dev --frozen
-      - run: uv run mkdocs build --strict
+      # The site arrives in the Phase 10 branch; earlier branches in the
+      # stack have no mkdocs.yml and should not fail for it.
+      - name: mkdocs build --strict
+        run: |
+          if [ -f mkdocs.yml ]; then
+            uv run mkdocs build --strict
+          else
+            echo "no mkdocs.yml on this branch; nothing to build"
+          fi
