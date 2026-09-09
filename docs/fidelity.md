@@ -21,6 +21,7 @@ not the manual. Where the three disagree, the generated Fortran wins.
 | F8 | **ACDC's physical constants** differ from CODATA-2018 in the last digits (`k_B = 1.3806504e-23`, `N_A = 6.02214179e23`). | Perl `:924-928` | `constants` | `"acdc"` |
 | F9 | **`ind_quad_loss_extra` is built but never read** by `feval`; the extra-product source is applied from the product's side. | `acdc_equations_*.f90:89-124` | — | reproduced (built, unused) |
 | F10 | **No van der Waals or Fuchs correction** on hard-sphere collisions; a vdW enhancement exists commented-out upstream. | Perl `:8798` | — | reproduced |
+| F11 | **The mobility-diameter mass correction is defeated by a unit bug.** `$mass1` is reassigned to g/mol at `:3672`, then the correction multiplies by `$mass_conv` *again* at `:3681`, giving `28.8·1.66e-27/98.08 ≈ 5e-28`, so `sqrt(1+…)` is exactly `1.0`. The emitted mobility diameters are just `d_mass + 0.3 nm` — every `get_mob_diameter` entry differs from `get_diameter` by 0.30 with no mass dependence. Reproduced by default because these feed the size-bin classifier. | Perl `:3672,:3681` | `mobility_diameter` | `"fortran"` |
 
 ## Upstream bugs *not* reproduced
 

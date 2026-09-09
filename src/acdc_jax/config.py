@@ -238,6 +238,16 @@ class FidelityConfig:
     See F4. ``get_acdc_J.f90:117``.
     """
 
+    mobility_diameter: Literal["fortran", "tammet"] = "fortran"
+    """How the mobility diameter is computed. See F11.
+
+    ``"fortran"``: ``d_mass + 0.3 nm``, which is what the reference actually
+    emits -- its intended mass-diffusion correction is defeated by a unit
+    bug (``$mass1`` is in g/mol but the formula multiplies by ``$mass_conv``
+    again, so the square root is exactly 1.0). ``"tammet"`` applies the
+    correction as intended, moving 1A from 0.85 to 0.97 nm.
+    """
+
     hydrate_discard_threshold: float = 0.99
     """Discard a hydrate distribution normalising at or below this and treat
     the cluster as dry. See F7, P:2637-2643. Phase 8.
