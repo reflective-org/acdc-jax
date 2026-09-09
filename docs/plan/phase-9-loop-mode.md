@@ -86,6 +86,22 @@ F21 (three losses emit invalid Fortran), F22 (one-component `feval` reads
 not compile). All recorded in `docs/fidelity.md`; the oracle repairs F22
 and F23 in its copy of the generated source.
 
+## Review follow-up
+`deltag_evaporation` masked only its result, so an off-grid pair's exponent
+(its `safe` index points at cluster 0) could overflow and leave the `exp`
+VJP computing `0 * inf` -- `jax.grad` returned NaN on a grid deep enough to
+reach it. The exponent is masked too, and a test at a free-energy scale
+that overflows fails without the fix. Also: `assemble(channels="monomer")`
+for the Kelvin channel set (O(n·n_types) rather than O(n²)); the grid build
+uses the generator's own `clust_from_indices` lookup instead of a pass over
+pairs (n = 2000 went from 1.3 s to a fraction of that); `--exp_loss_exponent`
+and `--exp_loss_ref_cluster` are honoured rather than hardcoded;
+`LossSettings.coagulation=None` expresses a wall-loss-only run; the
+variable-temperature goldens are captured at 250 K so their tests gate the
+temperature dependence; the no-op `LOOP_FIDELITY` is gone (the wall losses'
+mass correction is live on both paths -- F11 concerns the emitted metadata
+table, not the wall-loss formula).
+
 ## Deferred, recorded
 `--j_in`/`--j_in_function`/`--jlim`/`--loop_j_frac` (J-table input and
 flux-over-size diagnostics), `--loop_cs` (sink cluster inside the set),

@@ -50,6 +50,10 @@ class LoopSystem:
     """m, from the summed bulk molecular volumes."""
     monomers: np.ndarray
     """(n_types,) cluster index of each pure monomer."""
+    clust_from_indices: np.ndarray
+    """The generator's lookup table: a dense array over composition space
+    (``max_k + 1`` per type) giving the cluster index, -1 where there is no
+    cluster (Perl ``get_cluster_numbers``, :6308-6379)."""
     product_index: np.ndarray
     """(nclust, nclust) int: the cluster ``i + j`` forms, or -1 when it
     leaves the grid (booked to ``out_neu``)."""
@@ -100,7 +104,12 @@ def build_loop_system(cluster_set: ClusterSetFile) -> LoopSystem:
     ).reshape(-1, len(max_counts))
     counts = grid[grid.sum(axis=1) > 0]  # C order == first type outermost
     n = len(counts)
-    index_of = {tuple(int(x) for x in row): i for i, row in enumerate(counts)}
+    # The generator's `clust_from_indices` table (Perl :6308-6379): a dense
+    # array over composition space holding the cluster number, -1 outside.
+    # An O(1) lookup, so neither the enumeration nor the product map needs a
+    # pass over pairs.
+    lookup = np.full([c + 1 for c in max_counts], -1, dtype=np.int64)
+    lookup[tuple(counts.T)] = np.arange(n)
 
     species_labels = tuple(
         labels.format_label(dict(zip(order, row, strict=True)), order) for row in counts
@@ -129,16 +138,24 @@ def build_loop_system(cluster_set: ClusterSetFile) -> LoopSystem:
 
     monomers = np.array(
         [
-            index_of[tuple(int(k == t) for k in range(len(order)))]
+            lookup[tuple(int(k == t) for k in range(len(order)))]
             for t in range(len(order))
         ]
     )
-    product = np.full((n, n), -1, dtype=int)
+    # Row by row: n vectorised lookups rather than n^2/2 dictionary probes.
+    # The (n, n) result is the binding memory cost for a very large grid
+    # (n = 10 000 is 800 MB); `clust_from_indices` is kept so a caller that
+    # cannot afford it can resolve products on the fly.
+    limits = np.asarray(max_counts)
+    product = np.full((n, n), -1, dtype=np.int64)
     for i in range(n):
-        for j in range(i, n):
-            k = index_of.get(tuple(int(x) for x in counts[i] + counts[j]))
-            if k is not None:
-                product[i, j] = product[j, i] = k
+        sums = counts[i] + counts[i:]
+        within = np.all(sums <= limits, axis=1)
+        found = np.full(len(sums), -1, dtype=np.int64)
+        if within.any():
+            found[within] = lookup[tuple(sums[within].T)]
+        product[i, i:] = found
+        product[i:, i] = found
 
     return LoopSystem(
         system=system,
@@ -148,6 +165,7 @@ def build_loop_system(cluster_set: ClusterSetFile) -> LoopSystem:
         mass_g=mass_g,
         radius=radius,
         monomers=monomers,
+        clust_from_indices=lookup,
         product_index=product,
     )
 
@@ -288,13 +306,18 @@ def deltag_evaporation(
     kt = config.K_B * temperature
     g = jnp.asarray(gibbs_kcal(loop.counts)) * config.KCAL_PER_MOL_TO_J
     product = loop.product_index
-    valid = product >= 0
-    safe = np.where(valid, product, 0)
-    delta = g[safe] - g[:, None] - g[None, :]
+    valid = jnp.asarray(product >= 0)
+    safe = np.where(product >= 0, product, 0)
+    # Double where: an off-grid pair's `safe` index points at cluster 0, so
+    # its delta can be the largest in the matrix and exp() overflows. A
+    # single mask on the result hides that forward but leaves the exp VJP
+    # computing 0 * inf, i.e. jax.grad returns NaN. Mask the EXPONENT too.
+    delta = jnp.where(valid, g[safe] - g[:, None] - g[None, :], 0.0)
     e = collision * reference_pressure / kt * jnp.exp(delta / kt)
-    e = jnp.where(jnp.asarray(valid), e, 0.0)
+    e = jnp.where(valid, e, 0.0)
     if rlim_no_evap is not None:
-        e = jnp.where(jnp.asarray(loop.radius)[safe] >= rlim_no_evap, 0.0, e)
+        too_big = valid & (jnp.asarray(loop.radius)[safe] >= rlim_no_evap)
+        e = jnp.where(too_big, 0.0, e)
     return jnp.where(jnp.eye(n, dtype=bool), 0.5 * e, e)
 
 
@@ -303,16 +326,30 @@ def deltag_evaporation(
 # ---------------------------------------------------------------------------
 
 
-def rate_inputs(loop: LoopSystem) -> rates.RateInputs:
+def rate_inputs(
+    loop: LoopSystem,
+    cs_exponent: float = config.CS_EXPONENT_DEFAULT,
+    cs_reference: str | None = None,
+) -> rates.RateInputs:
     """A :class:`~acdc_jax.rates.RateInputs` for the grid, so the small-set
     loss formulas apply. Only the geometric fields carry information; the
-    grid has no charges, dipoles or energies. ``cs_shape`` is relative to the
-    first monomer, upstream's ``r_ref`` (Perl :6577)."""
+    grid has no charges, dipoles or energies.
+
+    Args:
+        cs_exponent: the ``--exp_loss_exponent`` power.
+        cs_reference: the ``--exp_loss_ref_cluster`` label; default the
+            first monomer, upstream's ``r_ref`` (Perl :6577).
+    """
     n = loop.n_clusters
     diameter_nm = 2e9 * loop.radius
     zeros = np.zeros(n)
     pair_kind, partner = rates._classify_pairs(np.zeros(n, dtype=int))
-    reference = loop.radius[loop.monomers[0]]
+    if cs_reference is None:
+        reference = loop.radius[loop.monomers[0]]
+    else:
+        if cs_reference not in loop.system.labels:
+            raise ValueError(f"{cs_reference!r} is not a cluster of the grid")
+        reference = loop.radius[loop.system.labels.index(cs_reference)]
     return rates.RateInputs(
         mass=loop.mass_g * config.MASS_CONV,
         radius=loop.radius,
@@ -326,7 +363,7 @@ def rate_inputs(loop: LoopSystem) -> rates.RateInputs:
         delta_g_kcal=np.zeros((n, 2)),
         delta_h=zeros,
         delta_s=zeros,
-        cs_shape=(loop.radius / reference) ** config.CS_EXPONENT_DEFAULT,
+        cs_shape=(loop.radius / reference) ** cs_exponent,
         cs_excluded=np.zeros(n, dtype=bool),
         is_generic_ion=np.zeros(n, dtype=bool),
         sticking=np.ones((n, n)),
@@ -336,25 +373,28 @@ def rate_inputs(loop: LoopSystem) -> rates.RateInputs:
     )
 
 
-LOOP_FIDELITY = dataclasses.replace(config.DEFAULT, mobility_diameter="tammet")
-"""Loop-mode wall losses use the LIVE mobility-diameter mass correction
-(``sqrt(1 + 28.8/m)``, Perl :7024), unlike the small-set path where a unit
-slip defeats it (F11)."""
-
-
 def first_order_losses(
     loop: LoopSystem,
     settings: losses.LossSettings,
     temperature,
     cs_ref=config.CS_COEFFICIENT_DEFAULT,
+    fidelity: config.FidelityConfig = config.DEFAULT,
 ) -> dict[str, jnp.ndarray]:
     """The loop-mode ``get_losses`` (Perl :6433-7670), keyed by flux slot.
 
     Same formulas as the small-set losses evaluated on the grid's sizes; the
     generator sums them into one ``loss`` vector, the port keeps them apart.
+    ``LossSettings.cs_exponent`` and ``cs_reference`` carry
+    ``--exp_loss_exponent`` and ``--exp_loss_ref_cluster``.
+
+    The wall losses' mobility-diameter mass correction is live on this path
+    and on the small-set one alike: ``losses.mobility_diameter`` uses the raw
+    kg mass, where F11's unit slip only affects the metadata table the
+    generator emits for the size classifier.
     """
+    inputs = rate_inputs(loop, settings.cs_exponent, settings.cs_reference)
     return losses.first_order_losses(
-        settings, rate_inputs(loop), temperature, cs_ref, 1.0, LOOP_FIDELITY
+        settings, inputs, temperature, cs_ref, 1.0, fidelity
     )
 
 
@@ -365,6 +405,7 @@ def assemble(
     monomer_sources,
     loss_vectors: dict[str, jnp.ndarray] | None = None,
     constant_monomers: bool = False,
+    channels: Literal["all", "monomer"] = "all",
 ) -> rhs.Coefficients:
     """The loop-mode right-hand side as a :class:`~acdc_jax.rhs.Coefficients`.
 
@@ -385,6 +426,11 @@ def assemble(
     rate = collision[iu, ju] * jnp.where(iu == ju, 0.5, 1.0)
 
     on_grid = product >= 0
+    if channels == "monomer":
+        monomer_party = np.isin(iu, loop.monomers) | np.isin(ju, loop.monomers)
+        on_grid = on_grid & monomer_party
+    elif channels != "all":
+        raise ValueError(f"unknown evaporation channel set {channels!r}")
     if evaporation is None:
         evap_k = evap_i = evap_j = np.zeros(0, dtype=int)
         evap_rate = jnp.zeros(0)
@@ -472,7 +518,6 @@ def size_bin_matrix(loop: LoopSystem) -> np.ndarray:
 
 
 __all__ = [
-    "LOOP_FIDELITY",
     "LoopSystem",
     "assemble",
     "build_loop_system",

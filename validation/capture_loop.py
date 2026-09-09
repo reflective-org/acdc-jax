@@ -32,6 +32,10 @@ import loop_bridge  # noqa: E402
 
 GENERATOR = FORTRAN / "perl/acdc_2020_04_28.pl"
 T = 280.0
+T_VARIABLE = 250.0
+"""The --variable_temp variants are EVALUATED here, away from the fixed-T
+value, so a test on them actually gates the temperature dependence rather
+than re-checking the 280 K numbers."""
 BG_CONCENTRATION = 1.0e9
 """Background number concentration, 1/m^3, supplied to the bg_loss stub
 module (upstream reads it from `shared_input`)."""
@@ -104,12 +108,13 @@ def capture(name: str, input_file: str, flags: list[str]) -> None:
     mod = loop_bridge.build(name, bg_concentration=BG_CONCENTRATION)
     text = equations.read_text()
     n_types = 2 if "indices(nclust,2)" in text else 1
+    temperature = T_VARIABLE if variable_temp else T
 
-    data: dict[str, np.ndarray | float] = {"temperature": T, "nclust": n}
+    data: dict[str, np.ndarray | float] = {"temperature": temperature, "nclust": n}
 
     if variable_temp:
-        k = mod.get_coll(n, T)
-        e = mod.get_evap(k, T)  # nrates inferred from K's shape by f2py
+        k = mod.get_coll(n, temperature)
+        e = mod.get_evap(k, temperature)  # nrates from K's shape, via f2py
     else:
         k = mod.get_coll(n)
         e = mod.get_evap(n)
@@ -140,7 +145,7 @@ def capture(name: str, input_file: str, flags: list[str]) -> None:
         # Under --variable_temp coef(1) is the temperature and the monomer
         # source is NOT overridden (it stays at the stub's zero); otherwise
         # coef is the monomer source(s).
-        coef = np.array([T]) if variable_temp else source
+        coef = np.array([temperature]) if variable_temp else source
         rhs.append(mod.feval(0.0, c, coef, ipar))
         ipar = np.zeros(4, dtype=np.int32)
         js.append(
