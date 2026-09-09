@@ -19,10 +19,19 @@ import matplotlib
 
 matplotlib.use("Agg")
 
+import matplotlib.colors  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
-from acdc_jax import rates, rhs, sensitivity, solve  # noqa: E402
+from acdc_jax import (  # noqa: E402
+    config,
+    free_energy,
+    pathways,
+    rates,
+    rhs,
+    sensitivity,
+    solve,
+)
 from acdc_jax.boundary import BoundarySystem  # noqa: E402
 from acdc_jax.clusterset import parse_cluster_set  # noqa: E402
 from acdc_jax.reactions import enumerate_reactions  # noqa: E402
@@ -495,11 +504,184 @@ def figure_stability(model) -> str:
     return f"{out.name}: {stable:.0%} of evaporating clusters are below the growth rate"
 
 
+# ---------------------------------------------------------------------------
+def _quickguide_state(model):
+    """Steady state at the QuickGuide's conditions: [H2SO4] = 5e6 cm^-3,
+    [NH3] = 100 ppt, T = 280 K, coagulation sink, ion production 3 cm^-3 s^-1."""
+    system, reactions, inputs = model
+    temperature = 280.0
+    co = rhs.assemble(system, reactions, inputs, temperature, 1e-3, 3e6, 3e6)
+    c_n = 100e-12 * config.P_ATM / (config.K_B * temperature)
+    c0 = solve.set_vapours(
+        system, np.zeros(system.n_equations), {"1A": 5e6 * CM3, "1N": c_n}
+    )
+    result = solve.solve_steady_state(system, co, c0=c0)
+    return co, np.asarray(result.concentrations), temperature
+
+
+def _acid_base(system, label: str) -> tuple[int, int]:
+    """(acid, base) coordinates of a label, folding the bisulfate ion into the
+    acid count and ignoring the proton -- the QuickGuide's axes."""
+    from acdc_jax import labels as label_module
+
+    comp = label_module.parse(label)
+    acid = comp.get("A", 0) + comp.get("B", 0)
+    base = comp.get("N", 0)
+    return acid, base
+
+
+def figure_pathway(model) -> str:
+    """The neutral growth pathway in composition space -- the QuickGuide's
+    slide 6, from the port's own flux tracking.
+
+    Each arrow is a significant flux into a cluster (>= 5% of its inflow),
+    from the growing collider; the arrow out of the set is the exit channel.
+    Colour is the flux on a log scale; the main route is drawn heavier. The
+    dashed lines mark the largest neutral cluster in the set: everything
+    beyond them is 'out'. What the reader should take away is the same
+    conclusion the QuickGuide draws for this system: growth runs along and
+    below the acid = base diagonal, so a boundary that lets clusters with
+    more acid than base grow out is a defensible one.
+    """
+    system, reactions, _ = model
+    co, c, temperature = _quickguide_state(model)
+    pw = pathways.track_pathways(system, reactions, co, c, charge=0)
+
+    edges = [e for e in pw.edges if e.start in system.labels] + list(pw.exits)
+    values = np.array([e.value for e in edges]) / CM3
+    vmin, vmax = values.min(), values.max()
+    norm = matplotlib.colors.LogNorm(vmin=vmin, vmax=vmax)
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        "flux", [BLUE, VIOLET, "#e34948"]
+    )
+    route = set(zip(pw.main_route[:-1], pw.main_route[1:], strict=True))
+
+    figure, ax = plt.subplots(figsize=(6.0, 5.2))
+    for edge, value in zip(edges, values, strict=True):
+        (x0, y0), (x1, y1) = (
+            _acid_base(system, edge.start),
+            _acid_base(system, edge.end),
+        )
+        on_route = (edge.start, edge.end) in route
+        ax.annotate(
+            "",
+            xy=(x1, y1),
+            xytext=(x0, y0),
+            arrowprops={
+                "arrowstyle": "-|>",
+                "color": cmap(norm(value)),
+                "lw": 3.2 if on_route else 1.4,
+                "shrinkA": 6,
+                "shrinkB": 6,
+                "alpha": 1.0 if on_route else 0.8,
+            },
+            zorder=3 if on_route else 2,
+        )
+    neutral = [i for i in range(system.n_clusters) if system.charges[i] == 0]
+    max_acid = max(_acid_base(system, system.labels[i])[0] for i in neutral)
+    max_base = max(_acid_base(system, system.labels[i])[1] for i in neutral)
+    ax.axvline(max_acid + 0.5, color=INK, ls="--", lw=1.2)
+    ax.axhline(max_base + 0.5, color=INK, ls="--", lw=1.2)
+    ax.plot([0, max_acid + 1], [0, max_acid + 1], color=INK_MUTED, ls=":", lw=1)
+    ax.set_xlim(-0.5, max_acid + 1.5)
+    ax.set_ylim(-0.5, max_base + 1.5)
+    ax.set_xticks(range(max_acid + 2))
+    ax.set_yticks(range(max_base + 2))
+    ax.set_xlabel("H$_2$SO$_4$ molecules")
+    ax.set_ylabel("NH$_3$ molecules")
+    ax.set_aspect("equal")
+    _tidy(ax)
+    ax.grid(True, alpha=0.5)
+    sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
+    cbar = figure.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("flux (cm$^{-3}$ s$^{-1}$)")
+    ax.set_title(
+        "Neutral growth pathways at [H$_2$SO$_4$] = 5·10$^6$ cm$^{-3}$, "
+        "[NH$_3$] = 100 ppt, 280 K\n"
+        f"main route: {' → '.join(pw.main_route)}",
+        fontsize=9,
+        loc="left",
+    )
+    ax.annotate(
+        "dashed: edge of the cluster set (growth beyond is counted as J)",
+        xy=(0.02, 0.02),
+        xycoords="axes fraction",
+        color=INK_SECONDARY,
+        fontsize=8,
+    )
+    figure.tight_layout()
+    out = FIGURES / "05_growth_pathway.png"
+    figure.savefig(out, bbox_inches="tight")
+    plt.close(figure)
+    return f"{out.name}: main route {' -> '.join(pw.main_route)}"
+
+
+def figure_evaporation_map(model) -> str:
+    """Total evaporation rate of every neutral cluster on the (acid, base)
+    grid -- the QuickGuide's slide 3, the first check of a cluster set.
+
+    The reader is looking for the largest clusters (top right) to be cold:
+    if the corner still evaporates at 1e2 s^-1 or more, the set is too small
+    and J is an artefact of where it was cut. Cells print log10 of the rate.
+    """
+    system, reactions, _ = model
+    co, _, temperature = _quickguide_state(model)
+    total = free_energy.total_evaporation_rate(
+        system.n_clusters, co.evaporation_k, co.evaporation_rate
+    )
+    grid = free_energy.composition_grid(system, total, "A", "N", charge=0)
+    log_grid = np.log10(np.where(grid > 0, grid, np.nan))
+
+    figure, ax = plt.subplots(figsize=(6.0, 5.0))
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        "evap", [BLUE, "#f0efec", ORANGE]
+    )
+    image = ax.imshow(
+        log_grid.T,
+        origin="lower",
+        cmap=cmap,
+        vmin=float(np.nanmin(log_grid)),
+        vmax=float(np.nanmax(log_grid)),
+        aspect="equal",
+    )
+    for a in range(grid.shape[0]):
+        for b in range(grid.shape[1]):
+            if np.isnan(grid[a, b]):
+                continue
+            value = grid[a, b]
+            text = "0" if value == 0 else f"$10^{{{int(np.round(np.log10(value)))}}}$"
+            ax.text(a, b, text, ha="center", va="center", fontsize=8, color=INK)
+    ax.set_xticks(range(grid.shape[0]))
+    ax.set_yticks(range(grid.shape[1]))
+    ax.set_xlabel("H$_2$SO$_4$ molecules")
+    ax.set_ylabel("NH$_3$ molecules")
+    ax.set_title(
+        "Total evaporation rate Σγ (s$^{-1}$) of neutral clusters "
+        f"at {temperature:g} K",
+        fontsize=9,
+        loc="left",
+    )
+    cbar = figure.colorbar(image, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("log$_{10}$ Σγ (s$^{-1}$)")
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    figure.tight_layout()
+    out = FIGURES / "06_evaporation_map.png"
+    figure.savefig(out, bbox_inches="tight")
+    plt.close(figure)
+    finite = grid[~np.isnan(grid)]
+    low = np.log10(finite[finite > 0]).min()
+    high = np.log10(finite.max())
+    return f"{out.name}: evaporation spans 10^{low:.0f} to 10^{high:.0f} s^-1"
+
+
 FIGURE_FUNCTIONS = {
     "parity": figure_parity,
     "distribution": figure_distribution,
     "sensitivity": figure_sensitivity,
     "stability": figure_stability,
+    "pathway": figure_pathway,
+    "evaporation": figure_evaporation_map,
 }
 
 

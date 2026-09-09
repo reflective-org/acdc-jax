@@ -5,8 +5,12 @@ A faithful port of [ACDC](https://github.com/tolenius/ACDC) (Atmospheric
 Cluster Dynamics Code; Kupiainen-Määttä & Olenius), validated against the
 Fortran reference.
 
-> **Status: Phase 0 (scaffold).** Nothing solves yet. See
-> [`docs/plan/PROGRESS.md`](docs/plan/PROGRESS.md) for live status.
+> **Status: Phases 0–10 complete.** Small-set and loop modes, every
+> generator option, steady state by integration or root-find, `jax.grad`
+> through the whole model, growth-pathway diagnostics. Gated against the
+> Fortran at 1e-12 for rates and 1e-5 for *J*. See
+> [`docs/plan/PROGRESS.md`](docs/plan/PROGRESS.md) for the per-slice record
+> and [`docs/fidelity.md`](docs/fidelity.md) for every upstream quirk found.
 
 ## What ACDC does
 
@@ -78,6 +82,8 @@ Regenerate all of them from a clean checkout with
 | **Parity.** Steady-state *J* against the Fortran reference, with the residual against the 1e-5 acceptance gate. | **Steady-state population.** All 54 clusters against mass diameter, split by charge. |
 | ![free-energy sensitivity](figures/03_free_energy_sensitivity.png) | ![cluster stability](figures/04_cluster_stability.png) |
 | **∂ln*J*/∂ΔH.** Which cluster free energies control the formation rate — the capability the reference cannot provide. | **Stability.** Evaporation against acid-collision frequency: the system-adequacy check from the ACDC QuickGuide. |
+| ![growth pathway](figures/05_growth_pathway.png) | ![evaporation map](figures/06_evaporation_map.png) |
+| **Growth pathway.** Significant fluxes between neutral clusters in composition space at the QuickGuide's conditions; the main route exits through 5A5N → 6A5N, as the QuickGuide finds. | **Evaporation map.** Total evaporation rate on the (acid, base) grid: the largest clusters must be cold for the set to be adequate. |
 
 ## Documentation
 
