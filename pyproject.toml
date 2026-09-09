@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "acdc-jax"
+version = "0.1.0"
+description = "Differentiable atmospheric molecular-cluster dynamics in Python/JAX. Faithful port of ACDC (Olenius), validated against the Fortran reference."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Ali Akherati", email = "ali@reflective.org" }]
+requires-python = ">=3.11"
+dependencies = [
+    "jax>=0.4.30",
+    "equinox>=0.11",
+    "diffrax>=0.6",
+    "optimistix>=0.0.9",
+    "numpy",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "scipy",
+]
+dev = [
+    "pytest",
+    "scipy",
+    "ruff",
+    "matplotlib",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    # Required by numpy.f2py -c, which drives the in-process Fortran
+    # comparison. Not needed to import or test the pure-Python port.
+    "meson",
+    "ninja",
+]
+# GPU targets NVIDIA CUDA. Kept out of the default set so a plain install
+# stays CPU-only and portable. Untested: development is on Apple silicon.
+gpu = ["jax[cuda12]>=0.4.30"]
+
+[project.urls]
+Repository = "https://github.com/reflective-org/acdc-jax"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/acdc_jax"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests", "validation", "scripts", "benchmarks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

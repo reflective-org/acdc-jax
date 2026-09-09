@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both this port and the original ACDC model."
+title: "acdc-jax: Differentiable atmospheric molecular-cluster dynamics in JAX"
+authors:
+  - family-names: "Akherati"
+    given-names: "Ali"
+    email: "ali@reflective.org"
+    affiliation: "Reflective"
+license: GPL-3.0
+repository-code: "https://github.com/reflective-org/acdc-jax"
+references:
+  - type: software
+    title: "Atmospheric Cluster Dynamics Code"
+    authors:
+      - family-names: "Olenius"
+        given-names: "Tinja"
+        orcid: "https://orcid.org/0000-0001-9900-3081"
+    url: "https://github.com/tolenius/ACDC"
+    license: GPL-3.0
+  - type: article
+    title: "Free energy barrier in the growth of sulfuric acid-ammonia and sulfuric acid-dimethylamine clusters"
+    authors:
+      - family-names: "Olenius"
+        given-names: "Tinja"
+      - family-names: "Kupiainen-Määttä"
+        given-names: "Oona"
+      - family-names: "Ortega"
+        given-names: "Ismael K."
+      - family-names: "Kurtén"
+        given-names: "Theo"
+      - family-names: "Vehkamäki"
+        given-names: "Hanna"
+    journal: "The Journal of Chemical Physics"
+    volume: 139
+    issue: 8
+    year: 2013
+    doi: "10.1063/1.4819024"

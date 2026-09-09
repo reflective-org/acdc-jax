@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+build/
+dist/
+
+# Fortran reference build artifacts
+fortran/build/
+fortran/bin/
+*.o
+*.mod
+*.so
+*.dylib
+
+# Generated goldens staging (committed goldens live in validation/goldens/)
+.refstage/
+
+# Docs site build
+site/
+
+# OS
+.DS_Store
