@@ -17,13 +17,16 @@ detail.
 - ✅ **0.5** Golden capture
 - ✅ **0.6** Boundary-decision oracle
 
-## Phase 1 — Parser
-- ⬜ **1.1** Molecule-property header
-- ⬜ **1.2** Cluster-set body and range expansion
-- ⬜ **1.3** Cluster labels and canonicalisation
-- ⬜ **1.4** Geometry (mass, volume, radius, mobility diameter)
-- ⬜ **1.5** Energy file (ΔH/ΔS/ΔG)
-- ⬜ **1.6** Dipole/polarizability file
+## Phase 1 — Parser ✅
+
+Taken in dependency order: labels first, since everything else needs them.
+
+- ✅ **1.3** Cluster labels and canonicalisation — `0e5c97f`
+- ✅ **1.1** Molecule-property header — `0e5c97f`
+- ✅ **1.2** Cluster-set body and range expansion — `0e5c97f`
+- ✅ **1.4** Geometry (mass, volume, radius, mobility diameter) — `4ce0e2a`
+- ✅ **1.5** Energy file (ΔH/ΔS/ΔG) — `13ffa6d`
+- ✅ **1.6** Dipole/polarizability file — `13ffa6d`
 
 ## Phase 2 — Boundary cascade
 - ⬜ **2.1** `combine_labels` protonation algebra
@@ -95,11 +98,36 @@ be re-derived.
 | Golden J grid | 60 points, J from 1.97e-8 to 2.76e5 cm⁻³ s⁻¹ | `validation/goldens/steadystate.npz` |
 | `K` / `E` / `coef_quad` / `coef_lin` nonzeros | 2131 / 422 / 2679 / 474 | f2py bridge |
 | Boundary oracle | **3034 decisions** across 3 cluster sets | `validation/goldens/boundary_*.json` |
+| Cluster labels | all **52** match the KEY block exactly | Phase 1.2 |
+| Mass / diameter / mob. diameter | all **52** match after `%.2f` rounding | Phase 1.4 |
+| ΔH, ΔS | all **52** match the literals inlined in `get_evap` | Phase 1.5 |
 | Regeneration fidelity | 0 structural diffs, max 9.8e-15 rel | replayed `run_perl.sh` vs committed |
 
 ---
 
 ## Changelog
+
+### 2026-09-08 (Phase 1)
+
+- **Phase 1 complete**, 191 tests. Cluster sets are now data: `.inp`,
+  ΔH/ΔS and dipole tables parse straight into arrays, with every result
+  checked against the generated Fortran.
+- **F11 — a live unit bug in the reference's mobility diameter.** At
+  Perl `:3672` `$mass1` is reassigned to g/mol; `:3681` then multiplies by
+  `$mass_conv` *again*, so `sqrt(1 + 28.8·1.66e-27/98.08)` is **exactly
+  1.0** and the intended Tammet mass correction vanishes. Emitted mobility
+  diameters are just `d_mass + 0.3 nm` — visible in the committed Fortran
+  itself, where every `get_mob_diameter` entry differs from `get_diameter`
+  by 0.30 with no mass dependence. Reproduced by default (it feeds the
+  size-bin classifier); `mobility_diameter="tammet"` fixes it, moving 1A
+  from 0.85 to 0.97 nm.
+- Declared-but-unused molecule types are dropped by the generator: the AN
+  header declares five but no cluster contains dimethylamine, so
+  `n_mol_types = 4`. Keeping all five would silently widen every
+  composition vector downstream.
+- Emitted geometry arrays go through `sprintf("%.2f")`, so full-precision
+  comparison misses by ~1e-3 — outside anything resembling a tolerance
+  failure and easy to misread as a formula error. Hence `geometry.emitted()`.
 
 ### 2026-09-08
 
