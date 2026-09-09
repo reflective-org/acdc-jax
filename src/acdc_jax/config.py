@@ -145,14 +145,16 @@ SU82_E = 0.62
 SU82_X_SWITCH = 2.0
 SU82_LANGEVIN = 4.8032e-16
 
-# Su & Bowers (1973), the alternative (P:8825).
+# Su & Bowers (1973), the alternative (P:8199-8213).
 #   fcr = (SU73_POL*sqrt(alpha) + SU73_DIP*mu_D/sqrt(T)) * sqrt(1/m1 + 1/m2)
 #         / beta_hard_sphere,  floored at 1
 SU73_POL = 9.5436e-29
 SU73_DIP = 6.4805e-27
 
 ION_ENHANCEMENT_CONSTANT = 10.0
-"""Size-independent enhancement for ``--ion_coll_method constant`` (P:8889)."""
+"""Size-independent enhancement for ``--ion_coll_method constant``. Set at
+P:8267-8271; under --variable_temp dropped at P:8436, where the `constant`
+method is excluded from the max(fcr, hard sphere) emission (F15)."""
 
 # ---------------------------------------------------------------------------
 # Loss constants
@@ -423,7 +425,19 @@ class FidelityConfig:
 
     hydrate_discard_threshold: float = 0.99
     """Discard a hydrate distribution normalising at or below this and treat
-    the cluster as dry. See F7, P:2637-2643. Phase 8.
+    the cluster as dry. See F7, P:2432-2440. Phase 8.
+    """
+
+    diffusion_wall_loss_generic_ions: Literal["excluded_2020", "included_2024"] = (
+        "excluded_2020"
+    )
+    """Whether the `diffusion` wall loss applies to the generic charger ions.
+
+    See F16. The 2020 generator -- the one that produced the shipped example
+    and every golden here -- loops that branch over the real clusters only
+    (:7325), so `neg`/`pos` get no diffusion wall loss while every other
+    loss includes them. The 2024 generator loops to `$max_cluster_number`
+    and includes them. Default reproduces the shipped Fortran.
     """
 
     def resolve_constants(self) -> dict[str, float]:

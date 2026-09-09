@@ -15,9 +15,12 @@ upstream can offer.
 
 from __future__ import annotations
 
+import dataclasses
+from typing import Literal
+
 import jax.numpy as jnp
 
-from acdc_jax import config
+from acdc_jax import config, rates
 from acdc_jax.rates import RateInputs
 
 
@@ -71,7 +74,6 @@ def background_coagulation_sink(
     bg_concentration: float = config.BG_CONCENTRATION_DEFAULT,
     bg_diameter: float = config.BG_DIAMETER_DEFAULT,
     bg_density: float = config.BG_DENSITY_DEFAULT,
-    excluded: jnp.ndarray | None = None,
 ) -> jnp.ndarray:
     """``bg_loss``: collision frequency with a monodisperse background, 1/s.
 
@@ -89,8 +91,6 @@ def background_coagulation_sink(
         bg_concentration: number concentration of background particles, m^-3
         bg_diameter: their diameter, m
         bg_density: their density, kg/m^3
-        excluded: optional bool mask of clusters with no sink -- the
-            ``--cs_only X,0`` mechanism that removes the vapour monomers
     """
     radius = jnp.asarray(inputs.radius)
     mass = jnp.asarray(inputs.mass)
@@ -116,8 +116,9 @@ def background_coagulation_sink(
     )
     sink = kernel * bg_concentration
 
-    if excluded is not None:
-        sink = jnp.where(jnp.asarray(excluded), 0.0, sink)
+    # --cs_only X,0: the same exclusion the exp_loss shape carries, read from
+    # the inputs so the two sinks can never disagree about who is scavenged.
+    sink = jnp.where(jnp.asarray(inputs.cs_excluded), 0.0, sink)
     return sink
 
 
@@ -209,18 +210,21 @@ def wall_loss_cloud4_ak(inputs: RateInputs, temperature) -> jnp.ndarray:
 def wall_loss_diffusion(
     inputs: RateInputs,
     temperature,
-    acid_index: int,
     tube_radius: float = config.WL_DIFFUSION_TUBE_RADIUS,
     tube_pressure: float = config.WL_DIFFUSION_TUBE_PRESSURE,
-    generic_ion_mask: jnp.ndarray | None = None,
+    fidelity: config.FidelityConfig = config.DEFAULT,
 ) -> jnp.ndarray:
-    """Flow-tube diffusion loss, relative to sulfuric acid in N2 (Perl :7283-7335).
+    """Flow-tube diffusion loss in N2 (Perl :7283-7335).
 
-    Kinetic-theory diffusivity ``D ~ (r + r_N2)^-2 sqrt(1/m + 1/m_N2)``, every
-    cluster scaled relative to the acid monomer, whose absolute loss is set by
-    its diffusivity at the tube pressure times Brown's laminar factor
-    ``3.65/R^2``. The N2 radius comes from its viscosity (Present 1958,
-    eq. 11-67) via Sutherland's formula.
+    Kinetic-theory diffusivity ``D = 3/8 kT/P (r + r_N2)^-2 sqrt(kT/2pi
+    (1/m + 1/m_N2))`` (Present 1958, eq. 8-87) at the tube pressure, times
+    Brown's laminar factor ``3.65/R^2``. The N2 radius comes from its
+    viscosity (Present eq. 11-67) via Sutherland's formula.
+
+    Upstream writes this as the acid monomer's absolute loss times each
+    cluster's diffusivity relative to the acid's. The acid reference
+    cancels exactly -- the result has no dependence on which cluster is
+    called the reference -- so it is written directly here.
     """
     radius = jnp.asarray(inputs.radius)
     mass = jnp.asarray(inputs.mass)
@@ -234,37 +238,23 @@ def wall_loss_diffusion(
         * (mass_n2 * config.K_B * temperature / config.PI) ** 0.25
     )
 
-    r_acid = radius[acid_index]
-    m_acid = mass[acid_index]
     kt = config.K_B * temperature
-    # Acid diffusivity in N2 at 1 atm (Present 1958, eq. 8-87), then to the
-    # tube pressure, then to a wall loss.
-    d_acid = (
+    diffusivity = (
         3.0
         / 8.0
-        / config.P_ATM
         * kt
-        / (r_acid + radius_n2) ** 2
-        * jnp.sqrt(kt / (2.0 * config.PI) * (1.0 / m_acid + 1.0 / mass_n2))
+        / tube_pressure
+        / (radius + radius_n2) ** 2
+        * jnp.sqrt(kt / (2.0 * config.PI) * (1.0 / mass + 1.0 / mass_n2))
     )
-    wl_acid = (
-        d_acid
-        / (tube_pressure / config.P_ATM)
-        * (config.WL_DIFFUSION_LAMINAR / tube_radius**2)
-    )
+    wl = diffusivity * config.WL_DIFFUSION_LAMINAR / tube_radius**2
 
-    d0_factor = 1.0 / (r_acid + radius_n2) ** 2 * jnp.sqrt(1.0 / m_acid + 1.0 / mass_n2)
-    d_factor = 1.0 / (radius + radius_n2) ** 2 * jnp.sqrt(1.0 / mass + 1.0 / mass_n2)
-    wl = d_factor / d0_factor * wl_acid
-
-    # The generic charger ions get NO diffusion wall loss. This branch alone
-    # loops `for iclus = 1 .. $max_cluster` (Perl :7325) -- the real clusters
-    # -- where every other loss branch loops to `$max_cluster_number`, which
-    # includes the two generic ions. An inconsistency in the reference,
-    # reproduced: the fixture has exactly 52 nonzero entries, zero at the
-    # generic-ion slots. Fidelity F16.
-    if generic_ion_mask is not None:
-        wl = jnp.where(jnp.asarray(generic_ion_mask), 0.0, wl)
+    # F16: the 2020 generator's branch loops over the real clusters only
+    # (Perl :7325), so the generic charger ions get NO diffusion wall loss
+    # where every other loss includes them; the fixture has 52 nonzero
+    # entries. The 2024 generator includes them.
+    if fidelity.diffusion_wall_loss_generic_ions == "excluded_2020":
+        wl = jnp.where(jnp.asarray(inputs.is_generic_ion), 0.0, wl)
     return wl
 
 
@@ -272,9 +262,10 @@ def wall_loss(
     method: str,
     inputs: RateInputs,
     temperature,
-    acid_index: int | None = None,
     fwl: float = config.FWL_DEFAULT,
-    generic_ion_mask: jnp.ndarray | None = None,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+    tube_radius: float = config.WL_DIFFUSION_TUBE_RADIUS,
+    tube_pressure: float = config.WL_DIFFUSION_TUBE_PRESSURE,
 ) -> jnp.ndarray:
     """Per-cluster wall loss for a named parameterization, 1/s, with the
     ion enhancement applied to charged clusters.
@@ -282,7 +273,8 @@ def wall_loss(
     Charged clusters are multiplied by ``fwl`` (3.3 by default) and neutrals
     are not -- confirmed in every generated fixture, where
     ``coef_lin(57,57,k)`` reads ``fwl*wl(k)`` for ions and ``wl(k)`` for
-    neutrals.
+    neutrals. ``tube_radius``/``tube_pressure`` (``--flowtube_radius``,
+    ``--flowtube_pressure``) only matter to ``diffusion``.
     """
     if method == "ift":
         wl = wall_loss_ift(inputs)
@@ -297,10 +289,8 @@ def wall_loss(
     elif method == "cloud4_ak":
         wl = wall_loss_cloud4_ak(inputs, temperature)
     elif method == "diffusion":
-        if acid_index is None:
-            raise ValueError("the diffusion wall loss is relative to the acid monomer")
         wl = wall_loss_diffusion(
-            inputs, temperature, acid_index, generic_ion_mask=generic_ion_mask
+            inputs, temperature, tube_radius, tube_pressure, fidelity
         )
     else:
         raise ValueError(f"unknown wall-loss method {method!r}")
@@ -319,8 +309,77 @@ def dilution(inputs: RateInputs, rate: float = config.DILUTION_DEFAULT) -> jnp.n
     return jnp.full(inputs.radius.shape, rate)
 
 
+@dataclasses.dataclass(frozen=True)
+class LossSettings:
+    """Which first-order losses a run includes, and their parameters.
+
+    Mirrors the generator's ``--cs``, ``--use_wl --wl`` and ``--use_dilution``
+    options. The default is the shipped example: the exp_loss coagulation
+    sink alone.
+    """
+
+    coagulation: Literal["exp_loss", "bg_loss"] = "exp_loss"
+    bg_concentration: float = config.BG_CONCENTRATION_DEFAULT
+    bg_diameter: float = config.BG_DIAMETER_DEFAULT
+    bg_density: float = config.BG_DENSITY_DEFAULT
+    wall: str | None = None
+    """A ``wall_loss`` method name, or None for no wall loss."""
+    fwl: float = config.FWL_DEFAULT
+    tube_radius: float = config.WL_DIFFUSION_TUBE_RADIUS
+    tube_pressure: float = config.WL_DIFFUSION_TUBE_PRESSURE
+    dilution: float | None = None
+    """Dilution rate, 1/s, or None for none."""
+
+
+def first_order_losses(
+    settings: LossSettings,
+    inputs: RateInputs,
+    temperature,
+    cs_ref,
+    fcs: float = config.FCS_DEFAULT,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+) -> dict[str, jnp.ndarray]:
+    """Every first-order loss the settings select, keyed by its flux slot.
+
+    ``coag`` is either the exp_loss sink scaled by ``cs_ref`` or the
+    bg_loss sink scaled by the background concentration (``cs_ref`` is then
+    unused, as upstream's ``--variable_cs`` is meaningless for bg_loss);
+    ``wall`` and ``dilution`` appear only when selected.
+    """
+    out: dict[str, jnp.ndarray] = {}
+    if settings.coagulation == "exp_loss":
+        out["coag"] = rates.coagulation_sink(inputs, cs_ref, fcs)
+    elif settings.coagulation == "bg_loss":
+        sink = background_coagulation_sink(
+            inputs,
+            temperature,
+            settings.bg_concentration,
+            settings.bg_diameter,
+            settings.bg_density,
+        )
+        charged = jnp.asarray(inputs.charge) != 0
+        out["coag"] = sink * jnp.where(charged, fcs, 1.0)
+    else:  # pragma: no cover - Literal keeps this unreachable
+        raise ValueError(f"unknown coagulation sink {settings.coagulation!r}")
+    if settings.wall is not None:
+        out["wall"] = wall_loss(
+            settings.wall,
+            inputs,
+            temperature,
+            settings.fwl,
+            fidelity,
+            settings.tube_radius,
+            settings.tube_pressure,
+        )
+    if settings.dilution is not None:
+        out["dilution"] = dilution(inputs, settings.dilution)
+    return out
+
+
 __all__ = [
+    "LossSettings",
     "air_mean_free_path",
+    "first_order_losses",
     "air_viscosity",
     "background_coagulation_sink",
     "dilution",

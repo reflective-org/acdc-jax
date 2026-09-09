@@ -209,6 +209,8 @@ def build_hydrate_model(
         delta_h=delta_h,
         delta_s=delta_s,
         cs_shape=cs_shape,
+        cs_excluded=inputs.cs_excluded[owner_arr],
+        is_generic_ion=inputs.is_generic_ion[owner_arr],
         sticking=inputs.sticking[np.ix_(owner_arr, owner_arr)],
         evap_scale_kcal=inputs.evap_scale_kcal[np.ix_(owner_arr, owner_arr)],
         has_energy_data=inputs.has_energy_data[owner_arr],
@@ -350,6 +352,21 @@ def evaporation(
     )
 
 
+def average_vector(
+    model: HydrateModel,
+    per_species: jnp.ndarray,
+    temperature,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+) -> jnp.ndarray:
+    """Contract any per-species first-order rate to the dry clusters.
+
+    This is how upstream averages bg_loss (Perl :6640-6700) and the wall
+    losses (:7443-7460) too: evaluate the formula on every hydrate, weight
+    by the distribution.
+    """
+    return hydrate_weights(model, temperature, fidelity) @ per_species
+
+
 def coagulation_sink(
     model: HydrateModel,
     cs_ref,
@@ -368,6 +385,7 @@ def coagulation_sink(
 
 __all__ = [
     "HydrateModel",
+    "average_vector",
     "build_hydrate_model",
     "coagulation_sink",
     "collision_coefficients",

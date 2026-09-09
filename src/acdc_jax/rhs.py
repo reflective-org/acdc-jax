@@ -16,7 +16,7 @@ import dataclasses
 import jax.numpy as jnp
 import numpy as np
 
-from acdc_jax import config, rates
+from acdc_jax import config, losses, rates
 from acdc_jax import hydrates as hydrate_module
 from acdc_jax.hydrates import HydrateModel
 from acdc_jax.reactions import ReactionSet
@@ -67,13 +67,19 @@ class Coefficients:
     evaporation_i: np.ndarray
     evaporation_j: np.ndarray
     evaporation_rate: jnp.ndarray
-    sink: jnp.ndarray
-    """(nclust,) first-order coagulation sink, 1/s."""
-    coag_slot: int
+    losses: tuple[jnp.ndarray, ...]
+    """First-order external losses, each (nclust,) in 1/s, one per slot in
+    ``loss_slots`` (coagulation, wall, dilution -- whichever are on)."""
+    loss_slots: tuple[int, ...]
     charge_balance: int = 0
     """--charge_balance mode; see charge_balance_projection."""
     system: AcdcSystem | None = None
     """Needed only when charge_balance != 0, for the projection inside rhs()."""
+
+    @property
+    def sink(self) -> jnp.ndarray:
+        """Total first-order external loss per cluster, 1/s."""
+        return sum(self.losses)
 
 
 def assemble(
@@ -89,6 +95,7 @@ def assemble(
     charge_balance: int = 0,
     fidelity: config.FidelityConfig = config.DEFAULT,
     hydrates: HydrateModel | None = None,
+    loss_settings: losses.LossSettings | None = None,
 ) -> Coefficients:
     """Build the coefficient tensors for one set of ambient conditions.
 
@@ -99,22 +106,34 @@ def assemble(
             monomers stay free so they can respond to ion production.
         fidelity: forwarded to every rate formula.
         hydrates: a :func:`~acdc_jax.hydrates.build_hydrate_model` result.
-            When given, K, E and the sink are the hydrate-averaged ones
+            When given, K, E and every loss are the hydrate-averaged ones
             (``--rh``); the model must have been built from these same
             reactions.
+        loss_settings: which first-order losses to include. Default: the
+            exp_loss coagulation sink only, as in the shipped example.
     """
     n, neq = system.n_clusters, system.n_equations
+    if loss_settings is None:
+        loss_settings = losses.LossSettings()
 
     if hydrates is None:
         collision = rates.collision_coefficients(inputs, temperature, fidelity)
-        sink = rates.coagulation_sink(inputs, cs_ref, fcs)
+        loss_vectors = losses.first_order_losses(
+            loss_settings, inputs, temperature, cs_ref, fcs, fidelity
+        )
     else:
         collision = hydrate_module.collision_coefficients(
             hydrates, temperature, fidelity
         )
-        sink = hydrate_module.coagulation_sink(
-            hydrates, cs_ref, fcs, temperature, fidelity
+        per_species = losses.first_order_losses(
+            loss_settings, hydrates.expanded, temperature, cs_ref, fcs, fidelity
         )
+        loss_vectors = {
+            name: hydrate_module.average_vector(hydrates, vector, temperature, fidelity)
+            for name, vector in per_species.items()
+        }
+    loss_slots = tuple(system.flux_index[name] for name in loss_vectors)
+    loss_list = tuple(loss_vectors.values())
 
     quad = jnp.zeros((n, n, neq))
     mult = np.ones((n, n, neq), dtype=np.int32)
@@ -173,9 +192,10 @@ def assemble(
             evaporation[asymmetric]
         )
 
-    # The coagulation sink is a first-order loss booked to its own slot.
-    coag = system.flux_index["coag"]
-    lin = lin.at[coag, coag, :].add(sink)
+    # External first-order losses, each booked to its own flux slot
+    # (coef_lin(56,56,k) coagulation, (57,57,k) wall, (58,58,k) dilution).
+    for vector, slot in zip(loss_list, loss_slots, strict=True):
+        lin = lin.at[slot, slot, :].add(vector)
 
     source = jnp.zeros(neq)
     if system.generic_neg >= 0:
@@ -235,8 +255,8 @@ def assemble(
         evaporation_i=evap_i,
         evaporation_j=evap_j,
         evaporation_rate=evap_rate,
-        sink=sink,
-        coag_slot=coag,
+        losses=loss_list,
+        loss_slots=loss_slots,
         charge_balance=charge_balance,
         system=system if charge_balance else None,
     )
@@ -332,11 +352,12 @@ def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
         f = f.at[coefficients.evaporation_i].add(evaporation)
         f = f.at[coefficients.evaporation_j].add(evaporation)
 
-    # External losses: first-order, booked to the coagulation slot.
+    # External losses: first-order, each booked to its own flux slot.
     n = coefficients.coef_quad.shape[0]
-    sink_loss = coefficients.sink * c[:n]
-    f = f.at[:n].add(-sink_loss)
-    f = f.at[coefficients.coag_slot].add(jnp.sum(sink_loss))
+    for vector, slot in zip(coefficients.losses, coefficients.loss_slots, strict=True):
+        lost = vector * c[:n]
+        f = f.at[:n].add(-lost)
+        f = f.at[slot].add(jnp.sum(lost))
 
     f = f + coefficients.source
 

@@ -96,6 +96,12 @@ class RateInputs:
     ``+scale/temperature`` term beside H/T - S/1e3, i.e. inside the exponent.
     K is untouched.
     """
+    cs_excluded: np.ndarray
+    """(nclust,) bool: clusters given a special zero sink (``--cs_only X,0``).
+    Every sink formulation honours it; ``cs_shape`` already carries the zero
+    for the exp_loss form."""
+    is_generic_ion: np.ndarray
+    """(nclust,) bool: the two generic charger ions."""
     has_energy_data: np.ndarray
     """(nclust,) bool: clusters with tabulated quantum-chemical energies.
 
@@ -192,6 +198,12 @@ def build_rate_inputs(
         system, diameter_nm, cs_reference_label, cs_exponent, cs_excluded
     )
 
+    cs_excluded_mask = np.array([label in cs_excluded for label in system.labels])
+    is_generic_ion = np.zeros(n, dtype=bool)
+    for index in (system.generic_neg, system.generic_pos):
+        if index >= 0:
+            is_generic_ion[index] = True
+
     valid_pairs = np.zeros((n, n), dtype=bool)
     if reactions is None:
         # No reaction list supplied: fall back to charge compatibility. Gives
@@ -219,6 +231,8 @@ def build_rate_inputs(
         delta_h=delta_h,
         delta_s=delta_s,
         cs_shape=cs_shape,
+        cs_excluded=cs_excluded_mask,
+        is_generic_ion=is_generic_ion,
         has_energy_data=has_energy_data,
         valid_pairs=valid_pairs,
     )
