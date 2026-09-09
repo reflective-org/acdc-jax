@@ -133,7 +133,7 @@ def _turnover(coefficients: rhs.Coefficients, c: jnp.ndarray) -> jnp.ndarray:
             .at[coefficients.evaporation_j]
             .add(evaporation)
         )
-    n = coefficients.coef_quad.shape[0]
+    n = coefficients.n_clusters
     return total.at[:n].add(coefficients.sink * c[:n])
 
 
