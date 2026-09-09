@@ -2,8 +2,12 @@
 
 **Goal:** time integration and steady state, both differentiable.
 
-**Gate:** J matches the Fortran binary to < 1e-6 relative across a
-(vapour, T, CS, IPR) grid; root-find vs integration < 1e-8.
+**Gate:** J matches the Fortran binary to < 1e-5 relative across the
+60-point (vapour, T, CS, IPR) golden grid; root-find vs integration < 1e-8.
+
+The J threshold is 1e-5 rather than 1e-6 because the reference's own
+steady-state J is only defined to within `sstol` -- measured at 1.5e-6
+between warm and cold starts of the same point. See `docs/validation.md`.
 
 ## 6.1 Time integration
 
@@ -28,7 +32,7 @@ Note the reference's ambiguity, reproduced but flagged: on non-convergence
 it returns `j_out = 0` with `ok = .true.`, so a caller cannot distinguish
 "converged to zero" from "failed". We return an explicit status.
 
-**Verify:** J < 1e-6 vs the `run` binary across the grid.
+**Verify:** J < 1e-5 vs the golden grid, which was captured cold.
 
 ## 6.3 Steady state by root-find (the fast path)
 

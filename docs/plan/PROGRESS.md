@@ -11,10 +11,10 @@ detail.
 ## Phase 0 — Scaffold & harness
 
 - ✅ **0.1** Repository scaffold and vendored ACDC reference — `57bba17`
-- 🔨 **0.2** Planning documents and doc stubs
-- ⬜ **0.3** Package skeleton and `config.py`
-- ⬜ **0.4** f2py bridge to the reference
-- ⬜ **0.5** Golden capture
+- ✅ **0.2** Planning documents and doc stubs — `22d7212`
+- ✅ **0.3** Package skeleton and `config.py` — `e2e62b5`
+- ✅ **0.4** f2py bridge to the reference — `9426f63`
+- ✅ **0.5** Golden capture
 - ⬜ **0.6** Boundary-decision oracle
 
 ## Phase 1 — Parser
@@ -90,6 +90,10 @@ be re-derived.
 | AN+ions example J | **2.218 cm⁻³ s⁻¹** | `fortran/src/run` at [A]=1e7, [N]=1e9 cm⁻³, CS=1e-3 s⁻¹, T=280 K, IPR=3 cm⁻³ s⁻¹ |
 | System size | 54 clusters, 63 equations | `acdc_system_AN_ions_example.f90:5-6` |
 | Solver path | VODE (≤5000 eqs), steady-state assumption | `run` stdout |
+| Cold-start J | **bit-identical across processes** | 3 fresh processes, same point |
+| Warm-start J spread | **1.5e-6 relative** | same point re-solved after another in one process |
+| Golden J grid | 60 points, J from 1.97e-8 to 2.76e5 cm⁻³ s⁻¹ | `validation/goldens/steadystate.npz` |
+| `K` / `E` / `coef_quad` / `coef_lin` nonzeros | 2131 / 422 / 2679 / 474 | f2py bridge |
 
 ---
 
@@ -106,6 +110,21 @@ be re-derived.
   The `:365` branch is dead (`small_set_mode` is a compile-time `.true.`).
   Resolved with a build flag rather than a patch, so `fortran/` stays
   byte-identical to upstream.
+- **0.4 complete.** f2py bridge built. The Fortran declares no `intent`, so
+  f2py silently returns untouched zero arrays; caught only because `K[0,0]`
+  came back `0.0` instead of `3.35e-16`. Fixed with a hand-written `.pyf`.
+- **0.5 complete.** Goldens captured (190 KB, plain `.npz`). While doing so,
+  measured that the reference's steady-state J is **only defined to within
+  `sstol`**: cold-start is bit-identical across processes, but re-solving
+  the same point after a different one shifts J by 1.5e-6. The J acceptance
+  gate was therefore relaxed from 1e-6 to **1e-5** — the original figure was
+  below the reference's own self-consistency, so it could not have been met
+  for reasons having nothing to do with the port. Goldens are now captured
+  one fresh subprocess per grid point.
+- A bug in the capture script swapped temperature and `cs_ref` via positional
+  unpacking and produced a plausible-looking J field three orders too small.
+  Now passed by keyword, with an assertion that the bundled example
+  reproduces `2217995.192415948` before the grid is run.
 - Corrected an early assumption worth recording: the generated `feval` is
   **not** an unrolled RHS. It is 58 lines looping over integer index arrays.
   The 10,669 lines are hardcoded *rate tables*. The port therefore

@@ -68,7 +68,7 @@ one `jnp.where`.
 | 3 | [Enumeration → index arrays](phase-3-enumeration.md) | index arrays identical to `initialize_parameters` |
 | 4 | [Rates](phase-4-rates.md) | `K`, `E`, `cs` < 1e-12 rel vs emitted literals |
 | 5 | [RHS, formation, fluxes](phase-5-rhs.md) | `dc/dt` < 1e-12 rel vs f2py `feval` |
-| 6 | [Solve](phase-6-solve.md) | J < 1e-6 rel vs binary; rootfind vs integrate < 1e-8 |
+| 6 | [Solve](phase-6-solve.md) | J < 1e-5 rel vs binary; rootfind vs integrate < 1e-8 |
 | 7 | [Differentiability & batching](phase-7-autodiff.md) | grad vs FD < 1e-3; vmap ≡ serial |
 | 8 | [Extended physics](phase-8-extended-physics.md) | each parameterization vs a Perl fixture |
 | 9 | [Loop mode](phase-9-loop-mode.md) | matches a loop-mode fixture |

@@ -80,5 +80,18 @@ python module acdc_ref
             real(kind=8), dimension(4), intent(in) :: coef
         end subroutine get_rate_coefs
 
+        ! Full steady-state solve (the shim around acdc_plugin).
+        ! NOT independent between calls in one process: acdc_plugin
+        ! warm-starts from a saved concentration vector.
+        subroutine solve_j(c_vapor_a,c_vapor_n,cs_ref,temp,ipr,j_acdc,diameter_acdc)
+            real(kind=8), intent(in) :: c_vapor_a
+            real(kind=8), intent(in) :: c_vapor_n
+            real(kind=8), intent(in) :: cs_ref
+            real(kind=8), intent(in) :: temp
+            real(kind=8), intent(in) :: ipr
+            real(kind=8), intent(out) :: j_acdc
+            real(kind=8), intent(out) :: diameter_acdc
+        end subroutine solve_j
+
     end interface
 end python module acdc_ref

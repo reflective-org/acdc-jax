@@ -12,7 +12,7 @@ errors; the per-leaf gates cannot.
 | `dc/dt` vs f2py-wrapped `feval` | < 1e-12 rel | 5 |
 | `jacfwd` vs the analytic quadratic Jacobian | < 1e-12 rel | 5 |
 | Conservation (molecules, charge) | < 1e-10 rel | 5 |
-| Steady-state J vs the `run` binary | < 1e-6 rel | 6 |
+| Steady-state J vs the `run` binary | **< 1e-5 rel** | 6 |
 | Root-find vs time-integration steady state | < 1e-8 rel | 6 |
 | `jax.grad` vs central finite difference | < 1e-3 rel | 7 |
 | `vmap` vs a serial Python loop | exact | 7 |
@@ -29,14 +29,41 @@ and because boundary reactions carry a large fraction of the mass flux in
 narrow cluster sets, a wrong decision produces a plausible-looking wrong
 answer rather than an obvious one.
 
-## Why the rate gate is 1e-12 and the J gate is 1e-6
+## Why the rate gate is 1e-12 and the J gate is 1e-5
 
 Rate constants are closed-form functions of the same inputs, evaluated in
 the same precision — they should agree to round-off, and anything looser
-would hide a genuine formula error. Steady-state J is the output of two
-*different* adaptive integrators with different error control, so agreement
-is limited by the tolerance of the loosest one (`rtol=1e-5`), not by
-arithmetic.
+would hide a genuine formula error.
+
+The J gate is looser for a reason that is a property of the reference, not
+of the port. **The reference's steady-state J is only defined to within
+`sstol = 1e-5`.** Measured during Phase 0.5 on this machine:
+
+| | |
+|---|---|
+| Same point, fresh process each time | **bit-identical** (`2217995.192415948`) |
+| Same point, re-solved after a different point in one process | **1.5e-6 relative shift** |
+
+The cause is that `acdc_plugin` keeps the concentration vector in a `save`d
+array (`get_acdc_J.f90:31`) and warm-starts from it, while the convergence
+criterion is a *relative-change* test rather than an exact root: no cluster
+may move by more than `sstol` over a 600 s window. Where you start therefore
+determines where inside that tolerance band you stop.
+
+So the reference does not have a single steady-state J to agree with to
+1e-6 — it has a band of width ~`sstol`. Gating tighter than that would be
+gating against an arbitrary point in the band, and would fail or pass on
+irrelevant details of the integration path. 1e-5 is the honest threshold.
+
+The root-find path has no such ambiguity (`f(c) = 0` is exact), which is why
+it is gated against the integration path at 1e-8 — that comparison is
+between two of *our* results, both deterministic.
+
+### Consequence for golden capture
+
+`validation/capture_steadystate.py` runs **one fresh subprocess per grid
+point**. Sweeping in a single process would bake the warm-start path into
+the goldens and make them unreproducible in any other order.
 
 ## Temperature sweeps, not single points
 

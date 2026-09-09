@@ -57,7 +57,7 @@ end-to-end. Thresholds are in [`docs/validation.md`](docs/validation.md):
 |---|---|
 | Rate constants `K`, `E`, `cs` vs emitted literals | < 1e-12 rel |
 | `dc/dt` vs f2py-wrapped `feval` | < 1e-12 rel |
-| Steady-state *J* vs the Fortran binary | < 1e-6 rel |
+| Steady-state *J* vs the Fortran binary | < 1e-5 rel |
 | Root-find vs time-integration steady state | < 1e-8 rel |
 | `jax.grad` vs central finite difference | < 1e-3 rel |
 | Boundary-cascade decisions vs `--print_boundary` | exact match |
