@@ -67,6 +67,18 @@ combinatorial: it decides which out-of-set collision products are counted as
 grown-out and which are stripped back into the system. Any divergence there
 is a different model, not a rounding difference.
 
+## Figures
+
+Regenerate all of them from a clean checkout with
+`uv run python scripts/make_figures.py`.
+
+| | |
+|---|---|
+| ![J vs sulfuric acid](figures/01_parity_j_vs_sulfuric_acid.png) | ![cluster distribution](figures/02_cluster_distribution.png) |
+| **Parity.** Steady-state *J* against the Fortran reference, with the residual against the 1e-5 acceptance gate. | **Steady-state population.** All 54 clusters against mass diameter, split by charge. |
+| ![free-energy sensitivity](figures/03_free_energy_sensitivity.png) | ![cluster stability](figures/04_cluster_stability.png) |
+| **∂ln*J*/∂ΔH.** Which cluster free energies control the formation rate — the capability the reference cannot provide. | **Stability.** Evaporation against acid-collision frequency: the system-adequacy check from the ACDC QuickGuide. |
+
 ## Documentation
 
 - [`docs/plan/ULTRAPLAN.md`](docs/plan/ULTRAPLAN.md) — the full arc

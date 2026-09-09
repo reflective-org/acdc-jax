@@ -342,7 +342,13 @@ def solve_steady_state(
 def set_vapours(
     system: AcdcSystem, c: jnp.ndarray, concentrations: dict[str, float]
 ) -> jnp.ndarray:
-    """Set named species concentrations, m^-3."""
+    """Set named species concentrations, m^-3.
+
+    Accepts a NumPy array as well as a JAX one; callers building an initial
+    condition reach for `np.zeros` as often as `jnp.zeros`, and the
+    `.at[].set()` idiom only exists on the latter.
+    """
+    c = jnp.asarray(c, dtype=float)
     for label, value in concentrations.items():
         c = c.at[system.labels.index(label)].set(value)
     return c
