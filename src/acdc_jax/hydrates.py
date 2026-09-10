@@ -279,8 +279,10 @@ def hydrate_weights(
     above ``hydrate_discard_threshold`` and treats that cluster as dry. A
     sum of normalised weights is 1 by construction, so in practice this
     catches only a non-finite distribution (an overflowing exponent): NaN
-    fails the comparison and the cluster silently reverts to dry. Same
-    here.
+    fails the comparison and the cluster silently reverts to dry. Both
+    criteria are reproduced -- the second from the exponent, so that the
+    fallback is reached with a finite gradient rather than through an
+    inf/inf that poisons reverse mode.
     """
     owner = jnp.asarray(model.owner)
     waters = jnp.asarray(model.waters)
@@ -291,12 +293,33 @@ def hydrate_weights(
     relative = (gibbs - dry_gibbs) * config.KCAL_PER_MOL_TO_J
     activity = model.rh_percent / 100.0 * water_saturation_pressure(temperature)
     activity = activity / model.reference_pressure
-    unnormalised = activity**waters * jnp.exp(-relative / (config.K_B * temperature))
+    # Upstream forms these weights in LINEAR space (Perl :2419). A
+    # sufficiently stable hydrate then overflows to inf, its normalised
+    # value becomes inf/inf = NaN, the 0.99 check fails, and the cluster is
+    # treated as dry (F7). Doing the same arithmetic here gives a finite
+    # answer through the final `where` but leaves reverse mode crossing an
+    # inf/inf, so `jax.grad` returns NaN. So: decide the discard from the
+    # EXPONENT, and normalise shifted by the per-cluster maximum, which is
+    # the same ratio computed without ever forming an inf.
+    log_activity = jnp.log(activity)
+    # 0 * -inf is NaN, and the dry species carries exactly zero waters, so
+    # the dry term is written out rather than multiplied (rh = 0 is a
+    # supported input).
+    log_weight = jnp.where(waters > 0, waters * log_activity, 0.0) - relative / (
+        config.K_B * temperature
+    )
 
-    total = jax.ops.segment_sum(unnormalised, owner, num_segments=n)
-    normalised = unnormalised / total[owner]
+    overflowing = jax.ops.segment_sum(
+        (log_weight > config.LOG_MAX_FLOAT64).astype(jnp.int32),
+        owner,
+        num_segments=n,
+    )
+    shift = jax.ops.segment_max(log_weight, owner, num_segments=n)
+    weight = jnp.exp(log_weight - shift[owner])
+    total = jax.ops.segment_sum(weight, owner, num_segments=n)
+    normalised = weight / total[owner]
     check = jax.ops.segment_sum(normalised, owner, num_segments=n)
-    keep = check > fidelity.hydrate_discard_threshold
+    keep = (check > fidelity.hydrate_discard_threshold) & (overflowing == 0)
     weights = jnp.where(keep[owner], normalised, (waters == 0).astype(normalised.dtype))
 
     return (

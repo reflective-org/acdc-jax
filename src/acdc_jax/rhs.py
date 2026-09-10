@@ -379,7 +379,18 @@ def formation_rate(
     The reference computes a per-cluster and per-charge-pair breakdown and
     then discards both (``driver_acdc_J.f90:359-363``). They cost nothing
     once the flux exists, so they are returned.
+
+    Under ``--charge_balance`` the fitted generic ion is pinned, so its
+    stored entry is not the balanced value; the emitted code projects at
+    the top of BOTH ``feval`` and ``formation`` (fixture
+    ``acdc_equations_cb1.f90``), so this does too. Without it a grow-out
+    collision involving that ion gives a J the Fortran would not.
     """
+    if coefficients.charge_balance:
+        c = charge_balance_projection(
+            coefficients.system, c, coefficients.charge_balance
+        )
+
     slots = [system.flux_index[name] for name in ("out_neu", "out_neg", "out_pos")]
 
     flux = (

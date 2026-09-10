@@ -270,6 +270,10 @@ DENS_WATER = 997.0
 """kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
 volumes at this bulk density."""
 
+LOG_MAX_FLOAT64 = 709.782712893384
+"""``log(np.finfo(float64).max)``. An exponent above this overflows to inf
+in linear space, which is how upstream's hydrate normalisation fails."""
+
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
 

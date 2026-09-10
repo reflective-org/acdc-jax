@@ -11,6 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import jax
+import jax.numpy as jnp
 import numpy as np
 import pytest
 
@@ -162,6 +163,40 @@ class TestFixture:
         dry = np.asarray(rates.collision_coefficients(inputs, T))
         a, n = system.index("1A"), system.index("1N")
         assert abs(golden["K"][n, a] / dry[n, a] - 1) > 0.01
+
+
+class TestOverflow:
+    def test_a_too_stable_hydrate_falls_back_to_dry_with_a_finite_gradient(
+        self, model
+    ) -> None:
+        """F7's discard branch. Upstream normalises in linear space, so a
+        very stable hydrate overflows to inf and the cluster reverts to
+        dry. Computing it that way gives a finite value through the final
+        `where` but leaves reverse mode crossing inf/inf, so `jax.grad`
+        came back NaN."""
+        import dataclasses
+
+        system, _, _, hm = model
+
+        def total(scale):
+            delta_h = jnp.where(
+                jnp.asarray(hm.waters) > 0, -1000.0 * scale, hm.expanded.delta_h
+            )
+            expanded = dataclasses.replace(hm.expanded, delta_h=delta_h)
+            return hydrates.hydrate_weights(
+                dataclasses.replace(hm, expanded=expanded), T
+            ).sum()
+
+        value = float(total(1.0))
+        gradient = float(jax.grad(total)(1.0))
+        # every cluster reverted to dry, so each row sums to exactly one
+        assert value == pytest.approx(float(system.n_clusters))
+        assert np.isfinite(gradient)
+
+    def test_the_ordinary_distribution_still_differentiates(self, model) -> None:
+        _, _, _, hm = model
+        gradient = float(jax.grad(lambda t: hydrates.hydrate_weights(hm, t).sum())(T))
+        assert np.isfinite(gradient)
 
 
 class TestTraceable:

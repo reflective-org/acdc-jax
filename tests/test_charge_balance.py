@@ -24,7 +24,7 @@ import pytest
 from acdc_jax import rates, rhs
 from acdc_jax.boundary import BoundarySystem
 from acdc_jax.clusterset import parse_cluster_set
-from acdc_jax.reactions import enumerate_reactions
+from acdc_jax.reactions import enumerate_reactions, parse_nonstandard_file
 from acdc_jax.system import build_system
 from acdc_jax.thermo import parse_dipole_file, parse_energy_file
 
@@ -170,6 +170,47 @@ class TestAssembly:
         keep = np.ones(system.n_equations, dtype=bool)
         keep[system.generic_pos] = False  # isconst differs by construction
         np.testing.assert_allclose(f[keep], f0[keep], rtol=1e-14)
+
+    def test_formation_rate_projects_too(self, model, tmp_path) -> None:
+        """The emitted code projects at the top of BOTH `feval` and
+        `formation` (fixture acdc_equations_cb1.f90:93-99); this had it in
+        `rhs` only.
+
+        No collision in the bundled set sends a charger ion out of the
+        system -- measured, zero of them -- so J there is independent of
+        both generic ions and the omission could not change a number. To
+        make the guarantee testable, `--nst` (Phase 8.8) is used to route
+        `neg + 1A` to the outgoing flux, which is what a wider cluster set
+        would do on its own. J from a state whose fitted ion is stale must
+        then equal J from the same state projected by hand.
+        """
+        system, _, inputs = model
+        cluster_set = parse_cluster_set(INPUTS / "input_ANnarrow_neutral_neg_pos.inp")
+        boundary = BoundarySystem(cluster_set)
+        rule = tmp_path / "nst.txt"
+        rule.write_text("neg 1A 1 out_neg\n")
+        reactions = enumerate_reactions(
+            system, boundary, nonstandard=parse_nonstandard_file(rule, system)
+        )
+
+        # charge_balance=-1 pins `neg`, which is now a collider that exits.
+        co = rhs.assemble(
+            system, reactions, inputs, 280.0, 1e-3, 3e6, 3e6, charge_balance=-1
+        )
+        c = np.full(system.n_equations, 1e10)
+        c[system.generic_neg] = 0.0  # stale: not the balanced value
+        projected = np.asarray(rhs.charge_balance_projection(system, c, -1))
+        assert projected[system.generic_neg] > 0
+
+        j_stale = float(rhs.formation_rate(system, co, c)["j_tot"])
+        j_projected = float(rhs.formation_rate(system, co, projected)["j_tot"])
+        assert j_stale == pytest.approx(j_projected, rel=1e-14)
+
+        # ...and it is not vacuous: reading the raw state, as the
+        # unprojected path did, gives a materially different J.
+        plain = rhs.assemble(system, reactions, inputs, 280.0, 1e-3, 3e6, 3e6)
+        j_unprojected = float(rhs.formation_rate(system, plain, c)["j_tot"])
+        assert abs(j_unprojected - j_stale) / j_stale > 1e-6
 
     def test_default_is_unchanged(self, model) -> None:
         system, reactions, inputs = model
