@@ -270,6 +270,10 @@ DENS_WATER = 997.0
 """kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
 volumes at this bulk density."""
 
+LOG_MAX_FLOAT64 = 709.782712893384
+"""``log(np.finfo(float64).max)``. An exponent above this overflows to inf
+in linear space, which is how upstream's hydrate normalisation fails."""
+
 PATHWAY_CRIT_OUT = 0.05
 """Fraction of the total outgoing flux below which an exit channel is folded
 into 'others' (track_fluxes.m crit_out)."""

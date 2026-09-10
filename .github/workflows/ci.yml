@@ -39,8 +39,12 @@ jobs:
       # the reference comparisons from skipped into real gates.
       - name: build the f2py bridge
         run: uv run python validation/reference/build.py
+      # The WHOLE suite, not just the bridge's own tests: several core
+      # modules (test_rates, test_reactions, test_rhs) skip themselves when
+      # the bridge is absent, so naming files here would leave them never
+      # run in CI.
       - name: pytest, bridge gates included
-        run: uv run pytest -q tests/test_reference_bridge.py tests/test_emitted.py tests/test_goldens.py
+        run: uv run pytest -q
 
   docs:
     name: docs build
