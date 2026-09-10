@@ -274,6 +274,13 @@ LOG_MAX_FLOAT64 = 709.782712893384
 """``log(np.finfo(float64).max)``. An exponent above this overflows to inf
 in linear space, which is how upstream's hydrate normalisation fails."""
 
+PATHWAY_CRIT_OUT = 0.05
+"""Fraction of the total outgoing flux below which an exit channel is folded
+into 'others' (track_fluxes.m crit_out)."""
+PATHWAY_CRIT_CLUST = 0.05
+"""Fraction of a cluster's total inflow below which a source is folded into
+'others' (track_fluxes.m crit_clust)."""
+
 NBINS = 5
 """Size bins for classifying loop-mode clusters (acdc_simulation_setup.f90:11)."""
 BIN_LIMITS_NM = (1.05, 1.28, 1.73, 2.59, 4.27, 6.36)

@@ -442,8 +442,9 @@ def evaporation_for_pairs(
     """Evaporation rates for a list of channels ``k -> i + j``, 1/s.
 
     Args:
-        parents, daughters_i, daughters_j: parallel index arrays, one entry
-            per evaporation channel.
+        parents: parent cluster index per evaporation channel.
+        daughters_i: first daughter index, parallel to ``parents``.
+        daughters_j: second daughter index, parallel to ``parents``.
 
     Returns:
         Shape ``(n_channels,)``.

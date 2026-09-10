@@ -1,0 +1,53 @@
+site_name: acdc-jax
+site_description: Differentiable atmospheric molecular-cluster dynamics in JAX, a faithful port of ACDC
+repo_url: https://github.com/reflective-org/acdc-jax
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+  features:
+    - navigation.sections
+    - content.code.copy
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: false
+            docstring_style: google
+            members_order: source
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - Home: index.md
+  - Physics: physics.md
+  - Fidelity: fidelity.md
+  - Validation: validation.md
+  - Porting notes: porting-notes.md
+  - Key decisions: KEY_DECISIONS.md
+  - API: api.md
+  - Plan:
+      - Overview: plan/ULTRAPLAN.md
+      - Progress: plan/PROGRESS.md
+      - Phase 0 harness: plan/phase-0-harness.md
+      - Phase 1 parser: plan/phase-1-parser.md
+      - Phase 2 boundary: plan/phase-2-boundary.md
+      - Phase 3 enumeration: plan/phase-3-enumeration.md
+      - Phase 4 rates: plan/phase-4-rates.md
+      - Phase 5 right-hand side: plan/phase-5-rhs.md
+      - Phase 6 solvers: plan/phase-6-solve.md
+      - Phase 7 autodiff: plan/phase-7-autodiff.md
+      - Phase 8 extended physics: plan/phase-8-extended-physics.md
+      - Phase 9 loop mode: plan/phase-9-loop-mode.md
+      - Phase 10 pathways, figures, docs: plan/phase-10-figures-docs.md

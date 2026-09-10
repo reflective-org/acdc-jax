@@ -127,6 +127,8 @@ def build_loop_system(cluster_set: ClusterSetFile) -> LoopSystem:
         has_generic_pos=False,
         charges_of_molecule=tuple(0 for _ in order),
         molecule_is_pseudo=tuple(False for _ in order),
+        molecule_parent=tuple(None for _ in order),
+        proton_host=None,
     )
 
     mol_mass = np.array([m.mass for m in molecules])
