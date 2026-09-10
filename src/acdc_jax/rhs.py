@@ -33,12 +33,14 @@ class Coefficients:
     evaporations.
     """
 
-    coef_quad: jnp.ndarray
-    """(nclust, nclust, neq)."""
-    coef_lin: jnp.ndarray
-    """(neq, neq, nclust)."""
-    multiplicity: np.ndarray
-    """(nclust, nclust, neq) int.
+    n_clusters: int
+    coef_quad: jnp.ndarray | None
+    """(nclust, nclust, neq). None when assembled without the dense tensors
+    (loop mode: n^2 * neq does not fit)."""
+    coef_lin: jnp.ndarray | None
+    """(neq, neq, nclust), or None."""
+    multiplicity: np.ndarray | None
+    """(nclust, nclust, neq) int, or None.
 
     How many of product ``k`` a single ``i + j`` collision yields. Almost
     always one; a boundary collision that strips two identical monomers off
@@ -240,6 +242,7 @@ def assemble(
         evap_rate = jnp.zeros(0)
 
     return Coefficients(
+        n_clusters=n,
         coef_quad=quad,
         coef_lin=lin,
         multiplicity=mult,
@@ -353,7 +356,7 @@ def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
         f = f.at[coefficients.evaporation_j].add(evaporation)
 
     # External losses: first-order, each booked to its own flux slot.
-    n = coefficients.coef_quad.shape[0]
+    n = coefficients.n_clusters
     for vector, slot in zip(coefficients.losses, coefficients.loss_slots, strict=True):
         lost = vector * c[:n]
         f = f.at[:n].add(-lost)

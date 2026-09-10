@@ -318,7 +318,14 @@ class LossSettings:
     sink alone.
     """
 
-    coagulation: Literal["exp_loss", "bg_loss"] = "exp_loss"
+    coagulation: Literal["exp_loss", "bg_loss"] | None = "exp_loss"
+    """None for no coagulation sink at all -- upstream's default, and what a
+    `--use_wl`-only run has."""
+    cs_exponent: float = config.CS_EXPONENT_DEFAULT
+    """`--exp_loss_exponent`."""
+    cs_reference: str | None = None
+    """`--exp_loss_ref_cluster`; None means the reference the inputs were
+    built with (the small-set path) or the first monomer (loop mode)."""
     bg_concentration: float = config.BG_CONCENTRATION_DEFAULT
     bg_diameter: float = config.BG_DIAMETER_DEFAULT
     bg_density: float = config.BG_DENSITY_DEFAULT
@@ -343,11 +350,14 @@ def first_order_losses(
 
     ``coag`` is either the exp_loss sink scaled by ``cs_ref`` or the
     bg_loss sink scaled by the background concentration (``cs_ref`` is then
-    unused, as upstream's ``--variable_cs`` is meaningless for bg_loss);
-    ``wall`` and ``dilution`` appear only when selected.
+    unused, as upstream's ``--variable_cs`` is meaningless for bg_loss), and
+    is absent when ``coagulation`` is None; ``wall`` and ``dilution`` appear
+    only when selected.
     """
     out: dict[str, jnp.ndarray] = {}
-    if settings.coagulation == "exp_loss":
+    if settings.coagulation is None:
+        pass
+    elif settings.coagulation == "exp_loss":
         out["coag"] = rates.coagulation_sink(inputs, cs_ref, fcs)
     elif settings.coagulation == "bg_loss":
         sink = background_coagulation_sink(

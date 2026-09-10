@@ -65,6 +65,11 @@ class Molecule:
     """-1 = not an acid; 1, 2, 3... = increasingly strong."""
     base_strength: int
     """-1 = not a base; 1, 2, 3... = increasingly strong."""
+    psat: float | None = None
+    """Saturation vapour pressure, Pa (optional `saturation vapor pressure`
+    row, Perl :1088). Used only by loop mode's Kelvin evaporation."""
+    surface_tension: float | None = None
+    """N/m (optional `surface tension` row, Perl :1100). Loop mode, Kelvin."""
 
     @property
     def is_proton(self) -> bool:
@@ -238,6 +243,11 @@ def _expand_ranges(cells: list[str], path: Path, raw: str) -> list[tuple[int, ..
     return rows
 
 
+def _float_or_none(cell: str) -> float | None:
+    value = _optional(cell)
+    return None if value is None else float(value)
+
+
 def _build_molecules(header: dict[str, list[str]], path: Path) -> tuple[Molecule, ...]:
     names = header["name"]
     n = len(names)
@@ -258,6 +268,8 @@ def _build_molecules(header: dict[str, list[str]], path: Path) -> tuple[Molecule
     corr_positive = column("corr_positive")
     acid = column("acid_strength", "-1")
     base = column("base_strength", "-1")
+    psat = column("psat")
+    surface_tension = column("surface_tension")
 
     molecules = []
     for i, name in enumerate(names):
@@ -279,6 +291,8 @@ def _build_molecules(header: dict[str, list[str]], path: Path) -> tuple[Molecule
                 corr_positive=_optional(corr_positive[i]),
                 acid_strength=int(acid[i]),
                 base_strength=int(base[i]),
+                psat=_float_or_none(psat[i]),
+                surface_tension=_float_or_none(surface_tension[i]),
             )
         )
     return tuple(molecules)
