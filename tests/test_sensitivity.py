@@ -189,6 +189,31 @@ class TestBatching:
         worst = float(np.max(np.abs(batched - loop) / np.abs(loop)))
         assert worst < 1e-9, worst
 
+    def test_rootfind_batches_too(self, model) -> None:
+        """The docstring offers `method="rootfind"`, and it used to raise
+        ConcretizationTypeError because that path called `int()` on the
+        solver's step count. Unlike the integrator, the root-find agrees
+        with the loop BITWISE: it converges to the same root, with no
+        adaptive step history to diverge."""
+        import jax.numpy as jnp
+
+        system, reactions, inputs = model
+        c_a = np.array([5e12, 1e13])
+        batched = np.asarray(
+            sensitivity.formation_rate_batch(
+                system,
+                reactions,
+                inputs,
+                sensitivity.Conditions(jnp.asarray(c_a), 1e15, 280.0, 1e-3, 3.0e6),
+                method="rootfind",
+            )
+        )
+        loop = sensitivity.sweep(
+            system, reactions, inputs, c_a, 1e15, 280.0, 1e-3, 3.0e6, method="rootfind"
+        )
+        assert np.all(np.isfinite(batched))
+        np.testing.assert_array_equal(batched, loop)
+
     def test_broadcasts_a_temperature_grid(self, model) -> None:
         """Any field may be the batched one; a scalar rides along."""
         import jax.numpy as jnp

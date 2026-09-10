@@ -65,6 +65,10 @@ defines J at all. The gate is 1e-9.
 | loop | 4.6 s | 14.4 s | 25.5 s | 49.2 s |
 | batched | 2.8 s | 3.2 s | 4.0 s | 5.3 s |
 
+Both methods batch. `"rootfind"` had to have its step count left as an
+array as well; it agrees with the loop *bitwise*, since it converges to the
+same root and has no adaptive step history to diverge.
+
 ## 7.5 jit ✅ (off by default, measured)
 
 Available as `formation_rate_batch(jit=True)`. It is **not** the default:

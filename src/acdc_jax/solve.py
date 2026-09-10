@@ -320,7 +320,10 @@ def steady_state_by_rootfind(
         j_total=formation["j_tot"],
         j_by_channel=formation["j_by_channel"],
         converged=solution.result == optimistix.RESULTS.successful,
-        steps=int(solution.stats.get("num_steps", 0)),
+        # Left as an array, like the integration path: `int()` here made
+        # the whole root-find path unbatchable, even though its docstring
+        # offered `method="rootfind"` to `formation_rate_batch`.
+        steps=solution.stats.get("num_steps", 0),
     )
 
 
