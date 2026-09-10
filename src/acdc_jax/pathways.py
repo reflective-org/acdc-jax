@@ -174,6 +174,40 @@ class Pathways:
     """Total outgoing flux, all charges, 1/m^3/s."""
 
 
+def _neutralised(system: AcdcSystem, counts: np.ndarray, proton: int) -> np.ndarray:
+    """Revert an ion pair's charge carriers before naming their product.
+
+    Upstream combines a recombining pair by first turning the negative ion
+    back into its corresponding neutral molecule -- or, when the ion is
+    described by a missing proton, simply dropping it -- and taking one
+    proton off the positive side, and only then adding the compositions
+    (Perl :10077-10125). Adding first conserves charge but invents
+    molecules: ``3A1B2N + 2A3N1P`` would be reported as ``5A1B5N1P`` where
+    upstream names it ``6A5N``.
+
+    The same chemistry as :meth:`BoundarySystem._recombine`, which
+    additionally decides whether the product is a nameable member of the
+    system; a label for a diagnostic needs only the composition.
+    """
+    counts = np.asarray(counts).copy()
+    carrier = next(
+        (
+            t
+            for t in range(len(counts))
+            if counts[t] > 0 and system.charges_of_molecule[t] < 0
+        ),
+        -1,
+    )
+    if carrier >= 0:
+        counts[carrier] -= 1
+        parent = system.molecule_parent[carrier]
+        if parent is not None and parent in system.order:
+            counts[system.order.index(parent)] += 1
+    if proton >= 0 and counts[proton] > 0:
+        counts[proton] -= 1
+    return counts
+
+
 def _significant(items, crit: float):
     """``get_significant``: keep entries at or above ``crit`` of the total,
     aggregated by key, largest first."""
@@ -239,8 +273,19 @@ def track_pathways(
             return same[0]
         return i if mols[i] >= mols[j] else j
 
+    proton = next(
+        (
+            t
+            for t, pseudo in enumerate(system.molecule_is_pseudo)
+            if pseudo and system.charges_of_molecule[t] > 0
+        ),
+        -1,
+    )
+
     def combined_label(i: int, j: int) -> str:
         summed = compositions[i] + compositions[j]
+        if charges[i] * charges[j] < 0:
+            summed = _neutralised(system, summed, proton)
         return label_module.format_label(
             {m: int(k) for m, k in zip(system.order, summed, strict=True)},
             system.order,
