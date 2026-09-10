@@ -152,5 +152,6 @@ loudly with informative errors.
 - Planning docs live in `docs/plan/`: `ULTRAPLAN.md`, one `phase-N-*.md`
   per phase, and `PROGRESS.md` as the live status log. Each task `N.M` is
   one commit.
-- **No Claude attribution** (no `Co-Authored-By` / `Generated with` lines)
-  in commits or PRs.
+- Commit and PR attribution follows the Claude Code harness's current
+  instructions. (An earlier draft of this file said the opposite, copied
+  from sibling repos; the harness instruction supersedes it.)

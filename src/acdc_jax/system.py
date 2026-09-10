@@ -68,20 +68,26 @@ class AcdcSystem:
         return self.labels.index("pos") if self.has_generic_pos else -1
 
     def is_monomer(self, i: int) -> bool:
-        """A single molecule, ignoring the proton it may be carrying.
+        """Exactly one molecule, not counting the proton pseudo-species.
 
-        `1N1P` (protonated ammonia) is a monomer even though it has two
-        entries: the proton is charge bookkeeping, not a second molecule.
+        The generator's ``check_monomer``/``calculate_molecules`` (Perl
+        :10823-10845): every molecule type counts except the proton and the
+        missing proton. So ``1N1P`` is a monomer (the proton is charge
+        bookkeeping), ``1B`` -- the bisulfate ion, a charged molecule in its
+        own right -- is a monomer too, and ``1A1B`` is not. An earlier draft
+        excluded every charged molecule type, which got both of the last two
+        backwards; only the Su73 dipole-locking choice reads this, and the
+        bundled locking coefficients are equal, so nothing caught it until
+        the --nst `clusters` rule needed the real definition.
         """
         counts = self.compositions[i]
-        total = sum(
-            n
-            for j, n in enumerate(counts)
-            if self.charges_of_molecule[j] == 0 and n > 0
-        )
+        total = sum(n for j, n in enumerate(counts) if not self.molecule_is_pseudo[j])
         return total == 1
 
     charges_of_molecule: tuple[int, ...] = ()
+    molecule_is_pseudo: tuple[bool, ...] = ()
+    """Per molecule type in ``order``: True for the proton and the missing
+    proton, which are charge bookkeeping rather than molecules."""
 
 
 def generic_ion_composition(
@@ -169,6 +175,9 @@ def build_system(
         has_generic_neg=include_generic_neg,
         has_generic_pos=include_generic_pos,
         charges_of_molecule=molecule_charges,
+        molecule_is_pseudo=tuple(
+            by_name[n].is_proton or by_name[n].is_missing_proton for n in order
+        ),
     )
 
 

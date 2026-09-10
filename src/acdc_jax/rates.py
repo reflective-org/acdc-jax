@@ -20,7 +20,7 @@ import dataclasses
 import jax.numpy as jnp
 import numpy as np
 
-from acdc_jax import config, geometry
+from acdc_jax import config, geometry, rules
 from acdc_jax.clusterset import ClusterSetFile
 from acdc_jax.system import AcdcSystem
 from acdc_jax.thermo import DipoleTable, EnergyTable
@@ -58,6 +58,14 @@ class RateInputs:
     partner) or has no data."""
     polarizability: np.ndarray
     """Angstrom^3."""
+    dipole_locked: np.ndarray
+    """Debye, multiplied by the Su73 dipole LOCKING coefficient.
+
+    Su73 damps the dipole by a factor from the dipole file's header --
+    a separate coefficient for monomers and for clusters (Perl :7880-7886).
+    Su82 reads those two header lines and ignores them, so this column is
+    used only by Su73.
+    """
     charge: np.ndarray
     """-1, 0 or +1, shape (nclust,)."""
     pair_kind: np.ndarray
@@ -73,6 +81,27 @@ class RateInputs:
     delta_s: np.ndarray
     cs_shape: np.ndarray
     """Coagulation-sink size dependence, dimensionless, shape (nclust,)."""
+    sticking: np.ndarray
+    """(nclust, nclust) sticking factor multiplying K, 1.0 by default.
+
+    From the --sticking_factor rule list (:mod:`acdc_jax.rules`). Already
+    rounded to the generator's %.4e literal. Under upstream's emission the
+    same factor also multiplies E -- see F19 and
+    ``FidelityConfig.sticking_on_evaporation``.
+    """
+    evap_scale_kcal: np.ndarray
+    """(nclust, nclust) kcal/mol ADDED to the reaction free energy of the
+    evaporation k -> i + j, indexed by the daughters. Zero by default. From
+    the --scale_evap rule list; the emitted Fortran shows it as an extra
+    ``+scale/temperature`` term beside H/T - S/1e3, i.e. inside the exponent.
+    K is untouched.
+    """
+    cs_excluded: np.ndarray
+    """(nclust,) bool: clusters given a special zero sink (``--cs_only X,0``).
+    Every sink formulation honours it; ``cs_shape`` already carries the zero
+    for the exp_loss form."""
+    is_generic_ion: np.ndarray
+    """(nclust,) bool: the two generic charger ions."""
     has_energy_data: np.ndarray
     """(nclust,) bool: clusters with tabulated quantum-chemical energies.
 
@@ -103,6 +132,8 @@ def build_rate_inputs(
     energies: EnergyTable,
     dipoles: DipoleTable,
     reactions=None,
+    sticking_rules: tuple[rules.Rule, ...] = (),
+    evap_scale_rules: tuple[rules.Rule, ...] = (),
     cs_reference_label: str = "1A",
     cs_exponent: float = config.CS_EXPONENT_DEFAULT,
     cs_excluded: tuple[str, ...] = ("1A", "1N"),
@@ -143,10 +174,17 @@ def build_rate_inputs(
 
     dipole = np.zeros(n)
     polarizability = np.zeros(n)
+    dipole_locked = np.zeros(n)
     for i, label in enumerate(system.labels):
         if label in dipoles.dipole:
             dipole[i] = dipoles.dipole[label]
             polarizability[i] = dipoles.polarizability[label]
+            locking = (
+                dipoles.monomer_locking
+                if system.is_monomer(i)
+                else dipoles.cluster_locking
+            )
+            dipole_locked[i] = dipoles.dipole[label] * locking
 
     delta_h = np.array([energies.delta_h.get(label, 0.0) for label in system.labels])
     delta_s = np.array([energies.delta_s.get(label, 0.0) for label in system.labels])
@@ -160,6 +198,12 @@ def build_rate_inputs(
         system, diameter_nm, cs_reference_label, cs_exponent, cs_excluded
     )
 
+    cs_excluded_mask = np.array([label in cs_excluded for label in system.labels])
+    is_generic_ion = np.zeros(n, dtype=bool)
+    for index in (system.generic_neg, system.generic_pos):
+        if index >= 0:
+            is_generic_ion[index] = True
+
     valid_pairs = np.zeros((n, n), dtype=bool)
     if reactions is None:
         # No reaction list supplied: fall back to charge compatibility. Gives
@@ -172,11 +216,14 @@ def build_rate_inputs(
             valid_pairs[collision.j, collision.i] = True
 
     return RateInputs(
+        sticking=rules.sticking_matrix(system, sticking_rules),
+        evap_scale_kcal=rules.evap_scale_matrix(system, evap_scale_rules),
         mass=mass_g * config.MASS_CONV,
         radius=radius,
         diameter_nm=diameter_nm,
         dipole=dipole,
         polarizability=polarizability,
+        dipole_locked=dipole_locked,
         charge=charge,
         pair_kind=pair_kind,
         neutral_partner=neutral_partner,
@@ -184,6 +231,8 @@ def build_rate_inputs(
         delta_h=delta_h,
         delta_s=delta_s,
         cs_shape=cs_shape,
+        cs_excluded=cs_excluded_mask,
+        is_generic_ion=is_generic_ion,
         has_energy_data=has_energy_data,
         valid_pairs=valid_pairs,
     )
@@ -303,7 +352,36 @@ def langevin_prefactor(inputs: RateInputs) -> jnp.ndarray:
     )
 
 
-def collision_coefficients(inputs: RateInputs, temperature) -> jnp.ndarray:
+def su73_ionic_rate(inputs: RateInputs, temperature) -> jnp.ndarray:
+    """Su & Bowers (1973) ion-neutral capture rate, m^3/s.
+
+    Unlike Su82 this returns an ABSOLUTE rate rather than a ratio -- the
+    published constants absorb the Langevin prefactor (Perl :8199-8213)::
+
+        rate = (9.5436e-29 sqrt(alpha) + 6.4805e-27 mu_locked / sqrt(T))
+               * sqrt(1/m_i + 1/m_j)
+
+    ``mu_locked`` is the dipole moment damped by the locking coefficient,
+    which is the parameterization's way of accounting for the dipole not
+    staying aligned with the field during the encounter.
+    """
+    partner = inputs.neutral_partner
+    polarizability = jnp.asarray(inputs.polarizability)[partner]
+    dipole = jnp.asarray(inputs.dipole_locked)[partner]
+    mass = jnp.asarray(inputs.mass)
+    reduced = jnp.sqrt(1.0 / mass[:, None] + 1.0 / mass[None, :])
+
+    return (
+        config.SU73_POL * jnp.sqrt(polarizability)
+        + config.SU73_DIP * dipole / jnp.sqrt(temperature)
+    ) * reduced
+
+
+def collision_coefficients(
+    inputs: RateInputs,
+    temperature,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+) -> jnp.ndarray:
     """Collision coefficients K, m^3/s. Shape (nclust, nclust).
 
     Dispatches on the pair classification: hard sphere for neutral pairs,
@@ -316,12 +394,30 @@ def collision_coefficients(inputs: RateInputs, temperature) -> jnp.ndarray:
     (Perl :8886-8888).
     """
     beta = hard_sphere(inputs, temperature)
-    ionic = su82_enhancement(inputs, temperature) * langevin_prefactor(inputs)
+    method = fidelity.ion_collision_method
+
+    if method == "su82":
+        enhanced = jnp.maximum(
+            su82_enhancement(inputs, temperature) * langevin_prefactor(inputs), beta
+        )
+    elif method == "su73":
+        enhanced = jnp.maximum(su73_ionic_rate(inputs, temperature), beta)
+    elif method == "constant":
+        enhanced = config.ION_ENHANCEMENT_CONSTANT * beta
+    elif method == "constant_no_enhancement":
+        # Reproduces upstream's variable-temperature path, where the
+        # documented factor of 10 is silently dropped. See fidelity F15.
+        enhanced = beta
+    else:  # pragma: no cover - Literal keeps this unreachable
+        raise ValueError(f"unknown ion collision method {method!r}")
 
     kind = jnp.asarray(inputs.pair_kind)
     k = jnp.where(kind == PAIR_NEUTRAL, beta, 0.0)
-    k = jnp.where(kind == PAIR_ION_NEUTRAL, jnp.maximum(ionic, beta), k)
+    k = jnp.where(kind == PAIR_ION_NEUTRAL, enhanced, k)
     k = jnp.where(kind == PAIR_RECOMBINATION, config.RECOMB_COEFF, k)
+    # Sticking factors sit outside everything else, including the max():
+    # `K(53,1) = 2.0000d+00*max((...`. Ones where no rule applies.
+    k = k * jnp.asarray(inputs.sticking)
     return jnp.where(jnp.asarray(inputs.valid_pairs), k, 0.0)
 
 
@@ -341,6 +437,7 @@ def evaporation_for_pairs(
     daughters_j: np.ndarray,
     temperature,
     reference_pressure: float = config.P_ATM,
+    fidelity: config.FidelityConfig = config.DEFAULT,
 ) -> jnp.ndarray:
     """Evaporation rates for a list of channels ``k -> i + j``, 1/s.
 
@@ -353,6 +450,9 @@ def evaporation_for_pairs(
     """
     gibbs = gibbs_at(inputs, temperature)
     delta = gibbs[parents] - gibbs[daughters_i] - gibbs[daughters_j]
+    # --scale_evap: a per-channel Delta-G correction, kcal/mol, added inside
+    # the exponent. Zero unless rules were supplied.
+    delta = delta + jnp.asarray(inputs.evap_scale_kcal)[daughters_i, daughters_j]
 
     # kcal/mol -> J per molecule, then divided by k_B T. The reference folds
     # this into the single constant 5.03218937158374e2 = KCAL_PER_MOL_TO_J/k_B.
@@ -364,7 +464,15 @@ def evaporation_for_pairs(
     symmetric = jnp.asarray(daughters_i == daughters_j)
     factor = jnp.where(symmetric, 0.5, 1.0)
 
-    return factor * number_density * jnp.exp(exponent) * beta
+    rate = factor * number_density * jnp.exp(exponent) * beta
+
+    # F19: upstream prepends the sticking literal to the E expression, which
+    # already references the K that carries it, so E scales as s^2 while K
+    # scales as s. Reproduced by default; "detailed_balance" applies it once
+    # (through K only) so E/K stays exp(dG/kT)/n_ref.
+    if fidelity.sticking_on_evaporation == "upstream":
+        rate = rate * jnp.asarray(inputs.sticking)[daughters_i, daughters_j]
+    return rate
 
 
 def coagulation_sink(

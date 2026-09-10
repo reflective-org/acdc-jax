@@ -26,7 +26,17 @@ INPUT = REPO / "fortran/src/Perl_input/input_ANnarrow_neutral_neg_pos.inp"
 sys.path.insert(0, str(REPO / "validation/reference"))
 sys.path.insert(0, str(REPO / "validation"))
 metadata = pytest.importorskip("metadata")
-reference = pytest.importorskip("reference")
+try:
+    import reference
+except ImportError as exc:  # the compiled bridge is absent
+    # `pytest.importorskip` does not cover this: the package imports and
+    # then raises because its .so is missing, which pytest treats as an
+    # error rather than a missing module. CI without gfortran found it.
+    pytest.skip(
+        f"Fortran bridge not built ({exc}); "
+        "run: uv run python validation/reference/build.py",
+        allow_module_level=True,
+    )
 
 
 @pytest.fixture(scope="module")

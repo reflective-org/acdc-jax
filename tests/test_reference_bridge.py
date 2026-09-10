@@ -21,10 +21,17 @@ import pytest
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "validation"))
 
-reference = pytest.importorskip(
-    "reference",
-    reason="Fortran bridge not built: uv run python validation/reference/build.py",
-)
+try:
+    import reference
+except ImportError as exc:  # the compiled bridge is absent
+    # `pytest.importorskip` does not cover this: the package imports and
+    # then raises because its .so is missing, which pytest treats as an
+    # error rather than a missing module. CI without gfortran found it.
+    pytest.skip(
+        f"Fortran bridge not built ({exc}); "
+        "run: uv run python validation/reference/build.py",
+        allow_module_level=True,
+    )
 
 T_REF = 280.0
 COEF = reference.make_coef(temperature=T_REF, cs_ref=1e-3, ipr_neg=3.0e6)

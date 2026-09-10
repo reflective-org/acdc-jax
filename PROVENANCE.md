@@ -49,6 +49,22 @@ that is absent from the committed example. Reproducing the committed files
 byte-for-byte requires the 2020 generator; validating against current
 upstream behaviour requires the 2024 one.
 
+### Which generator produced the validation goldens
+
+Every golden under `validation/goldens/` is generated with the **2020**
+script, because the shipped example the port is gated on came from it and
+the goldens must be consistent with that baseline.
+`validation/capture_variants.py` then regenerates every variant with the
+**2024** script and compares: K, E, the loss vectors and the reaction graph
+are identical for every variant except the `diffusion` wall loss (F16: the
+2024 generator gives the generic ions a wall loss too; exposed as a
+`FidelityConfig` flag). The only other 2020/2024 difference observed on the
+bundled system is a renumbering of the flux-bookkeeping slots after the
+recombination counter (the 2024 file inserts one), which changes nothing
+physical. The cross-check refuses to complete if a variant differs
+unexpectedly, so a new 2020-specific quirk cannot slip into a golden
+unrecorded.
+
 ### Regeneration is reproducible to 1e-14
 
 `fortran/src/run_perl.sh`'s invocation, replayed with the 2020 generator

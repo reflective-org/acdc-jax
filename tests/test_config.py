@@ -150,7 +150,7 @@ class TestFidelityConfig:
         cfg = config.DEFAULT
         assert cfg.constants == "acdc"
         assert cfg.fitted_projection == "fortran"
-        assert cfg.enforce_charge_balance is False
+        assert cfg.charge_balance == 0
         assert cfg.clamp_negative_j is True
 
     def test_is_frozen(self) -> None:

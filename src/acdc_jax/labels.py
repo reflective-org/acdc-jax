@@ -82,6 +82,31 @@ def canonical(label: str, order: list[str] | tuple[str, ...]) -> str:
     return format_label(composition, order)
 
 
+def canonical_hydrate(
+    label: str, order: list[str] | tuple[str, ...], water: str = "W"
+) -> str:
+    """Canonicalise a label that may carry a water count the system lacks.
+
+    The energy and dipole files list hydrates as ``<dry label><n>W`` (Perl
+    ``get_corresponding_dry``, :10760). Water is not a species, so when
+    ``W`` is not in the molecule order the water term is split off and
+    re-attached after the canonical dry label: ``1N1A2W`` -> ``1A1N2W``.
+    If the system does have a molecule called ``W`` the label is treated as
+    an ordinary composition.
+    """
+    if is_generic_ion(label) or water in order:
+        return canonical(label, order)
+    composition = parse(label)
+    waters = composition.pop(water, 0)
+    dry = format_label(composition, order)
+    unknown = set(composition) - set(order)
+    if unknown:
+        raise ValueError(
+            f"label {label!r} contains molecules not in the system: {sorted(unknown)}"
+        )
+    return f"{dry}{waters}{water}" if waters else dry
+
+
 def total_molecules(label: str) -> int:
     """Total molecule count, used to tell monomers from clusters.
 

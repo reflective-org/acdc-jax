@@ -16,7 +16,9 @@ import dataclasses
 import jax.numpy as jnp
 import numpy as np
 
-from acdc_jax import rates
+from acdc_jax import config, losses, rates
+from acdc_jax import hydrates as hydrate_module
+from acdc_jax.hydrates import HydrateModel
 from acdc_jax.reactions import ReactionSet
 from acdc_jax.system import AcdcSystem
 
@@ -65,9 +67,19 @@ class Coefficients:
     evaporation_i: np.ndarray
     evaporation_j: np.ndarray
     evaporation_rate: jnp.ndarray
-    sink: jnp.ndarray
-    """(nclust,) first-order coagulation sink, 1/s."""
-    coag_slot: int
+    losses: tuple[jnp.ndarray, ...]
+    """First-order external losses, each (nclust,) in 1/s, one per slot in
+    ``loss_slots`` (coagulation, wall, dilution -- whichever are on)."""
+    loss_slots: tuple[int, ...]
+    charge_balance: int = 0
+    """--charge_balance mode; see charge_balance_projection."""
+    system: AcdcSystem | None = None
+    """Needed only when charge_balance != 0, for the projection inside rhs()."""
+
+    @property
+    def sink(self) -> jnp.ndarray:
+        """Total first-order external loss per cluster, 1/s."""
+        return sum(self.losses)
 
 
 def assemble(
@@ -80,6 +92,10 @@ def assemble(
     ipr_pos: float = 0.0,
     constant_vapours: tuple[str, ...] = ("1A", "1N"),
     fcs: float = 1.0,
+    charge_balance: int = 0,
+    fidelity: config.FidelityConfig = config.DEFAULT,
+    hydrates: HydrateModel | None = None,
+    loss_settings: losses.LossSettings | None = None,
 ) -> Coefficients:
     """Build the coefficient tensors for one set of ambient conditions.
 
@@ -88,11 +104,36 @@ def assemble(
             the steady-state assumption the reference pins the neutral
             vapour monomers (``acdc_simulation_setup.f90:84``); the ionic
             monomers stay free so they can respond to ion production.
+        fidelity: forwarded to every rate formula.
+        hydrates: a :func:`~acdc_jax.hydrates.build_hydrate_model` result.
+            When given, K, E and every loss are the hydrate-averaged ones
+            (``--rh``); the model must have been built from these same
+            reactions.
+        loss_settings: which first-order losses to include. Default: the
+            exp_loss coagulation sink only, as in the shipped example.
     """
     n, neq = system.n_clusters, system.n_equations
+    if loss_settings is None:
+        loss_settings = losses.LossSettings()
 
-    collision = rates.collision_coefficients(inputs, temperature)
-    sink = rates.coagulation_sink(inputs, cs_ref, fcs)
+    if hydrates is None:
+        collision = rates.collision_coefficients(inputs, temperature, fidelity)
+        loss_vectors = losses.first_order_losses(
+            loss_settings, inputs, temperature, cs_ref, fcs, fidelity
+        )
+    else:
+        collision = hydrate_module.collision_coefficients(
+            hydrates, temperature, fidelity
+        )
+        per_species = losses.first_order_losses(
+            loss_settings, hydrates.expanded, temperature, cs_ref, fcs, fidelity
+        )
+        loss_vectors = {
+            name: hydrate_module.average_vector(hydrates, vector, temperature, fidelity)
+            for name, vector in per_species.items()
+        }
+    loss_slots = tuple(system.flux_index[name] for name in loss_vectors)
+    loss_list = tuple(loss_vectors.values())
 
     quad = jnp.zeros((n, n, neq))
     mult = np.ones((n, n, neq), dtype=np.int32)
@@ -130,18 +171,31 @@ def assemble(
         parents = np.array([e.k for e in reactions.evaporations])
         di = np.array([e.i for e in reactions.evaporations])
         dj = np.array([e.j for e in reactions.evaporations])
-        evaporation = rates.evaporation_for_pairs(
-            inputs, collision, parents, di, dj, temperature
-        )
+        if hydrates is None:
+            evaporation = rates.evaporation_for_pairs(
+                inputs, collision, parents, di, dj, temperature, fidelity=fidelity
+            )
+        else:
+            same_channels = (
+                np.array_equal(hydrates.channel_parent, parents)
+                and np.array_equal(hydrates.channel_i, di)
+                and np.array_equal(hydrates.channel_j, dj)
+            )
+            if not same_channels:
+                raise ValueError("hydrate model was built from different reactions")
+            evaporation = hydrate_module.evaporation(
+                hydrates, temperature, fidelity=fidelity
+            )
         lin = lin.at[di, dj, parents].add(evaporation)
         asymmetric = di != dj
         lin = lin.at[dj[asymmetric], di[asymmetric], parents[asymmetric]].add(
             evaporation[asymmetric]
         )
 
-    # The coagulation sink is a first-order loss booked to its own slot.
-    coag = system.flux_index["coag"]
-    lin = lin.at[coag, coag, :].add(sink)
+    # External first-order losses, each booked to its own flux slot
+    # (coef_lin(56,56,k) coagulation, (57,57,k) wall, (58,58,k) dilution).
+    for vector, slot in zip(loss_list, loss_slots, strict=True):
+        lin = lin.at[slot, slot, :].add(vector)
 
     source = jnp.zeros(neq)
     if system.generic_neg >= 0:
@@ -153,6 +207,15 @@ def assemble(
     for label in constant_vapours:
         if label in system.labels:
             isconst[system.labels.index(label)] = True
+
+    # Under --charge_balance the fitted ion is algebraic, not integrated:
+    # the generator marks it isconst and drops its source (cb1.f90:227-230).
+    if charge_balance > 0 and system.generic_pos >= 0:
+        isconst[system.generic_pos] = True
+        source = source.at[system.generic_pos].set(0.0)
+    elif charge_balance < 0 and system.generic_neg >= 0:
+        isconst[system.generic_neg] = True
+        source = source.at[system.generic_neg].set(0.0)
 
     coll_i, coll_j, coll_rate = [], [], []
     prod_index, prod_owner, prod_mult = [], [], []
@@ -192,9 +255,54 @@ def assemble(
         evaporation_i=evap_i,
         evaporation_j=evap_j,
         evaporation_rate=evap_rate,
-        sink=sink,
-        coag_slot=coag,
+        losses=loss_list,
+        loss_slots=loss_slots,
+        charge_balance=charge_balance,
+        system=system if charge_balance else None,
     )
+
+
+def charge_balance_projection(
+    system: AcdcSystem, c: jnp.ndarray, mode: int
+) -> jnp.ndarray:
+    """Set one generic ion to balance the net charge of everything else.
+
+    Reproduces the block the generator emits at the top of ``feval`` AND
+    ``formation`` under ``--charge_balance`` (fixture cb1.f90:93-99)::
+
+        excess = c(neg) + sum(c(negative clusters)) - sum(c(positive clusters))
+        if excess > 0:  c(pos) = excess
+        else:           c(neg) = -(sum(neg clusters) - sum(pos clusters)); c(pos) = 0
+
+    for ``mode = +1``; ``mode = -1`` is the mirror. ``mode = 0`` is the
+    identity. Note the else-branch OVERWRITES the sourced ion too.
+
+    Upstream mutates ``c`` in place inside the RHS -- a state change through
+    the ODE solver. Here it is a pure projection applied to the state before
+    the RHS and before J, which is the same computation without the side
+    effect. Branch-free via jnp.where so it stays traceable.
+    """
+    c = jnp.asarray(c)
+    if mode == 0:
+        return c
+    charges = jnp.asarray(system.charges)
+    n = system.n_clusters
+    neg_i, pos_i = system.generic_neg, system.generic_pos
+    # Charged CLUSTERS only -- the generic ions are handled explicitly.
+    is_cluster = jnp.arange(n) < n
+    is_cluster = is_cluster.at[neg_i].set(False).at[pos_i].set(False)
+    neg_sum = jnp.sum(jnp.where(is_cluster & (charges < 0), c[:n], 0.0))
+    pos_sum = jnp.sum(jnp.where(is_cluster & (charges > 0), c[:n], 0.0))
+
+    if mode > 0:
+        excess = c[neg_i] + neg_sum - pos_sum
+        c_pos = jnp.where(excess > 0, excess, 0.0)
+        c_neg = jnp.where(excess > 0, c[neg_i], -(neg_sum - pos_sum))
+    else:
+        excess = c[pos_i] + pos_sum - neg_sum
+        c_neg = jnp.where(excess > 0, excess, 0.0)
+        c_pos = jnp.where(excess > 0, c[pos_i], -(pos_sum - neg_sum))
+    return c.at[neg_i].set(c_neg).at[pos_i].set(c_pos)
 
 
 def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
@@ -218,6 +326,11 @@ def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
     - An evaporation flux is ``rate * c_k``, added to BOTH daughters, so a
       symmetric channel delivers two.
     """
+    if coefficients.charge_balance:
+        c = charge_balance_projection(
+            coefficients.system, c, coefficients.charge_balance
+        )
+
     quad_i = coefficients.collision_i
     quad_j = coefficients.collision_j
     rate = coefficients.collision_rate
@@ -239,11 +352,12 @@ def rhs(coefficients: Coefficients, c: jnp.ndarray) -> jnp.ndarray:
         f = f.at[coefficients.evaporation_i].add(evaporation)
         f = f.at[coefficients.evaporation_j].add(evaporation)
 
-    # External losses: first-order, booked to the coagulation slot.
+    # External losses: first-order, each booked to its own flux slot.
     n = coefficients.coef_quad.shape[0]
-    sink_loss = coefficients.sink * c[:n]
-    f = f.at[:n].add(-sink_loss)
-    f = f.at[coefficients.coag_slot].add(jnp.sum(sink_loss))
+    for vector, slot in zip(coefficients.losses, coefficients.loss_slots, strict=True):
+        lost = vector * c[:n]
+        f = f.at[:n].add(-lost)
+        f = f.at[slot].add(jnp.sum(lost))
 
     f = f + coefficients.source
 
@@ -265,7 +379,18 @@ def formation_rate(
     The reference computes a per-cluster and per-charge-pair breakdown and
     then discards both (``driver_acdc_J.f90:359-363``). They cost nothing
     once the flux exists, so they are returned.
+
+    Under ``--charge_balance`` the fitted generic ion is pinned, so its
+    stored entry is not the balanced value; the emitted code projects at
+    the top of BOTH ``feval`` and ``formation`` (fixture
+    ``acdc_equations_cb1.f90``), so this does too. Without it a grow-out
+    collision involving that ion gives a J the Fortran would not.
     """
+    if coefficients.charge_balance:
+        c = charge_balance_projection(
+            coefficients.system, c, coefficients.charge_balance
+        )
+
     slots = [system.flux_index[name] for name in ("out_neu", "out_neg", "out_pos")]
 
     flux = (

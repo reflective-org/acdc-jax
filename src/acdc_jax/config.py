@@ -145,14 +145,16 @@ SU82_E = 0.62
 SU82_X_SWITCH = 2.0
 SU82_LANGEVIN = 4.8032e-16
 
-# Su & Bowers (1973), the alternative (P:8825).
+# Su & Bowers (1973), the alternative (P:8199-8213).
 #   fcr = (SU73_POL*sqrt(alpha) + SU73_DIP*mu_D/sqrt(T)) * sqrt(1/m1 + 1/m2)
 #         / beta_hard_sphere,  floored at 1
 SU73_POL = 9.5436e-29
 SU73_DIP = 6.4805e-27
 
 ION_ENHANCEMENT_CONSTANT = 10.0
-"""Size-independent enhancement for ``--ion_coll_method constant`` (P:8889)."""
+"""Size-independent enhancement for ``--ion_coll_method constant``. Set at
+P:8267-8271; under --variable_temp dropped at P:8436, where the `constant`
+method is excluded from the max(fcr, hard sphere) emission (F15)."""
 
 # ---------------------------------------------------------------------------
 # Loss constants
@@ -166,6 +168,111 @@ CS_EXPONENT_DEFAULT = -1.6
 
 CS_COEFFICIENT_DEFAULT = 2.6e-3
 """exp_loss reference coagulation sink, 1/s (acdc_system_AN_ions_example.f90:15)."""
+
+# bg_loss: coagulation onto a monodisperse background population
+# (Perl :325-327 for the defaults, :6668-6699 for the physics). The
+# generator dies if this is combined with variable temperature (:6665); JAX
+# has no such limit, so here the sink follows temperature.
+
+BG_CONCENTRATION_DEFAULT = 1e3 * 1e6
+"""Background particle number concentration, m^-3 (generator default 1e3 cm^-3)."""
+
+BG_DIAMETER_DEFAULT = 100e-9
+"""Background particle diameter, m (generator default 100 nm)."""
+
+BG_DENSITY_DEFAULT = 1000.0
+"""Background particle density, kg/m^3."""
+
+AIR_VISCOSITY_A = 2.5277e-7
+AIR_VISCOSITY_B = 0.75302
+"""Dynamic viscosity of air as ``A * T**B``, Pa s -- the DMAN fit ACDC
+inherited (Perl :6668). Not Sutherland's form; matching the reference wins."""
+
+AIR_MOLAR_MASS = 0.0289
+"""kg/mol, in the mean-free-path expression (Perl :6670)."""
+
+# Phillips (1975) slip correction to the Brownian diffusivity, as a rational
+# function of lambda/r:  (5 + 4x + 6x^2 + 18x^3) / (5 - x + (8 + pi) x^2).
+# The reference labels it "S&P Eq. 9.73" (Perl :6672, :6692).
+PHILLIPS_SLIP_NUMERATOR = (5.0, 4.0, 6.0, 18.0)
+PHILLIPS_SLIP_DENOMINATOR = (5.0, 1.0, 8.0)
+
+# Wall losses (Perl :7100-7375). Six chamber/flow-tube parameterizations.
+# All of them apply to EVERY cluster including the vapour monomers -- unlike
+# the coagulation sink, there is no --cs_only exclusion for walls -- and
+# charged clusters are multiplied by FWL_DEFAULT.
+
+WL_IFT = 2.3e-2
+"""IfT-LFT flow-tube wall loss, 1/s, flat (Berndt & Richters 2011; Perl :7373)."""
+
+# CLOUD4 (Almeida et al. 2013): 1.66e-12 / d_mob, with d_mob = (d + 0.3 nm)
+# * sqrt(1 + m_N2/m). Here the mass correction is applied CORRECTLY --
+# $mass1 is the raw kg value -- unlike the metadata emission in F11.
+WL_CLOUD4_JA = 1.66e-12
+"""m/s, Perl :7208."""
+
+WL_CLOUD3 = 1.310e-12
+"""m/s, same form as CLOUD4_JA with the CLOUD3 coefficient (Perl :7251)."""
+
+WL_CLOUD4_SIMPLE = 1.0e-12
+"""m/s, over (d + 0.3 nm) with NO mass correction (Kurten et al. 2015; Perl :7230)."""
+
+# CLOUD4_JK (Jasper Kirkby's Excel fit; Perl :7101-7118). wl = 0.774*sqrt(D)
+# with D the slip-corrected Brownian diffusivity of the mobility diameter.
+WL_JK_PREFACTOR = 0.774
+WL_JK_VISCOSITY = (1.708e-5, 273.15, 1.5, 393.396, 120.246)
+"""Sutherland-type air viscosity: 1.708e-5 (T/273.15)^1.5 * 393.396/(T+120.246)."""
+WL_JK_SLIP = (2.0e-9, 101300.0, 0.752e-6, 6.32, 2.01, 0.1095e9)
+"""Slip correction 1 + 2e-9/(P d 0.752e-6) (6.32 + 2.01 exp(-0.1095e9 P d 0.752e-6)),
+at P = 101300 Pa, as written."""
+
+# CLOUD4_AK (Andreas Kurten; Perl :7155-7175). wl = 0.77*sqrt(D) with D from
+# the GEOMETRIC diameter (the generator's own comment: "for some reason").
+WL_AK_PREFACTOR = 0.77
+WL_AK_VISCOSITY = (11.798, 0.629976, -1.81158e-04, 1e-7)
+"""Polynomial air viscosity: (11.798 + 0.629976 T - 1.81158e-4 T^2) * 1e-7."""
+WL_AK_LAMBDA = (100000.0, 0.37e-9)
+"""Mean free path k_B T / (sqrt2 * P * pi * d_mol^2) at P = 1e5 Pa, d_mol = 0.37 nm."""
+WL_AK_SLIP = (1.142, 0.558, 0.999)
+"""Cunningham-type slip: 1 + Kn (1.142 + 0.558 exp(-0.999/Kn))."""
+
+# diffusion (flow tube of Hanson & Eisele 2000; Perl :7283-7335). Loss
+# relative to the acid monomer's diffusivity in N2, scaled by the laminar
+# diffusion-limited factor 3.65/R^2 (Brown 1978).
+WL_DIFFUSION_TUBE_RADIUS = 0.049 / 2
+"""m, Hanson & Eisele 2000 default; --flowtube_radius overrides (given in cm)."""
+WL_DIFFUSION_TUBE_PRESSURE = 133.322 * 620
+"""Pa, 620 Torr default; --flowtube_pressure overrides."""
+WL_DIFFUSION_LAMINAR = 3.65
+"""Brown (1978) tubular-reactor factor: D -> wall loss as 3.65 D / R^2."""
+MASS_N2 = 28.01
+"""g/mol."""
+N2_SUTHERLAND = (17.9e-6, 300.0, 111.0)
+"""N2 viscosity: 17.9e-6 (300+111)/(T+111) (T/300)^1.5 (Crane 1988 / CRC)."""
+
+WEXLER = (
+    -2991.2729,
+    -6017.0128,
+    18.87643854,
+    -0.028354721,
+    0.17838301e-4,
+    -0.84150417e-9,
+    0.44412543e-12,
+    2.858487,
+)
+"""Wexler (1976) water saturation-pressure fit, Pa: exp(a0/T^2 + a1/T + a2 +
+a3 T + a4 T^2 + a5 T^3 + a6 T^4 + a7 ln T). Perl :858. An older CNT-book
+form sits commented out beside it upstream."""
+
+MASS_WATER = 18.02
+"""g/mol (Perl :854)."""
+DENS_WATER = 997.0
+"""kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
+volumes at this bulk density."""
+
+LOG_MAX_FLOAT64 = 709.782712893384
+"""``log(np.finfo(float64).max)``. An exponent above this overflows to inf
+in linear space, which is how upstream's hydrate normalisation fails."""
 
 FCS_DEFAULT = 1.0
 """Ion enhancement factor for the coagulation sink (P:'--fcs' default)."""
@@ -243,18 +350,51 @@ class FidelityConfig:
     distributions.
     """
 
-    enforce_charge_balance: bool = False
-    """Project the generic ions onto charge neutrality each outer iteration.
+    charge_balance: int = 0
+    """The generator's ``--charge_balance`` flag: 0, +1 or -1.
 
-    See F2. MATLAB does this (P:10346-10377); Fortran does not, relying on
-    symmetric ion sources. Arguably a correctness feature rather than a
-    diagnostic, which is why it is available -- but the default is Fortran.
+    ``0`` (default, the shipped example): both generic ions are sourced at
+    the ion production rate and the equations balance themselves.
+
+    ``+1``: the positive ion is not integrated. Before every RHS and
+    formation evaluation it is SET to ``c(neg) + sum(negative clusters) -
+    sum(positive clusters)``, i.e. whatever balances the net charge, floored
+    at zero with the excess pushed onto the negative ion. ``-1`` is the
+    mirror. Emitted at the top of feval/formation (fixture
+    acdc_equations_cb1.f90:93-99), with the fitted ion marked isconst.
+
+    Distinct from F2, which is the MATLAB driver's per-outer-iteration
+    projection; this one is a generator option and part of the Fortran path.
     """
 
     clamp_negative_j: bool = True
     """Replace negative formation rates with 1e-100 rather than reporting.
 
     See F4. ``get_acdc_J.f90:117``.
+    """
+
+    ion_collision_method: Literal[
+        "su82", "su73", "constant", "constant_no_enhancement"
+    ] = "su82"
+    """Ion-neutral collision parameterization. See F15.
+
+    ``"su82"`` (Su & Chesnavich 1982) is the reference's default.
+    ``"su73"`` (Su & Bowers 1973) uses the dipole locking coefficients from
+    the dipole file header, which Su82 reads but ignores.
+
+    The two ``constant`` values exist because upstream's behaviour depends on
+    whether temperature is a runtime variable:
+
+    - ``"constant"`` applies the documented size-independent factor of 10,
+      which is what upstream does at FIXED temperature.
+    - ``"constant_no_enhancement"`` reproduces upstream's VARIABLE-temperature
+      path, where the factor is silently dropped and ion-neutral collisions
+      come out at the bare hard-sphere rate. Verified by generating that
+      fixture: zero of 587 ion-neutral pairs carry any enhancement.
+
+    Split into two names rather than one flag because either choice would
+    otherwise be silent, and 'constant' quietly meaning 'no enhancement' is
+    a worse trap than an extra option.
     """
 
     mobility_diameter: Literal["fortran", "tammet"] = "fortran"
@@ -267,9 +407,41 @@ class FidelityConfig:
     correction as intended, moving 1A from 0.85 to 0.97 nm.
     """
 
+    sticking_on_evaporation: Literal["upstream", "detailed_balance"] = "upstream"
+    """How a --sticking_factor reaches the evaporation rate. See F19.
+
+    Upstream emits ``E(i,j) = s*<prefactor>*exp(...)*K(i,j)`` where ``K(i,j)``
+    already carries ``s``, so evaporation is scaled by s^2 and collision by s,
+    breaking detailed balance by a factor s. ``"upstream"`` reproduces that;
+    ``"detailed_balance"`` applies the factor once, through K only.
+    """
+
+    nonstandard_main_coefficient: Literal["fortran", "literal"] = "fortran"
+    """What happens to the coefficient of the FIRST product of a --nst line.
+
+    See F20. The generator folds it into ``coef_quad_form``, which only the
+    MATLAB emitter reads; the Fortran forms the main product once per
+    collision whatever the coefficient says (``1N 2A1N 2 1A1N`` forms one
+    1A1N and loses the other). ``"fortran"`` reproduces that; ``"literal"``
+    honours the coefficient. Extra products (third column onward) keep
+    their coefficients on both paths.
+    """
+
     hydrate_discard_threshold: float = 0.99
     """Discard a hydrate distribution normalising at or below this and treat
-    the cluster as dry. See F7, P:2637-2643. Phase 8.
+    the cluster as dry. See F7, P:2432-2440. Phase 8.
+    """
+
+    diffusion_wall_loss_generic_ions: Literal["excluded_2020", "included_2024"] = (
+        "excluded_2020"
+    )
+    """Whether the `diffusion` wall loss applies to the generic charger ions.
+
+    See F16. The 2020 generator -- the one that produced the shipped example
+    and every golden here -- loops that branch over the real clusters only
+    (:7325), so `neg`/`pos` get no diffusion wall loss while every other
+    loss includes them. The 2024 generator loops to `$max_cluster_number`
+    and includes them. Default reproduces the shipped Fortran.
     """
 
     def resolve_constants(self) -> dict[str, float]:

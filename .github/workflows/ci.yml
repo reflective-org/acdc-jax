@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: lint and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev --frozen
+      - name: ruff
+        run: |
+          uv run ruff check src tests scripts validation
+          uv run ruff format --check src tests scripts validation
+      - name: pytest
+        run: uv run pytest -q
+
+  reference:
+    name: Fortran reference gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev --frozen
+      # gfortran ships with the runner image; the f2py bridge is what turns
+      # the reference comparisons from skipped into real gates.
+      - name: build the f2py bridge
+        run: uv run python validation/reference/build.py
+      # The WHOLE suite, not just the bridge's own tests: several core
+      # modules (test_rates, test_reactions, test_rhs) skip themselves when
+      # the bridge is absent, so naming files here would leave them never
+      # run in CI.
+      - name: pytest, bridge gates included
+        run: uv run pytest -q
+
+  docs:
+    name: docs build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev --frozen
+      # The site arrives in the Phase 10 branch; earlier branches in the
+      # stack have no mkdocs.yml and should not fail for it.
+      - name: mkdocs build --strict
+        run: |
+          if [ -f mkdocs.yml ]; then
+            uv run mkdocs build --strict
+          else
+            echo "no mkdocs.yml on this branch; nothing to build"
+          fi
