@@ -238,6 +238,29 @@ class TestPathways:
             assert all(e.value > 0 for e in into)
             assert len({e.start for e in into}) == len(into)
 
+    def test_recombination_exits_are_neutralised(self, model, steady) -> None:
+        """Upstream combines an ion pair by reverting the negative ion to
+        its neutral parent and removing the proton BEFORE adding the
+        compositions (Perl :10077-10125); adding first invents molecules.
+        `3A1B2N + 2A3N1P` is `6A5N`, not `5A1B5N1P`."""
+        from acdc_jax import labels as label_module
+
+        system, _, _ = model
+        co, c = steady
+        for charge in (-1, 1):
+            pw = pathways.track_pathways(system, co, c, charge=charge, crit_out=0.01)
+            channels = {(e.start, e.end) for e in pw.exits}
+            assert channels
+            for start, end in channels:
+                composition = label_module.parse(end)
+                # a product may carry a charge carrier OR a proton, never
+                # both: that combination is the un-neutralised sum
+                assert not (composition.get("B") and composition.get("P")), (
+                    f"{start} -> {end}"
+                )
+        negative = pathways.track_pathways(system, co, c, charge=-1, crit_out=0.01)
+        assert ("3A1B2N", "6A5N") in {(e.start, e.end) for e in negative.exits}
+
     def test_charged_pathways(self, model, steady) -> None:
         system, reactions, _ = model
         co, c = steady
