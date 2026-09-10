@@ -270,6 +270,10 @@ DENS_WATER = 997.0
 """kg/m^3 (Perl :855). A hydrate's volume is the dry volume plus n water
 volumes at this bulk density."""
 
+LOG_MAX_FLOAT64 = 709.782712893384
+"""``log(np.finfo(float64).max)``. An exponent above this overflows to inf
+in linear space, which is how upstream's hydrate normalisation fails."""
+
 NBINS = 5
 """Size bins for classifying loop-mode clusters (acdc_simulation_setup.f90:11)."""
 BIN_LIMITS_NM = (1.05, 1.28, 1.73, 2.59, 4.27, 6.36)
