@@ -22,6 +22,7 @@ from __future__ import annotations
 import dataclasses
 
 import diffrax
+import jax
 import jax.numpy as jnp
 import numpy as np
 import optimistix
@@ -39,14 +40,15 @@ class SteadyStateResult:
     """Formation rate, 1/m^3/s."""
     j_by_channel: jnp.ndarray
     """Neutral, negative, positive."""
-    converged: bool
+    converged: jnp.ndarray | bool
     """Explicit, unlike the reference.
 
     ``driver_acdc_J.f90:178-187`` returns ``j_out = 0`` with ``ok = .true.``
     when the steady state is not reached, so a caller cannot tell "converged
     to zero" from "gave up". Here the two are distinguishable.
     """
-    steps: int
+    steps: jnp.ndarray | int
+    """Solver steps taken. Left as an array so the solve traces."""
 
 
 def integrate(
@@ -169,6 +171,11 @@ def steady_state_by_integration(
     that this makes the answer only defined to within ``sstol`` -- see
     docs/validation.md.
 
+    The whole function traces, so it can be ``vmap``-ed over a grid of
+    conditions (7.4): the checkpoint grid is fixed in advance, which makes
+    WHICH pairs the criterion considers a compile-time fact, and only the
+    comparison itself depends on the data.
+
     Integrated as a SINGLE solve with checkpoints, not as a sequence of
     restarts. The reference restarts because VODE is handed a fixed 20-point
     time grid, but restarting an adaptive implicit solver throws away its
@@ -186,13 +193,16 @@ def steady_state_by_integration(
     # dynamics are fast, then linear.
     early = [1e-8, 1e-4, 1e-2, 1.0, 60.0]
     late = list(np.arange(sstimetot, max_time + sstimech, sstimech * 20))
-    checkpoints = jnp.array([t for t in early + late if t <= max_time])
+    # Kept as Python floats: the grid is a compile-time fact, and reading
+    # the last one back out of a jnp array would concretize under jit.
+    times = [float(t) for t in early + late if t <= max_time]
+    checkpoints = jnp.asarray(times)
 
     solution = integrate(
         system,
         coefficients,
         c0,
-        t1=float(checkpoints[-1]),
+        t1=times[-1],
         t0=0.0,
         rtol=rtol,
         atol=atol,
@@ -201,18 +211,21 @@ def steady_state_by_integration(
     )
     trajectory = solution.ys
 
-    converged = False
-    index = len(checkpoints) - 1
-    for k in range(1, len(checkpoints)):
-        if float(checkpoints[k]) < sstimetot:
-            continue
-        if float(checkpoints[k] - checkpoints[k - 1]) < sstimech:
-            continue
-        change = _relative_change(trajectory[k], trajectory[k - 1], n)
-        if float(change) <= sstol:
-            converged = True
-            index = k
-            break
+    # Which checkpoint pairs the criterion may consider is fixed by the
+    # grid, so it is settled here rather than inside the traced comparison.
+    eligible = np.zeros(len(times), dtype=bool)
+    for k in range(1, len(times)):
+        eligible[k] = (times[k] >= sstimetot) and (times[k] - times[k - 1] >= sstimech)
+
+    change = jax.vmap(_relative_change, in_axes=(0, 0, None))(
+        trajectory[1:], trajectory[:-1], n
+    )
+    settled = jnp.concatenate([jnp.array([False]), change <= sstol])
+    settled = settled & jnp.asarray(eligible)
+    converged = jnp.any(settled)
+    # argmax picks the FIRST True, which is the checkpoint the reference's
+    # loop would have stopped at.
+    index = jnp.where(converged, jnp.argmax(settled), len(times) - 1)
 
     c = jnp.zeros(system.n_equations).at[:n].set(trajectory[index])
     formation = rhs.formation_rate(system, coefficients, c)
@@ -221,7 +234,7 @@ def steady_state_by_integration(
         j_total=formation["j_tot"],
         j_by_channel=formation["j_by_channel"],
         converged=converged,
-        steps=int(solution.stats["num_steps"]),
+        steps=solution.stats["num_steps"],
     )
 
 
@@ -307,7 +320,10 @@ def steady_state_by_rootfind(
         j_total=formation["j_tot"],
         j_by_channel=formation["j_by_channel"],
         converged=solution.result == optimistix.RESULTS.successful,
-        steps=int(solution.stats.get("num_steps", 0)),
+        # Left as an array, like the integration path: `int()` here made
+        # the whole root-find path unbatchable, even though its docstring
+        # offered `method="rootfind"` to `formation_rate_batch`.
+        steps=solution.stats.get("num_steps", 0),
     )
 
 

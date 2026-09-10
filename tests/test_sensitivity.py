@@ -167,3 +167,85 @@ class TestConditionGradients:
         )
         for key, value in result.items():
             assert np.isfinite(float(value)), key
+
+
+class TestBatching:
+    """Phase 7.4: the whole steady-state solve under `vmap`."""
+
+    def test_matches_the_loop(self, model) -> None:
+        """The gate the plan asked for was bitwise equality. It is not
+        achievable and should not be: under `vmap` diffrax's adaptive
+        controller drives the whole batch on one clock, so the step
+        sequence differs from a solo solve and the trajectories part at the
+        last couple of digits. Measured worst case over the sweep is 6e-13,
+        which is eight orders below the 1e-5 the steady-state criterion
+        itself defines J to."""
+        system, reactions, inputs = model
+        c_a = np.logspace(12, 13, 3)
+        args = (system, reactions, inputs, c_a, 1e15, 280.0, 1e-3, 3.0e6)
+        loop = sensitivity.sweep(*args)
+        batched = sensitivity.sweep(*args, batched=True)
+        assert np.all(np.isfinite(batched))
+        worst = float(np.max(np.abs(batched - loop) / np.abs(loop)))
+        assert worst < 1e-9, worst
+
+    def test_rootfind_batches_too(self, model) -> None:
+        """The docstring offers `method="rootfind"`, and it used to raise
+        ConcretizationTypeError because that path called `int()` on the
+        solver's step count. Unlike the integrator, the root-find agrees
+        with the loop BITWISE: it converges to the same root, with no
+        adaptive step history to diverge."""
+        import jax.numpy as jnp
+
+        system, reactions, inputs = model
+        c_a = np.array([5e12, 1e13])
+        batched = np.asarray(
+            sensitivity.formation_rate_batch(
+                system,
+                reactions,
+                inputs,
+                sensitivity.Conditions(jnp.asarray(c_a), 1e15, 280.0, 1e-3, 3.0e6),
+                method="rootfind",
+            )
+        )
+        loop = sensitivity.sweep(
+            system, reactions, inputs, c_a, 1e15, 280.0, 1e-3, 3.0e6, method="rootfind"
+        )
+        assert np.all(np.isfinite(batched))
+        np.testing.assert_array_equal(batched, loop)
+
+    def test_broadcasts_a_temperature_grid(self, model) -> None:
+        """Any field may be the batched one; a scalar rides along."""
+        import jax.numpy as jnp
+
+        system, reactions, inputs = model
+        temperatures = jnp.array([270.0, 280.0, 290.0])
+        j = sensitivity.formation_rate_batch(
+            system,
+            reactions,
+            inputs,
+            sensitivity.Conditions(1e13, 1e15, temperatures, 1e-3, 3.0e6),
+        )
+        assert j.shape == (3,)
+        assert np.all(np.isfinite(j))
+        # Evaporation grows with temperature faster than collision does, so
+        # at fixed vapour the formation rate falls.
+        assert j[0] > j[1] > j[2]
+
+    def test_result_takes_the_broadcast_shape(self, model) -> None:
+        import jax.numpy as jnp
+
+        system, reactions, inputs = model
+        j = sensitivity.formation_rate_batch(
+            system,
+            reactions,
+            inputs,
+            sensitivity.Conditions(
+                jnp.array([[1e13], [2e13]]),
+                1e15,
+                jnp.array([275.0, 285.0]),
+                1e-3,
+                3.0e6,
+            ),
+        )
+        assert j.shape == (2, 2)
